@@ -1,0 +1,392 @@
+:root {
+  --white: white;
+  --black: black;
+}
+
+h1 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+p {
+  margin-bottom: 16px;
+  font-size: 24px;
+  font-weight: 400;
+}
+
+.section {
+  height: 100vh;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 0%;
+  display: flex;
+}
+
+.container {
+  max-width: 1280px;
+  flex: 1;
+  order: 0;
+  align-self: center;
+  position: static;
+}
+
+.split-hero-wrapper {
+  min-width: 100%;
+  grid-column-gap: 80px;
+  grid-row-gap: 80px;
+  justify-content: space-around;
+  display: flex;
+  overflow: hidden;
+}
+
+.split-content {
+  width: 50%;
+}
+
+.split-content.hero-content {
+  grid-row-gap: 16px;
+  object-fit: contain;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: stretch;
+  display: flex;
+}
+
+.split-content.hero-image {
+  max-height: 580px;
+  max-width: 100%;
+  object-fit: fill;
+  flex: 0 auto;
+  order: 1;
+  align-self: stretch;
+  position: relative;
+  overflow: hidden;
+}
+
+.body {
+  color: #f6f6f7;
+  background-color: #1e1e1e;
+  padding-left: 32px;
+  padding-right: 32px;
+  font-family: Poppins, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.text-block-eyebrow {
+  opacity: .5;
+  color: #fff;
+  text-transform: uppercase;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.text-block-eyebrow._1 {
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.text-block-body-16px {
+  text-decoration: none;
+}
+
+.split-title-position-wrapper {
+  grid-column-gap: 16px;
+  grid-row-gap: 16px;
+  grid-template-rows: auto;
+  grid-template-columns: minmax(120px, 120px) 1fr;
+  grid-auto-columns: 1fr;
+  justify-content: space-between;
+  align-items: start;
+  margin-bottom: 8px;
+  display: grid;
+}
+
+.flex-vertical {
+  flex-direction: column;
+  align-items: flex-start;
+  display: flex;
+}
+
+.flex-vertical.gap-row-8px {
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+}
+
+.span-opacity {
+  opacity: .51;
+  object-fit: fill;
+}
+
+.social-link {
+  color: #f6f6f7;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-right: 12px;
+  text-decoration: none;
+}
+
+.social-link:hover {
+  text-decoration: underline;
+}
+
+.split-title-social-links-wrapper {
+  grid-column-gap: 20px;
+  grid-row-gap: 20px;
+  grid-template-rows: auto;
+  grid-template-columns: .25fr 1fr;
+  grid-auto-columns: 1fr;
+  justify-content: flex-start;
+  align-items: center;
+  display: flex;
+}
+
+.social-links-wrapper {
+  grid-row-gap: 24px;
+  flex-direction: column;
+  margin-top: 0;
+  display: flex;
+}
+
+.resume-content-wrapper {
+  grid-row-gap: 8px;
+  flex-direction: column;
+  padding-bottom: 0;
+  display: flex;
+}
+
+.title-wrapper {
+  object-fit: contain;
+  align-self: auto;
+}
+
+.image-hero {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  object-fit: cover;
+  margin-bottom: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  display: inline-block;
+  overflow: hidden;
+}
+
+.image-hero.is-hiding {
+  width: 100%;
+  display: block;
+}
+
+.light-switch-button {
+  max-width: 44px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-right: 8px;
+  overflow: visible;
+}
+
+.load-bar {
+  width: 1px;
+  height: 6px;
+  opacity: 0;
+  object-fit: fill;
+  background-color: #4e54ce;
+  border-top: 1px solid #fff;
+  display: none;
+  position: absolute;
+  bottom: 0;
+  left: 0%;
+  right: auto;
+  overflow: scroll;
+}
+
+.link, .link-2, .link-3 {
+  text-decoration: none;
+}
+
+.paragraph {
+  object-fit: contain;
+}
+
+.heading {
+  object-fit: contain;
+  font-weight: 400;
+}
+
+.text-block {
+  object-fit: fill;
+}
+
+@media screen and (max-width: 991px) {
+  .section {
+    height: 100%;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  .container {
+    flex: 1;
+  }
+
+  .split-hero-wrapper {
+    width: auto;
+    min-width: 100%;
+    flex-direction: column;
+    padding-bottom: 0;
+  }
+
+  .split-content.hero-content {
+    width: auto;
+    flex: 0 auto;
+    align-self: stretch;
+    align-items: flex-start;
+  }
+
+  .split-content.hero-image {
+    width: auto;
+    max-height: 740px;
+    max-width: 100%;
+    margin-bottom: auto;
+  }
+
+  .body {
+    padding: 32px;
+  }
+
+  .social-link {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  .image-hero {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .load-bar {
+    overflow: hidden;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .section {
+    height: 100%;
+    margin-bottom: 0;
+    padding: 0;
+  }
+
+  .container {
+    object-fit: fill;
+    display: block;
+  }
+
+  .split-hero-wrapper {
+    min-width: 100%;
+    grid-column-gap: 80px;
+    grid-row-gap: 80px;
+    padding-bottom: 0;
+  }
+
+  .split-content.hero-image {
+    max-height: 440px;
+    margin-bottom: auto;
+  }
+
+  .image-hero {
+    margin-bottom: auto;
+  }
+
+  .load-bar {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 479px) {
+  .section {
+    height: 100%;
+    justify-content: space-between;
+    align-items: stretch;
+    padding: 0;
+    position: relative;
+    overflow: visible;
+  }
+
+  .container {
+    max-width: 100%;
+    object-fit: cover;
+    flex: 1;
+    align-self: auto;
+    position: static;
+  }
+
+  .split-hero-wrapper {
+    width: auto;
+    min-width: auto;
+    grid-column-gap: 40px;
+    grid-row-gap: 40px;
+    justify-content: space-between;
+    align-items: stretch;
+    padding-bottom: 0;
+  }
+
+  .split-content.hero-content {
+    align-self: stretch;
+    align-items: flex-start;
+  }
+
+  .split-content.hero-image {
+    width: 100%;
+    max-height: 280px;
+    max-width: 100%;
+    object-fit: cover;
+    align-self: stretch;
+    position: relative;
+  }
+
+  .body {
+    margin-bottom: 0;
+    padding: 32px;
+  }
+
+  .split-title-position-wrapper {
+    grid-row-gap: 4px;
+    flex-flow: column wrap;
+    margin-bottom: 20px;
+    display: flex;
+  }
+
+  .social-link:hover {
+    text-decoration: underline;
+  }
+
+  .image-hero {
+    width: 100%;
+    height: 100%;
+    margin-bottom: 0;
+    overflow: hidden;
+  }
+
+  .image-hero.is-hiding {
+    width: 100%;
+  }
+
+  .load-bar {
+    display: none;
+  }
+
+  .paragraph {
+    object-fit: contain;
+  }
+}
+
+#w-node-_868e74d6-6cb3-254f-f206-c3e15b9d4b33-0f067df9, #w-node-_9dd94fb2-377d-ab9b-3ee9-b7d3af805953-0f067df9, #w-node-_61710b3e-f786-c03e-e579-dd3a7a0793d8-0f067df9 {
+  grid-area: span 1 / span 1 / span 1 / span 1;
+}
+
+
