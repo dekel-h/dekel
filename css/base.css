@@ -1,0 +1,31 @@
+/*
+  Base layout primitives for the portfolio site.
+  These rules replace the vendor stylesheet that originally shipped with the static export
+  and keep only the global resets needed by the custom stylesheets.
+*/
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: #fff;
+  color: #333;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
