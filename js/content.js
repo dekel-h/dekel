@@ -1,7 +1,7 @@
 // Content management bootstrap for Dekel Hillel's portfolio site
 //
 // This script loads structured content from `content.json` and injects it
-// into the static Webflow markup. The goal is to let non-technical editors
+// into the static HTML markup. The goal is to let non-technical editors
 // update the copy, links and imagery by editing a single JSON file instead
 // of touching the HTML. Once the content is in place we emit a custom
 // `content:ready` event so that other scripts (like the hero carousel)

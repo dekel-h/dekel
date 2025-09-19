@@ -37,13 +37,13 @@
     {
       "label": "LinkedIn",
       "url": "https://www.linkedin.com/in/dekelhillel/",
-      "id": "w-node-_9dd94fb2-377d-ab9b-3ee9-b7d3af805953-0f067df9",
+      "id": "social-link-linkedin",
       "className": "social-link"
     },
     {
       "label": "Instagram",
       "url": "https://www.instagram.com/dekelhillel/",
-      "id": "w-node-_61710b3e-f786-c03e-e579-dd3a7a0793d8-0f067df9",
+      "id": "social-link-instagram",
       "className": "social-link"
     }
   ],
@@ -58,10 +58,7 @@
       "classList": [
         "image-hero",
         "is-hiding"
-      ],
-      "dataAttributes": {
-        "data-w-id": "9785e105-9bc2-aeb4-70ef-be241f666759"
-      }
+      ]
     },
     {
       "src": "images/Pay.webp",
@@ -73,10 +70,7 @@
       "classList": [
         "image-hero",
         "is-hiding"
-      ],
-      "dataAttributes": {
-        "data-w-id": "0888242b-f7c5-282a-365e-d2f5521cae2a"
-      }
+      ]
     },
     {
       "src": "images/Balance.webp",
@@ -88,10 +82,7 @@
       "classList": [
         "image-hero",
         "is-hiding"
-      ],
-      "dataAttributes": {
-        "data-w-id": "e9eb1212-6140-ca06-51d7-a252654addbc"
-      }
+      ]
     }
   ]
 }

@@ -21,6 +21,14 @@
   let currentIndex = 0;
   let mutationFrame = null;
 
+  function emitEvent(name, detail) {
+    document.dispatchEvent(
+      new CustomEvent(name, {
+        detail,
+      })
+    );
+  }
+
   function collectImages(container) {
     return Array.from(container.querySelectorAll(IMAGE_SELECTOR));
   }
@@ -29,6 +37,13 @@
     if (intervalId) {
       clearInterval(intervalId);
       intervalId = null;
+    }
+
+    if (activeImages.length) {
+      emitEvent('carousel:stopped', {
+        total: activeImages.length,
+        index: currentIndex,
+      });
     }
   }
 
@@ -54,6 +69,12 @@
       if (img.getAttribute('aria-hidden') !== ariaHiddenValue) {
         img.setAttribute('aria-hidden', ariaHiddenValue);
       }
+    });
+
+    emitEvent('carousel:cycle', {
+      total: images.length,
+      index: currentIndex,
+      interval: CAROUSEL_INTERVAL,
     });
   }
 
@@ -90,6 +111,7 @@
       activeImages = [];
       currentIndex = 0;
       stopRotation();
+      emitEvent('carousel:reset', { total: 0 });
       return false;
     }
 
