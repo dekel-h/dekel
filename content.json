@@ -1,7 +1,7 @@
 {
   "hero": {
     "title": "Hi, I\u2019m Dekel Hillel",
-    "subtitleHtml": "Senior Product Designer <strong></strong> <br>&amp; Lecturer at <strong>Bezalel Academy</strong>"
+    "subtitleHtml": "Senior Product Designer <strong></strong> <br>&amp; Lecturer at <strong></strong>"
   },
   "previousRoles": [
      {
@@ -9,9 +9,19 @@
       "companyUrl": "https://ownera.io/",
       "linkClass": "link-3",
       "companyStrongClass": "social-link",
-      "titleHtml": "Senio Product Designer<br>",
+      "titleHtml": "Senior Product Designer<br>",
       "titleClass": "text-block",
       "years": "2023-2025",
+      "yearsClass": "span-opacity"
+    },
+         {
+      "companyName": "Bezalel Academy",
+      "companyUrl": "https://www.bezalel.ac.il/",
+      "linkClass": "link-3",
+      "companyStrongClass": "social-link",
+      "titleHtml": "Lecturer<br>",
+      "titleClass": "text-block",
+      "years": "2022-2024",
       "yearsClass": "span-opacity"
     },
     {
