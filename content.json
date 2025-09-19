@@ -1,0 +1,97 @@
+{
+  "hero": {
+    "title": "Hi, I\u2019m Dekel Hillel",
+    "subtitleHtml": "Senior Product Designer at <strong>Ownera</strong> <br>&amp; Lecturer at <strong>Bezalel Academy</strong>"
+  },
+  "previousRoles": [
+    {
+      "companyName": "placer.ai",
+      "companyUrl": "http://placer.ai",
+      "linkClass": "link-3",
+      "companyStrongClass": "social-link",
+      "titleHtml": "Product Designer<br>",
+      "titleClass": "text-block",
+      "years": "2021-2022",
+      "yearsClass": "span-opacity"
+    },
+    {
+      "companyName": "pay.com",
+      "companyUrl": "http://pay.com",
+      "linkClass": "link",
+      "companyStrongClass": "social-link",
+      "titleHtml": "Principal Product Designer<br>",
+      "years": "2020-2021",
+      "yearsClass": "span-opacity"
+    },
+    {
+      "companyName": "SimilarWeb",
+      "companyUrl": "http://similarweb.com",
+      "linkClass": "link-2",
+      "companyStrongClass": "social-link",
+      "titleHtml": "Product Designer<br>",
+      "years": "2018-2020",
+      "yearsClass": "span-opacity"
+    }
+  ],
+  "socialLinks": [
+    {
+      "label": "LinkedIn",
+      "url": "https://www.linkedin.com/in/dekelhillel/",
+      "id": "w-node-_9dd94fb2-377d-ab9b-3ee9-b7d3af805953-0f067df9",
+      "className": "social-link"
+    },
+    {
+      "label": "Instagram",
+      "url": "https://www.instagram.com/dekelhillel/",
+      "id": "w-node-_61710b3e-f786-c03e-e579-dd3a7a0793d8-0f067df9",
+      "className": "social-link"
+    }
+  ],
+  "heroImages": [
+    {
+      "src": "images/Placer.webp",
+      "loading": "eager",
+      "alt": "Placer.ai platform mockup",
+      "width": 680,
+      "srcset": "images/Placer-p-500.jpg 500w, images/Placer-p-800.jpg 800w, images/Placer-p-1080.jpg 1080w, images/Placer.webp 1360w",
+      "sizes": "(max-width: 479px) 87vw, (max-width: 767px) 92vw, (max-width: 991px) 94vw, 44vw",
+      "classList": [
+        "image-hero",
+        "is-hiding"
+      ],
+      "dataAttributes": {
+        "data-w-id": "9785e105-9bc2-aeb4-70ef-be241f666759"
+      }
+    },
+    {
+      "src": "images/Pay.webp",
+      "loading": "eager",
+      "alt": "Pay.com Platform Mockup",
+      "width": 680,
+      "srcset": "images/Pay-p-500.jpg 500w, images/Pay-p-800.jpg 800w, images/Pay-p-1080.jpg 1080w, images/Pay.webp 1360w",
+      "sizes": "(max-width: 479px) 87vw, (max-width: 767px) 92vw, (max-width: 991px) 94vw, 44vw",
+      "classList": [
+        "image-hero",
+        "is-hiding"
+      ],
+      "dataAttributes": {
+        "data-w-id": "0888242b-f7c5-282a-365e-d2f5521cae2a"
+      }
+    },
+    {
+      "src": "images/Balance.webp",
+      "loading": "eager",
+      "alt": "Balance app mockup",
+      "width": 680,
+      "srcset": "images/Balance-p-500.jpg 500w, images/Balance-p-800.jpg 800w, images/Balance-p-1080.jpg 1080w, images/Balance.webp 1360w",
+      "sizes": "(max-width: 479px) 87vw, (max-width: 767px) 92vw, (max-width: 991px) 94vw, 44vw",
+      "classList": [
+        "image-hero",
+        "is-hiding"
+      ],
+      "dataAttributes": {
+        "data-w-id": "e9eb1212-6140-ca06-51d7-a252654addbc"
+      }
+    }
+  ]
+}
