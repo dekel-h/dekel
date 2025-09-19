@@ -32,8 +32,6 @@ p {
   order: 0;
   align-self: center;
   position: static;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 .split-hero-wrapper {
@@ -188,12 +186,7 @@ p {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-right: 8px;
-  padding-left: 0;
   overflow: visible;
-  display: inline-block;
-  background: none;
-  border: 0;
-  cursor: pointer;
 }
 
 .load-bar {
@@ -222,23 +215,6 @@ p {
 .heading {
   object-fit: contain;
   font-weight: 400;
-}
-
-.body.is-light-mode {
-  background-color: #f6f6f7;
-  color: #121a1f;
-}
-
-.body.is-light-mode .text-block-eyebrow {
-  color: #121a1f;
-}
-
-.body.is-light-mode .social-link {
-  color: #121a1f;
-}
-
-.body.is-light-mode .span-opacity {
-  opacity: 0.7;
 }
 
 .text-block {
@@ -408,4 +384,9 @@ p {
     object-fit: contain;
   }
 }
+
+#w-node-_868e74d6-6cb3-254f-f206-c3e15b9d4b33-0f067df9, #w-node-_9dd94fb2-377d-ab9b-3ee9-b7d3af805953-0f067df9, #w-node-_61710b3e-f786-c03e-e579-dd3a7a0793d8-0f067df9 {
+  grid-area: span 1 / span 1 / span 1 / span 1;
+}
+
 
