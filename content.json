@@ -1,7 +1,11 @@
 {
   "hero": {
     "title": "Hi, I\u2019m Dekel Hillel",
-    "subtitleHtml": "Senior Product Designer <strong></strong> <br>&amp; Lecturer <strong></strong>"
+    "subtitleHtml": "Senior Product Designer <strong></strong> <br>&amp; Lecturer <strong></strong>",
+    "callToAction": {
+      "label": "Book a call",
+      "url": "https://cal.com/dekel/ux-and-career-mentoring"
+    }
   },
   "previousRoles": [
      {
