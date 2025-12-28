@@ -99,6 +99,18 @@ p {
   z-index: 10;
 }
 
+.top-nav .cta-button {
+  color: var(--ink);
+  font-size: 14px;
+  letter-spacing: .02em;
+  padding: 10px 18px;
+  background-position: 0% 50%;
+}
+
+.top-nav .cta-button:hover {
+  background-position: 100% 50%;
+}
+
 .top-nav .link-3 {
   color: var(--ownera-mint);
   letter-spacing: .01em;
