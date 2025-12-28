@@ -42,6 +42,38 @@
     }
   }
 
+  function buildCallToAction(callToAction) {
+    const container = getElement('#hero-cta');
+    if (!container) {
+      return;
+    }
+
+    container.innerHTML = '';
+
+    const {
+      label = '',
+      url = '',
+      target = '_blank',
+      rel = 'noopener noreferrer',
+    } = callToAction || {};
+
+    const trimmedLabel = typeof label === 'string' ? label.trim() : '';
+    const trimmedUrl = typeof url === 'string' ? url.trim() : '';
+
+    if (!trimmedLabel) {
+      return;
+    }
+
+    const button = document.createElement('a');
+    button.textContent = trimmedLabel;
+    button.className = 'cta-button';
+    button.href = trimmedUrl || '#';
+    button.target = target;
+    button.rel = rel;
+
+    container.appendChild(button);
+  }
+
   function buildPreviousRoles(roles) {
     const container = getElement('#previous-roles');
     if (!container || !Array.isArray(roles)) {
@@ -278,6 +310,7 @@
 
       setTextContent('#hero-title', hero.title || '');
       setTextContent('#hero-subtitle', hero.subtitleHtml || '', true);
+      buildCallToAction(hero.callToAction);
       buildPreviousRoles(previousRoles);
       buildSocialLinks(socialLinks);
       buildHeroImages(heroImages);

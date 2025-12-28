@@ -111,6 +111,11 @@ p {
   background-position: 100% 50%;
 }
 
+.cta-wrapper {
+  margin: 12px 0 8px;
+  display: flex;
+}
+
 .top-nav .link-3 {
   color: var(--ownera-mint);
   letter-spacing: .01em;
