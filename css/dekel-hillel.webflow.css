@@ -332,6 +332,25 @@ p {
   text-decoration: none;
 }
 
+.nav-book-link {
+  align-items: center;
+  gap: 6px;
+  display: inline-flex;
+}
+
+.nav-book-link:focus-visible {
+  outline: none;
+}
+
+.nav-link-arrow {
+  font-size: .9em;
+  transition: transform .2s ease;
+}
+
+.nav-book-link:hover .nav-link-arrow {
+  transform: translateX(4px);
+}
+
 .paragraph {
   object-fit: contain;
 }
