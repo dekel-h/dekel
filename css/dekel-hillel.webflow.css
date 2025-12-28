@@ -5,6 +5,7 @@
   --bezalel-indigo: #4e54ce;
   --ink: #121a1f;
   --paper: #f6f6f7;
+  --social-link-color: #f6f6f7;
   --book-call-bg: rgba(128, 128, 128, 0.18);
   --book-call-bg-hover: rgba(128, 128, 128, 0.24);
   --book-call-border: rgba(128, 128, 128, 0.28);
@@ -16,6 +17,7 @@
 
 @media (prefers-color-scheme: light) {
   :root {
+    --social-link-color: #121a1f;
     --book-call-bg: rgba(128, 128, 128, 0.22);
     --book-call-bg-hover: rgba(128, 128, 128, 0.3);
     --book-call-border: rgba(128, 128, 128, 0.35);
@@ -115,7 +117,7 @@ p {
 }
 
 .top-nav .link-3 {
-  color: var(--ownera-mint);
+  color: var(--social-link-color);
   letter-spacing: .01em;
   background: none;
   border: none;
@@ -126,23 +128,12 @@ p {
   align-items: center;
   gap: 8px;
   text-decoration: none;
-  transition: color .2s ease, transform .2s ease;
-}
-
-.top-nav .link-3::after {
-  content: "→";
-  font-size: 14px;
-  line-height: 1;
-  transition: transform .2s ease;
+  transition: color .2s ease;
 }
 
 .top-nav .link-3:hover {
-  color: #b6e7dc;
-  transform: translateX(2px);
-}
-
-.top-nav .link-3:hover::after {
-  transform: translateX(4px);
+  color: var(--social-link-color);
+  text-decoration: underline;
 }
 
 .top-nav .social-link {
@@ -243,7 +234,7 @@ p {
 }
 
 .social-link {
-  color: #f6f6f7;
+  color: var(--social-link-color);
   padding-top: 0;
   padding-bottom: 0;
   padding-right: 12px;
