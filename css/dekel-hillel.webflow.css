@@ -87,31 +87,44 @@ p {
 }
 
 .cta-button {
-  color: #f6f6f7;
-  letter-spacing: .02em;
-  background: rgba(255, 255, 255, .06);
-  border: 1px solid rgba(119, 213, 193, .5);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: #0e141a;
+  letter-spacing: .04em;
+  background: linear-gradient(135deg, #4e54ce, #77d5c1);
+  border: 1px solid rgba(255, 255, 255, .14);
   border-radius: 999px;
   padding: 12px 22px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
   text-decoration: none;
   box-shadow: 0 14px 40px rgba(0, 0, 0, .35);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  transition: transform .2s ease, box-shadow .2s ease, background .2s ease, border-color .2s ease;
+  transition: transform .2s ease, box-shadow .2s ease, background .2s ease, border-color .2s ease, color .2s ease;
 }
 
 .cta-button:hover {
-  transform: translateY(-2px);
-  background: linear-gradient(135deg, #4e54ce, #77d5c1);
-  border-color: transparent;
-  color: #0e141a;
+  transform: translateY(-1px);
+  background: linear-gradient(135deg, #5f66d8, #7fe0c9);
+  border-color: rgba(255, 255, 255, .25);
   box-shadow: 0 16px 44px rgba(0, 0, 0, .45);
 }
 
 .cta-button:focus-visible {
   outline: 2px solid #77d5c1;
   outline-offset: 4px;
+}
+
+.cta-button::after {
+  content: "→";
+  font-size: 14px;
+  font-weight: 600;
+  transition: transform .2s ease;
+}
+
+.cta-button:hover::after {
+  transform: translateX(4px);
 }
 
 .text-block-eyebrow {
