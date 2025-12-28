@@ -1,6 +1,10 @@
 :root {
   --white: white;
   --black: black;
+  --ownera-mint: #77d5c1;
+  --bezalel-indigo: #4e54ce;
+  --ink: #121a1f;
+  --paper: #f6f6f7;
 }
 
 h1 {
@@ -83,29 +87,70 @@ p {
   right: 32px;
   display: flex;
   justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  background-color: rgba(18, 26, 31, .7);
+  border: 1px solid rgba(255, 255, 255, .08);
+  border-radius: 999px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, .28);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
   z-index: 10;
 }
 
 .cta-button {
-  color: #121a1f;
+  color: var(--ink);
   letter-spacing: .02em;
-  background-image: linear-gradient(135deg, #77d5c1, #4e54ce);
+  background-image: linear-gradient(120deg, var(--ownera-mint), var(--bezalel-indigo));
+  background-size: 220% 220%;
   border-radius: 999px;
-  padding: 12px 20px;
+  padding: 12px 22px;
   font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   text-decoration: none;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, .25);
-  transition: transform .2s ease, box-shadow .2s ease;
+  box-shadow: 0 14px 38px rgba(78, 84, 206, .32), 0 10px 30px rgba(0, 0, 0, .28);
+  transition: transform .2s ease, box-shadow .2s ease, background-position .35s ease;
+  position: relative;
 }
 
 .cta-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 34px rgba(0, 0, 0, .35);
+  background-position: 100% 50%;
+  box-shadow: 0 18px 46px rgba(78, 84, 206, .42), 0 12px 34px rgba(0, 0, 0, .35);
 }
 
 .cta-button:focus-visible {
-  outline: 2px solid #f6f6f7;
+  outline: 2px solid var(--paper);
   outline-offset: 4px;
+}
+
+.cta-button:active {
+  transform: translateY(0);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, .3);
+}
+
+.cta-button::after {
+  content: '↗';
+  font-size: .9em;
+  transition: transform .2s ease;
+}
+
+.cta-button:hover::after {
+  transform: translateX(4px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cta-button,
+  .cta-button::after {
+    transition: none;
+  }
+
+  .cta-button {
+    background-position: 0 0;
+  }
 }
 
 .text-block-eyebrow {
@@ -428,4 +473,3 @@ p {
 #w-node-_868e74d6-6cb3-254f-f206-c3e15b9d4b33-0f067df9, #w-node-_9dd94fb2-377d-ab9b-3ee9-b7d3af805953-0f067df9, #w-node-_61710b3e-f786-c03e-e579-dd3a7a0793d8-0f067df9 {
   grid-area: span 1 / span 1 / span 1 / span 1;
 }
-
