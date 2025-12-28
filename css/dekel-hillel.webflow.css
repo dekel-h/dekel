@@ -1,6 +1,10 @@
 :root {
   --white: white;
   --black: black;
+  --cta-start: #4e54ce;
+  --cta-end: #77d5c1;
+  --cta-hover-start: #5f66d8;
+  --cta-hover-end: #7fe0c9;
 }
 
 h1 {
@@ -92,7 +96,7 @@ p {
   gap: 10px;
   color: #0e141a;
   letter-spacing: .04em;
-  background: linear-gradient(135deg, #4e54ce, #77d5c1);
+  background: linear-gradient(135deg, var(--cta-start), var(--cta-end));
   border: 1px solid rgba(255, 255, 255, .14);
   border-radius: 999px;
   padding: 12px 22px;
@@ -108,7 +112,7 @@ p {
 
 .cta-button:hover {
   transform: translateY(-1px);
-  background: linear-gradient(135deg, #5f66d8, #7fe0c9);
+  background: linear-gradient(135deg, var(--cta-hover-start), var(--cta-hover-end));
   border-color: rgba(255, 255, 255, .25);
   box-shadow: 0 16px 44px rgba(0, 0, 0, .45);
 }
@@ -127,6 +131,16 @@ p {
 
 .cta-button:hover::after {
   transform: translateX(4px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cta-button,
+  .cta-button:hover,
+  .cta-button::after,
+  .cta-button:hover::after {
+    transition: none;
+    transform: none;
+  }
 }
 
 .text-block-eyebrow {
