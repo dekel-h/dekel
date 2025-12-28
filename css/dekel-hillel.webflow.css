@@ -123,6 +123,7 @@ p {
   border: none;
   box-shadow: none;
   padding: 8px 12px;
+  font-size: 14px;
   font-weight: 600;
   display: inline-flex;
   align-items: center;
