@@ -13,6 +13,9 @@
   --book-call-shadow: 0 10px 30px rgba(0, 0, 0, .18);
   --book-call-shadow-hover: 0 12px 36px rgba(0, 0, 0, .22);
   --book-call-focus-ring: rgba(128, 128, 128, 0.55);
+  --mobile-nav-bg: rgba(18, 26, 31, 0.82);
+  --mobile-nav-border: rgba(255, 255, 255, 0.08);
+  --mobile-nav-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
 }
 
 @media (prefers-color-scheme: light) {
@@ -24,6 +27,9 @@
     --book-call-border-hover: rgba(128, 128, 128, 0.45);
     --book-call-shadow: 0 8px 24px rgba(78, 84, 206, .12);
     --book-call-shadow-hover: 0 10px 28px rgba(78, 84, 206, .18);
+    --mobile-nav-bg: rgba(246, 246, 247, 0.9);
+    --mobile-nav-border: rgba(18, 26, 31, 0.08);
+    --mobile-nav-shadow: 0 10px 32px rgba(0, 0, 0, 0.12);
   }
 }
 
@@ -417,6 +423,20 @@ p {
   .split-content.hero-image {
     max-height: 440px;
     margin-bottom: auto;
+  }
+
+  .top-nav {
+    left: 16px;
+    right: 16px;
+    gap: 8px;
+    padding: 10px 12px;
+    background: var(--mobile-nav-bg);
+    border: 1px solid var(--mobile-nav-border);
+    border-radius: 14px;
+    box-shadow: var(--mobile-nav-shadow);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    justify-content: space-between;
   }
 
   .image-hero {
