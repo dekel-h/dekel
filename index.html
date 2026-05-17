@@ -484,8 +484,10 @@
     @media (max-width: 799px) {
       .heading { font-size: 52px; letter-spacing: -3px; }
 
-      /* Hide Email / LinkedIn from the top sticky nav */
-      .menu-contact { display: none; }
+      /* Hide Email / LinkedIn from the top sticky nav.
+         Must use a.menu-link.menu-contact to beat the
+         a.menu-link { display:flex } touch-target rule above. */
+      a.menu-link.menu-contact { display: none; }
 
       /* Bottom footer — non-sticky, flows at end of page */
       .bottom-nav {
@@ -527,7 +529,7 @@
 
     <!-- NAV -->
     <nav class="menu" aria-label="Main navigation">
-      <a href="#work" class="menu-link">Work</a>
+      <a href="#" class="menu-link" id="nav-work">Work</a>
       <div class="blog-row">
         <span class="coming-soon">Coming Soon</span>
         <span class="blog-label" role="link" aria-disabled="true">Blog</span>
@@ -628,7 +630,13 @@
   </button>
 
   <script>
-    /* ── Scroll reveal ──────────────────────────────────────────── */
+    /* ── Work nav link → smooth scroll to top ───────────────────── */
+    document.getElementById('nav-work').addEventListener('click', e => {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    /* ── Scroll reveal (IntersectionObserver) ───────────────────── */
     const revealObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -640,17 +648,18 @@
 
     document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
-    /* ── Image: fade in + dismiss shimmer on load ───────────────── */
+    /* ── Images: shimmer dismiss + fade-in on load ──────────────── */
     document.querySelectorAll('.img-wrap img').forEach(img => {
-      const reveal = () => {
+      const markLoaded = () => {
         img.classList.add('loaded');
         img.closest('.img-wrap').classList.add('img-loaded');
       };
+      /* Already cached by browser — fire immediately */
       if (img.complete && img.naturalWidth > 0) {
-        reveal();
+        markLoaded();
       } else {
-        img.addEventListener('load',  reveal);
-        img.addEventListener('error', reveal);
+        img.addEventListener('load',  markLoaded);
+        img.addEventListener('error', markLoaded); /* show on broken img too */
       }
     });
 
