@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#000000"/>
+
+
+  <!-- Name -->
+  <text
+    x="104" y="260"
+    font-family="Manrope, sans-serif"
+    font-weight="800"
+    font-size="80"
+    fill="#ffffff"
+    letter-spacing="-4">Dekel Hillel</text>
+
+  <!-- Title -->
+  <text
+    x="104" y="320"
+    font-family="DM Sans, sans-serif"
+    font-weight="400"
+    font-size="26"
+    fill="#5f5c62">Senior Product Designer</text>
+
+  <!-- Description line 1 -->
+  <text
+    x="104" y="410"
+    font-family="DM Sans, sans-serif"
+    font-weight="400"
+    font-size="22"
+    fill="#ffffff">Architecting complex B2B infrastructure from the ground up.</text>
+
+  <!-- Description line 2 -->
+  <text
+    x="104" y="450"
+    font-family="DM Sans, sans-serif"
+    font-weight="400"
+    font-size="22"
+    fill="#ffffff">Ownera · Placer.ai · SimilarWeb</text>
+
+  <!-- URL -->
+  <text
+    x="104" y="560"
+    font-family="DM Sans, sans-serif"
+    font-weight="400"
+    font-size="18"
+    fill="#5f5c62">dekelhillel.com</text>
+</svg>
