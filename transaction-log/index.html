@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Transaction Log, Dekel Hillel</title>
+<meta name="description" content="From JSON Dump to Transaction Lifecycle. Giving operations teams a way to diagnose failures themselves, instead of escalating raw JSON to engineering.">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@800&family=DM+Sans:opsz,wght@9..40,400;9..40,700&display=swap">
+<style>
+  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+
+  :root{
+    --secondary:#767676;            /* lightened grey from the live site */
+    --font-heading:'Manrope', sans-serif;
+    --font-body:'DM Sans', sans-serif;
+    --ease:cubic-bezier(0.16, 1, 0.3, 1);
+    --hairline:rgba(255,255,255,0.14);
+    --hairline-soft:rgba(255,255,255,0.08);
+    --panel:#0d0d0d;
+    --danger:#ff6b6b;
+    --ok:#5dd6a0;
+    --info:#7aa2ff;
+  }
+
+  html{ scroll-behavior:smooth; background:#000; }
+  body{ background:#000; overflow-y:auto; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+  ::selection{ background:#fff; color:#000; }
+
+  /* ---------- keyframes ---------- */
+  @keyframes fadeUp { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+  @keyframes shimmer{ 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+  /* ---------- layout: top header (non-sticky) + content below ---------- */
+  .layout{ display:flex; flex-direction:column; min-height:100vh; align-items:center; }
+  /* Top header - horizontal, flows with the page (NOT sticky) */
+  .menu{
+    width:100%; max-width:1160px; background:#000;
+    padding:28px 40px;
+    display:flex; flex-direction:row; align-items:center; gap:24px;
+    animation:fadeIn .7s ease .1s both;
+  }
+  .main{
+    width:100%; max-width:1160px; background:#000; position:relative;
+    padding:12px 40px 40px;
+    display:flex; flex-direction:column; gap:24px;
+  }
+
+  /* ---------- nav links (header row) ---------- */
+  .menu-link{
+    font-family:var(--font-body); font-size:18px; color:#fff;
+    text-decoration:none; line-height:1.4;
+    white-space:nowrap; display:inline-block; transition:opacity .25s ease;
+  }
+  a.menu-link:hover{ opacity:.45; }
+  .menu-back{ color:var(--secondary); }
+  .menu-back:hover{ opacity:1; color:#fff; }
+  .menu-spacer{ flex:1; }
+  .menu-meta{
+    font-family:var(--font-body); font-size:13px; color:var(--secondary);
+    line-height:1.5; white-space:nowrap; text-align:right;
+  }
+  .menu-meta b{ color:#fff; font-weight:700; }
+
+  /* ---------- hero ---------- */
+  .tags{ display:flex; flex-wrap:wrap; gap:8px; animation:fadeUp 1s var(--ease) both; }
+  .tag{
+    font-family:var(--font-body); font-size:12px; font-weight:700;
+    letter-spacing:.04em; color:#fff;
+    background:rgba(255,255,255,0.04);
+    border:1px solid var(--hairline); border-radius:100px; padding:6px 14px;
+  }
+  .heading{
+    font-family:var(--font-heading); font-weight:800; font-size:64px;
+    color:#fff; letter-spacing:-3.4px; line-height:1.02; flex-shrink:0;
+    animation:fadeUp 1s var(--ease) .06s both; max-width:15ch;
+  }
+  .subhead{
+    font-family:var(--font-body); font-size:20px; color:#fff; line-height:1.55;
+    flex-shrink:0; max-width:52ch; animation:fadeUp 1s var(--ease) .14s both;
+  }
+  .subhead .dim{ color:var(--secondary); }
+
+  /* ---------- generic text ---------- */
+  .lede{ font-family:var(--font-body); font-size:20px; color:#fff; line-height:1.55; max-width:58ch; flex-shrink:0; }
+  .body-text{ font-family:var(--font-body); font-size:18px; color:#fff; line-height:1.6; max-width:62ch; flex-shrink:0; }
+  .body-text.muted{ color:var(--secondary); }
+  .body-text + .body-text{ margin-top:-8px; }
+  .body-text a, .lede a{ color:#fff; font-weight:700; text-decoration:underline; text-decoration-skip-ink:none; transition:opacity .2s ease; }
+  .body-text a:hover{ opacity:.55; }
+  em{ font-style:italic; color:#fff; }
+
+  /* ---------- section heading ---------- */
+  .sec-head{
+    font-family:var(--font-heading); font-weight:800; font-size:34px;
+    color:#fff; letter-spacing:-1.4px; line-height:1.1; flex-shrink:0; max-width:20ch;
+  }
+  .date-label{ /* reused as section marker, matches site's date rhythm */
+    font-family:var(--font-body); font-size:18px; font-weight:400;
+    color:var(--secondary); line-height:1.4; flex-shrink:0;
+  }
+
+  /* ---------- spacers ---------- */
+  .spacer{ height:24px; flex-shrink:0; }
+  .spacer-lg{ height:56px; flex-shrink:0; }
+  .rule{ height:1px; background:var(--hairline-soft); flex-shrink:0; margin:8px 0; }
+
+  /* ---------- work-entry rhythm ---------- */
+  .entry{ display:flex; flex-direction:column; gap:24px; flex-shrink:0; }
+
+  /* ---------- images (shimmer + fade, from site) ---------- */
+  .img-wrap{ position:relative; width:100%; flex-shrink:0; overflow:hidden; background:var(--panel); }
+  .img-wrap::before{
+    content:''; position:absolute; inset:0;
+    background:linear-gradient(90deg, transparent 0%, #1c1c1c 40%, transparent 100%);
+    background-size:200% 100%; animation:shimmer 1.6s ease-in-out infinite; z-index:1;
+    transition:opacity .5s ease;
+  }
+  .img-wrap.img-loaded::before{ opacity:0; animation-play-state:paused; }
+  .img-wrap.ratio-3x2{ aspect-ratio:3/2; }
+  .img-wrap img{
+    position:relative; z-index:2; width:100%; height:100%; display:block; object-fit:cover;
+    opacity:0; transform:scale(1.018);
+    transition:opacity .65s ease, transform .75s var(--ease); will-change:opacity, transform;
+  }
+  .img-wrap img.loaded{ opacity:1; transform:scale(1); }
+  /* desaturated "before" state */
+  .img-wrap.before-state img{ filter:grayscale(1) brightness(.85); }
+  .caption{
+    font-family:var(--font-body); font-size:15px; color:var(--secondary);
+    line-height:1.55; max-width:64ch; flex-shrink:0;
+  }
+  .caption b{ color:#fff; font-weight:700; }
+
+  /* ---------- TL;DR triple ---------- */
+  .tldr{ display:grid; grid-template-columns:repeat(3,1fr); gap:0; border-top:1px solid var(--hairline); border-bottom:1px solid var(--hairline); }
+  .tldr-cell{ padding:30px 28px 30px 0; }
+  .tldr-cell + .tldr-cell{ padding-left:30px; border-left:1px solid var(--hairline-soft); }
+  .tldr-cell .k{ font-family:var(--font-body); font-size:13px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--secondary); display:block; margin-bottom:12px; }
+  .tldr-cell p{ font-family:var(--font-body); font-size:16px; color:#fff; line-height:1.55; }
+
+  /* ---------- meta block ---------- */
+  .meta{ display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--hairline-soft); border:1px solid var(--hairline-soft); border-radius:14px; overflow:hidden; }
+  .meta-cell{ background:#000; padding:24px 26px; }
+  .meta-cell .k{ font-family:var(--font-body); font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--secondary); display:block; margin-bottom:10px; }
+  .meta-cell .v{ font-family:var(--font-body); font-size:15px; color:#fff; line-height:1.55; }
+
+  /* ---------- hook quote ---------- */
+  .hook{
+    font-family:var(--font-heading); font-weight:800; font-size:30px; line-height:1.32;
+    letter-spacing:-1px; color:#fff; max-width:24ch; flex-shrink:0;
+  }
+  .hook .dim{ color:var(--secondary); }
+
+  /* ---------- stakes ---------- */
+  .stakes{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .stake{ border:1px solid var(--hairline-soft); border-radius:14px; padding:26px 24px; }
+  .stake.cost{ border-color:rgba(255,107,107,0.35); background:rgba(255,107,107,0.06); }
+  .stake .k{ font-family:var(--font-body); font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--secondary); display:block; margin-bottom:12px; }
+  .stake.cost .k{ color:var(--danger); }
+  .stake p{ font-family:var(--font-body); font-size:15.5px; color:#fff; line-height:1.55; }
+
+  /* ---------- reframe ---------- */
+  .reframe{ display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--hairline); border-radius:14px; overflow:hidden; }
+  .rf-col{ padding:30px 30px; position:relative; }
+  .rf-col.assume{ background:var(--panel); }
+  .rf-col.insight{ background:#000; border-left:1px solid var(--hairline); }
+  .rf-col .k{ font-family:var(--font-body); font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; margin-bottom:12px; display:block; }
+  .rf-col.assume .k{ color:var(--secondary); }
+  .rf-col.insight .k{ color:#fff; }
+  .rf-col p{ font-family:var(--font-body); font-size:16px; line-height:1.55; }
+  .rf-col.assume p{ color:var(--secondary); }
+  .rf-col.insight p{ color:#fff; }
+  .rf-arrow{ position:absolute; left:-15px; top:50%; transform:translateY(-50%); width:30px;height:30px;border-radius:50%;background:#000;border:1px solid var(--hairline);display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;z-index:3; }
+
+  /* ---------- before/after ---------- */
+  .ba{ display:grid; grid-template-columns:1fr 1fr; gap:18px; align-items:start; }
+  .ba .lbl{ display:flex; align-items:center; gap:9px; margin-bottom:12px; font-family:var(--font-body); font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; }
+  .ba .lbl .dot{ width:7px;height:7px;border-radius:50%; }
+  .ba .before .lbl{ color:var(--secondary); } .ba .before .dot{ background:var(--secondary); }
+  .ba .after .lbl{ color:#fff; } .ba .after .dot{ background:var(--danger); }
+
+  /* ---------- interactive before/after slider ---------- */
+  .ba-slider{ position:relative; width:100%; flex-shrink:0; }
+  .ba-slider-labels{ display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+  .ba-chip{ font-family:var(--font-body); font-size:13px; font-weight:700; padding:6px 13px; border-radius:8px; }
+  .ba-chip.before{ background:rgba(255,255,255,0.06); color:var(--secondary); border:1px solid var(--hairline); }
+  .ba-chip.after{ background:#fff; color:#000; }
+  .ba-stage{
+    position:relative; width:100%; overflow:hidden;
+    box-shadow:0 4px 16px rgba(0,0,0,0.4); user-select:none; cursor:ew-resize; touch-action:none;
+    background:var(--panel);
+  }
+  .ba-stage img{ width:100%; height:auto; display:block; pointer-events:none; }
+  .ba-after-layer img{ display:block; width:100%; height:auto; }
+  .ba-before-layer{
+    position:absolute; inset:0; overflow:hidden; background:#000; pointer-events:none;
+    clip-path:inset(0 50% 0 0); will-change:clip-path;
+  }
+  .ba-before-layer img{ filter:grayscale(1) brightness(.85); }
+  .ba-handle{
+    position:absolute; top:0; bottom:0; width:2px; background:#fff;
+    transform:translateX(-50%); left:50%; will-change:left; box-shadow:0 0 12px rgba(0,0,0,.5);
+  }
+  .ba-knob{
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    width:44px; height:44px; background:#fff; border-radius:50%;
+    box-shadow:0 4px 16px rgba(0,0,0,0.45); display:flex; align-items:center; justify-content:center;
+    gap:3px; cursor:grab; transition:transform .15s var(--ease);
+  }
+  .ba-knob:active{ cursor:grabbing; transform:translate(-50%,-50%) scale(.95); }
+  .ba-stage:hover .ba-knob{ transform:translate(-50%,-50%) scale(1.08); }
+  .ba-knob svg{ width:14px; height:14px; stroke:#000; fill:none; stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+  .ba-knob.wiggle{ animation:knobWiggle 2s ease-in-out 3s infinite; }
+  @keyframes knobWiggle{ 0%,100%{transform:translate(-50%,-50%) scale(1)} 20%,60%{transform:translate(-50%,-50%) scale(1.06)} }
+  .ba-hint{ margin-top:14px; text-align:center; }
+  .ba-hint span{
+    display:inline-flex; align-items:center; gap:8px; font-family:var(--font-body); font-size:13px; font-weight:700;
+    color:#000; background:#fff; padding:8px 16px; border-radius:100px;
+  }
+  .ba-hint svg{ width:15px; height:15px; stroke:#000; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+
+  /* ---------- worked example ---------- */
+  .worked{ background:var(--panel); border:1px solid var(--hairline-soft); border-radius:14px; padding:28px 30px; }
+  .worked .k{ font-family:var(--font-body); font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--secondary); display:block; margin-bottom:14px; }
+  .worked p{ font-family:var(--font-body); font-size:16px; color:#fff; line-height:1.6; }
+  .worked p + p{ margin-top:14px; }
+  .mono{ font-family:'DM Sans',sans-serif; font-weight:700; letter-spacing:.02em; color:#fff; }
+  .pill{ display:inline-block; font-family:var(--font-body); font-size:12px; font-weight:700; padding:2px 9px; border-radius:100px; }
+  .pill.rej{ background:rgba(255,107,107,0.16); color:var(--danger); }
+  .pill.app{ background:rgba(93,214,160,0.16); color:var(--ok); }
+  .pill.prog{ background:rgba(122,162,255,0.16); color:var(--info); }
+
+  /* ---------- decision badge + trade-off ---------- */
+  .badge{ display:inline-block; font-family:var(--font-body); font-size:12px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#fff; border:1px solid var(--hairline); border-radius:100px; padding:5px 13px; }
+  .tradeoff{ border-left:2px solid #fff; padding:4px 0 4px 22px; }
+  .tradeoff .k{ font-family:var(--font-heading); font-weight:800; font-size:15px; color:#fff; display:block; margin-bottom:7px; letter-spacing:-.2px; }
+  .tradeoff p{ font-family:var(--font-body); font-size:16px; color:#fff; line-height:1.6; margin:0; }
+
+  /* ---------- rejected tag ---------- */
+  .rejtag{ display:inline-flex; align-items:center; gap:8px; font-family:var(--font-body); font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--danger); border:1px solid rgba(255,107,107,0.35); background:rgba(255,107,107,0.07); border-radius:100px; padding:5px 13px; }
+
+  /* ---------- gallery decision caption ---------- */
+  .cap-lead{ font-family:var(--font-heading); font-weight:800; font-size:15px; color:#fff; display:block; margin-bottom:5px; letter-spacing:-.2px; }
+
+  /* ---------- reflection ---------- */
+  .reflect{ font-family:var(--font-body); font-size:20px; color:#fff; line-height:1.6; max-width:60ch; flex-shrink:0; }
+
+  /* ---------- reveal ---------- */
+  .reveal{ opacity:0; transform:translateY(22px); transition:opacity .75s var(--ease), transform .75s var(--ease); }
+  .reveal.visible{ opacity:1; transform:translateY(0); }
+  .entry .reveal:nth-child(2){ transition-delay:.07s; }
+  .entry .reveal:nth-child(3){ transition-delay:.14s; }
+
+  /* ---------- back to top ---------- */
+  .back-to-top{ position:fixed; bottom:40px; right:40px; width:44px;height:44px; background:#fff;color:#000;border:none;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:200;opacity:0;transform:translateY(12px);transition:opacity .35s ease,transform .35s var(--ease);pointer-events:none; }
+  .back-to-top svg{ width:18px;height:18px;stroke:#000;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round; }
+  .back-to-top:hover{ background:#e0e0e0; }
+  .back-to-top.visible{ opacity:1;transform:translateY(0);pointer-events:auto; }
+
+  /* ---------- skip link ---------- */
+  .skip-link{ position:fixed; top:-100%; left:16px; z-index:999; background:#fff;color:#000;font-family:var(--font-body);font-size:16px;font-weight:700;padding:12px 20px;border-radius:4px;text-decoration:none;transition:top .15s ease; }
+  .skip-link:focus{ top:16px; }
+  :focus-visible{ outline:2px solid #fff; outline-offset:4px; border-radius:2px; }
+
+  /* ---------- tablet ≤1316px ---------- */
+  @media (max-width:1316px){
+    .heading,.subhead,.tags{ animation:none; opacity:1; transform:none; }
+    .menu{ padding:20px 24px; gap:16px; }
+    .main{ padding:8px 24px 40px; }
+    .back-to-top{ bottom:24px; right:24px; }
+  }
+
+  /* ---------- mobile ≤799px ---------- */
+  @media (max-width:799px){
+    .menu{ flex-wrap:wrap; gap:12px; padding:18px 20px; }
+    .menu-meta{ display:none; }
+    .heading{ font-size:42px; letter-spacing:-2px; }
+    .sec-head{ font-size:28px; letter-spacing:-1px; }
+    .subhead,.lede,.reflect{ font-size:18px; }
+    .tldr{ grid-template-columns:1fr; }
+    .tldr-cell{ padding:24px 0; }
+    .tldr-cell + .tldr-cell{ padding-left:0; border-left:none; border-top:1px solid var(--hairline-soft); }
+    .meta{ grid-template-columns:1fr; }
+    .reframe{ grid-template-columns:1fr; }
+    .rf-col.insight{ border-left:none; border-top:1px solid var(--hairline); }
+    .rf-arrow{ left:50%; top:-15px; transform:translateX(-50%) rotate(90deg); }
+    .ba{ grid-template-columns:1fr; gap:26px; }
+    .stakes{ grid-template-columns:1fr; }
+    .hook{ font-size:24px; }
+  }
+</style>
+</head>
+<body>
+<a href="#main-content" class="skip-link">Skip to main content</a>
+
+<div class="layout">
+
+  <!-- TOP HEADER (horizontal, non-sticky) -->
+  <nav class="menu" aria-label="Main navigation">
+    <a href="../" class="menu-link menu-back">← Work</a>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="main" id="main-content">
+
+    <!-- 1. HERO -->
+    <div class="tags">
+      <span class="tag">FinTech</span>
+      <span class="tag">Information Architecture</span>
+      <span class="tag">Data Visualization</span>
+      <span class="tag">UX Research</span>
+    </div>
+    <h1 class="heading">From JSON Dump to Transaction Lifecycle</h1>
+    <p class="subhead">Giving operations teams a way to diagnose failures themselves, <span class="dim">instead of escalating raw JSON to engineering.</span></p>
+
+    <div class="spacer"></div>
+    <div class="img-wrap ratio-3x2 reveal">
+      <img src="assets/flow-rejected-hero.png" alt="The redesigned transaction view: a single transaction shown as a left-to-right flow with the failure marked at Hold." loading="eager" fetchpriority="high" decoding="async">
+    </div>
+    <p class="caption reveal">The screen the case is named after: a stalled transaction read as a lifecycle, with the failure surfaced at <b>Hold</b> and the next action one click away.</p>
+
+    <div class="spacer-lg"></div>
+
+    <!-- 2. TL;DR -->
+    <div class="tldr reveal">
+      <div class="tldr-cell">
+        <span class="k">The problem</span>
+        <p>Operations users like bankers couldn't interpret the raw transaction log on their own, so they escalated to internal teams just to understand what had happened.</p>
+      </div>
+      <div class="tldr-cell">
+        <span class="k">What I did</span>
+        <p>I restructured the raw JSON view into a flow-based diagnostic tool, so the lifecycle already in the data became readable at a glance, instead of decoded by hand.</p>
+      </div>
+      <div class="tldr-cell">
+        <span class="k">The result</span>
+        <p>The people who lived in the log, the clients' operations users and Customer Success alike, could read a stalled transaction at a glance and diagnose it without escalating.</p>
+      </div>
+    </div>
+
+    <div class="spacer-lg"></div>
+
+    <!-- 3. ROLE & CONTEXT -->
+    <article class="entry">
+      <h2 class="date-label reveal">Role &amp; Context</h2>
+      <div class="meta reveal">
+        <div class="meta-cell">
+          <span class="k">Product</span>
+          <span class="v">Ownera, a platform connecting banks and financial institutions to trade tokenized digital assets. I worked on the Admin Platform; the Transaction Log was its most-used screen.</span>
+        </div>
+        <div class="meta-cell">
+          <span class="k">Role</span>
+          <span class="v">Sole product designer, working directly with the Director of Product and presenting iterations to the CTO, the GM (a co-founder), and the CEO.</span>
+        </div>
+        <div class="meta-cell">
+          <span class="k">Discovery</span>
+          <span class="v">I ran the research myself: sitting with the operations and Customer Success teams who used the log daily, mapping where they lost time. I also scanned comparable tools in the market.</span>
+        </div>
+        <div class="meta-cell">
+          <span class="k">Timeline &amp; Constraints</span>
+          <span class="v">A multi-week effort, discovery to delivery. A small front-end team, so I worked within the existing React component library, and a raw data structure I couldn't change server-side.</span>
+        </div>
+      </div>
+    </article>
+
+    <div class="spacer-lg"></div>
+    <div class="rule"></div>
+    <div class="spacer"></div>
+
+    <!-- 4. HOOK -->
+    <article class="entry">
+      <h2 class="date-label reveal">The moment</h2>
+      <p class="hook reveal">A banker gets a call: a transfer their client was expecting hasn't gone through. They open the Transaction Log to find out why, and they hit a wall of raw JSON. <span class="dim">They can't see where it stopped, or who is holding it. So they do what everyone does with this screen: they send it to Customer Success to decode.</span></p>
+      <div class="img-wrap ratio-3x2 before-state reveal">
+        <img src="assets/before-json-tree.png" alt="The old transaction log: an expandable row revealing a raw JSON tree with plan id, timestamp, status, and collapsed nodes." loading="lazy" decoding="async">
+      </div>
+      <p class="caption reveal">The wall they hit: a transaction expanded into a raw JSON tree. Every field is here, including why it stalled. None of it reads as a process.</p>
+    </article>
+
+    <div class="spacer-lg"></div>
+
+    <!-- 5. STAKES -->
+    <article class="entry">
+      <h2 class="date-label reveal">Stakes</h2>
+      <h3 class="sec-head reveal">Why a single screen mattered</h3>
+      <p class="lede reveal">This wasn't a peripheral screen. It was a core screen, used every day by the clients' operations teams and by Customer Success.</p>
+      <div class="stakes reveal">
+        <div class="stake cost">
+          <span class="k">The repeating cost</span>
+          <p>Every time a transfer stalled and someone couldn't say why, the cost repeated: another escalation to Customer Success, just to decode what the screen was already showing.</p>
+        </div>
+        <div class="stake">
+          <span class="k">The deeper, strategic cost</span>
+          <p>For a platform sold to banks, a core screen that read like a developer's console wasn't a UX problem. It was a sales risk in every demo, and the kind of friction that erodes trust the moment clients rely on it.</p>
+        </div>
+      </div>
+    </article>
+
+    <div class="spacer-lg"></div>
+    <div class="rule"></div>
+    <div class="spacer"></div>
+
+    <!-- 6. REFRAME -->
+    <article class="entry">
+      <h2 class="date-label reveal">The reframe</h2>
+      <h3 class="sec-head reveal">They didn't want more data</h3>
+      <div class="reframe reveal">
+        <div class="rf-col assume">
+          <span class="k">Initial assumption</span>
+          <p>"Users need more data and better filters to find what went wrong."</p>
+        </div>
+        <div class="rf-col insight">
+          <span class="rf-arrow">→</span>
+          <span class="k">The actual insight</span>
+          <p>They arrived already knowing which transaction they needed, by its ID, not hunting for it. They wanted that one transaction's context: what happened, where it stalled, and what to do next.</p>
+        </div>
+      </div>
+      <p class="body-text muted reveal">A scan of comparable tools (Tokeny, Chainlink, Digital Asset) showed the same failure everywhere: plenty of data, no story. That confirmed the fix was not more filters, but a representation that made the process legible.</p>
+    </article>
+
+    <div class="spacer-lg"></div>
+
+    <!-- 7. CORE PROBLEM -->
+    <article class="entry">
+      <h2 class="date-label reveal">The core problem</h2>
+      <h3 class="sec-head reveal">The structure was already in the data</h3>
+      <p class="lede reveal">Every transaction's JSON held the full process: the stages, the organizations involved, and each one's role and status. Nothing was missing. The old screen simply exposed the data structure directly, as a tree, and a data structure is not a process. You could read every field and still not see where it had stalled.</p>
+      <p class="body-text reveal">So I didn't define a new model. I gave the existing one a representation that fit. Each transaction became a flow: stages left to right, Plan Approval, Hold, Transfer, Release, Completed, with Roll back as the exception, and participants attached to the stage they gate. The shift was representational, not informational: same data, shown as the process it always was.</p>
+
+      <div class="ba-slider reveal" id="baSlider">
+        <div class="ba-slider-labels">
+          <span class="ba-chip before">Before · data structure</span>
+          <span class="ba-chip after">After · the process</span>
+        </div>
+        <div class="ba-stage" id="baStage">
+          <div class="ba-after-layer">
+            <img src="assets/flow-rejected-hero.png" alt="After: the same transaction shown as a flow, with the stall marked at Hold." draggable="false">
+          </div>
+          <div class="ba-before-layer" id="baBefore">
+            <img src="assets/before-json-tree.png" alt="Before: the same transaction as a raw JSON tree." draggable="false">
+          </div>
+          <div class="ba-handle" id="baHandle">
+            <div class="ba-knob wiggle" id="baKnob">
+              <svg viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
+            </div>
+          </div>
+        </div>
+        <div class="ba-hint">
+          <span><svg viewBox="0 0 24 24"><path d="M8 7L3 12m0 0l5 5m-5-5h18M16 17l5-5m0 0l-5-5"/></svg>Drag to compare</span>
+        </div>
+      </div>
+      <p class="caption reveal">Same transaction, two representations. The tree lists fields; the flow shows the lifecycle, and marks the exact stage where it stopped. This is where the case earns its title.</p>
+
+      <div class="worked reveal">
+        <span class="k">Worked example · a real transaction</span>
+        <p><span class="mono">A403AFD…3441X</span>, a Loan Intent between JPMorgan Chase, Bank of America, and DTCC, stalled at Hold. The old tree showed only that the plan had failed. The flow shows <em>why</em>: inside Hold, Bank of America as Issuer is <span class="pill rej">Rejected</span> while JPMorgan Chase as Custodian is <span class="pill app">Approved</span>, and the rest sit <span class="pill prog">In Progress</span>, waiting on a stage that will never clear.</p>
+        <p>All of it was in the JSON the whole time. The flow made it visible, and put the next action right where the failure is.</p>
+      </div>
+    </article>
+
+    <div class="spacer-lg"></div>
+    <div class="rule"></div>
+    <div class="spacer"></div>
+
+    <!-- 8. KEY DECISION -->
+    <article class="entry">
+      <h2 class="date-label reveal">Key decision</h2>
+      <h3 class="sec-head reveal">Two connected views <span class="badge" style="vertical-align:middle;margin-left:8px;font-size:11px">one flow · one table</span></h3>
+      <p class="lede reveal">Diagnosis and monitoring are different jobs, so I gave each its own view: a dedicated full screen where a single transaction's whole flow and every participant is legible, and a filterable table for scanning and monitoring many at a glance.</p>
+      <div class="img-wrap ratio-3x2 reveal"><img src="assets/table-new.png" alt="The monitoring table: many transactions with creation date, ID, type, initiated by, and color-coded status." loading="lazy" decoding="async"></div>
+      <p class="caption reveal"><b>The monitoring view.</b> A dense, filterable table for scanning hundreds of transactions, status color-coded so problem rows surface without reading. Selecting one leads into its full-screen flow.</p>
+      <div class="tradeoff reveal">
+        <span class="k">The trade-off I accepted on purpose</span>
+        <p>The user leaves the table, and the list, to study one transaction, then comes back. You can't watch hundreds and read one deeply on the same surface. I accepted that context switch deliberately, because the list adds nothing during focused diagnosis, and one view doing both jobs would do neither well.</p>
+      </div>
+    </article>
+
+    <div class="spacer-lg"></div>
+
+    <!-- 9. WHAT DIDN'T WORK -->
+    <article class="entry">
+      <h2 class="date-label reveal">What didn't work</h2>
+      <span class="rejtag reveal">● early exploration · rejected</span>
+      <h3 class="sec-head reveal">Inline expansion, the safe choice</h3>
+      <p class="lede reveal">My first direction kept the pattern the old screen already used: expand a transaction in place, inside the table. On paper it was the safe choice, the detail opens right where you are.</p>
+      <p class="body-text reveal">It broke the moment I watched real usage. Operations users never open several transactions in parallel; they work one at a time, on the one they came for. Inline expansion is built for comparing many open rows, a need these users don't have, while cramping the single transaction they actually want to understand. So I dropped it and gave one transaction its own full screen.</p>
+      <div class="img-wrap ratio-3x2 before-state reveal"><img src="assets/before-json-tree.png" alt="The rejected inline-expansion pattern: a transaction expanded in place inside the table." loading="lazy" decoding="async"></div>
+      <p class="caption reveal">The rejected pattern in its original form: detail expands in-place under the row, the same inline behaviour the old screen used. <b>Swap for a dedicated A-vs-B shot when available.</b></p>
+    </article>
+
+    <div class="spacer-lg"></div>
+    <div class="rule"></div>
+    <div class="spacer"></div>
+
+    <!-- 10. SOLUTION & IMPACT -->
+    <article class="entry">
+      <h2 class="date-label reveal">Solution &amp; impact</h2>
+      <h3 class="sec-head reveal">The redesign, end to end</h3>
+      <p class="lede reveal">Two connected views: a full-screen flow for diagnosing one transaction, and a table for monitoring many. The table handled the usual high-volume needs, filtering, density, responsiveness, without making any of that the story.</p>
+
+      <div class="img-wrap ratio-3x2 reveal"><img src="assets/flow-rejected-hero.png" alt="Single-transaction flow with the failure at Hold and an instruction-level rejection panel." loading="lazy" decoding="async"></div>
+      <p class="caption reveal"><span class="cap-lead">Read the failure, don't decode it.</span> The flow surfaces the stall at Hold and pairs it with the instruction-level reason, Bank of America rejected as Issuer, plus a direct "Contact Issuer" action.</p>
+
+      <div class="img-wrap ratio-3x2 reveal"><img src="assets/table-filters.png" alt="Monitoring table flow detail with the participant approval panel open." loading="lazy" decoding="async"></div>
+      <p class="caption reveal"><span class="cap-lead">Every participant, legible at once.</span> The approval panel lays out each organization's role and status, so the one rejection holding up eight in-progress actors is obvious.</p>
+
+      <div class="img-wrap ratio-3x2 reveal"><img src="assets/detail-panel.png" alt="Detailed event panel showing settlement message steps and raw on-chain data." loading="lazy" decoding="async"></div>
+      <p class="caption reveal"><span class="cap-lead">Depth on demand, not by default.</span> The underlying message trail and raw on-chain payload stay one click away for the rare case that needs them, kept out of the default read so the flow stays legible.</p>
+
+      <div class="img-wrap ratio-3x2 reveal"><img src="assets/empty-state.png" alt="Empty state of the transaction log with a clear illustration and explanatory copy." loading="lazy" decoding="async"></div>
+      <p class="caption reveal"><span class="cap-lead">The screen explains itself when there's nothing to show.</span> A considered empty state, part of treating the most-used screen as a product surface, not a data dump.</p>
+
+      <p class="body-text reveal" style="margin-top:8px">I validated it with the Customer Success team, who both used the log daily and absorbed its cost, testing each direction against the real cases they handled. The outcome held for everyone who used the screen: a transaction you used to decode, you could now simply read. The work was reviewed and endorsed up to the CTO, the GM, and the CEO.</p>
+    </article>
+
+    <div class="spacer-lg"></div>
+    <div class="rule"></div>
+    <div class="spacer"></div>
+
+    <!-- 11. REFLECTION -->
+    <article class="entry">
+      <h2 class="date-label reveal">Reflection</h2>
+      <p class="reflect reveal">With no analytics, the people closest to the pain were my instrument: if Customer Success could read a transaction without help, the design was working. If I did it again I'd still start there, but I'd also set one lightweight signal early, a simple before-and-after on how long it took to explain a failed transaction, so the improvement I could see in the room would be legible to those who weren't.</p>
+    </article>
+
+    <div class="spacer-lg"></div>
+
+  </main>
+</div>
+
+<!-- back to top -->
+<button class="back-to-top" id="toTop" aria-label="Back to top">
+  <svg viewBox="0 0 24 24"><polyline points="6 14 12 8 18 14"></polyline></svg>
+</button>
+
+<script>
+  // scroll reveal
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); } });
+  }, { threshold:.12, rootMargin:'0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+  // image load -> fade in + stop shimmer
+  document.querySelectorAll('.img-wrap img').forEach(img=>{
+    const done=()=>{ img.classList.add('loaded'); img.closest('.img-wrap').classList.add('img-loaded'); };
+    if(img.complete && img.naturalWidth) done();
+    else { img.addEventListener('load',done); img.addEventListener('error',done); }
+  });
+
+  // back to top
+  const toTop=document.getElementById('toTop');
+  window.addEventListener('scroll',()=>{ toTop.classList.toggle('visible', window.scrollY>600); });
+  toTop.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+
+  // before/after slider - drag to compare
+  (function(){
+    const stage=document.getElementById('baStage');
+    const before=document.getElementById('baBefore');
+    const handle=document.getElementById('baHandle');
+    const knob=document.getElementById('baKnob');
+    if(!stage) return;
+    let dragging=false, interacted=false;
+
+    function setPct(pct){
+      pct=Math.max(0,Math.min(100,pct));
+      before.style.clipPath='inset(0 '+(100-pct)+'% 0 0)';
+      handle.style.left=pct+'%';
+    }
+    function moveFromX(clientX){
+      const r=stage.getBoundingClientRect();
+      setPct(((clientX-r.left)/r.width)*100);
+    }
+    function start(){ dragging=true; if(!interacted){ interacted=true; knob.classList.remove('wiggle'); } }
+    function end(){ dragging=false; }
+
+    stage.addEventListener('mousedown',e=>{ start(); moveFromX(e.clientX); });
+    stage.addEventListener('touchstart',e=>{ start(); if(e.touches[0]) moveFromX(e.touches[0].clientX); },{passive:true});
+    window.addEventListener('mousemove',e=>{ if(dragging){ e.preventDefault(); moveFromX(e.clientX); } },{passive:false});
+    window.addEventListener('touchmove',e=>{ if(dragging&&e.touches[0]){ e.preventDefault(); moveFromX(e.touches[0].clientX); } },{passive:false});
+    window.addEventListener('mouseup',end);
+    window.addEventListener('touchend',end);
+    setPct(50);
+  })();
+</script>
+</body>
+</html>
