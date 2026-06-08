@@ -14,6 +14,7 @@
 
   :root{
     --secondary:#767676;            /* lightened grey from the live site */
+    --text:#fff;                    /* primary text color token */
     --font-heading:'Manrope', sans-serif;
     --font-body:'DM Sans', sans-serif;
     --ease:cubic-bezier(0.16, 1, 0.3, 1);
@@ -26,7 +27,17 @@
   }
 
   html{ scroll-behavior:smooth; background:#000; }
-  body{ background:#000; overflow-y:auto; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+  body{ background:#000; overflow-y:auto; overflow-x:hidden; position:relative; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+
+  /* Background gradient glow: aurora at the top, fades to black */
+  .bg-glow{
+    position:absolute; top:0; left:0; right:0; height:820px; z-index:0; pointer-events:none;
+    background-image:url('data:image/png;base64,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');
+    background-size:cover; background-position:top center; background-repeat:no-repeat;
+    -webkit-mask-image:linear-gradient(to bottom, #000 0%, #000 78%, transparent 100%);
+            mask-image:linear-gradient(to bottom, #000 0%, #000 78%, transparent 100%);
+  }
+  @media (max-width:799px){ .bg-glow{ height:540px; } }
   ::selection{ background:#fff; color:#000; }
 
   /* ---------- keyframes ---------- */
@@ -35,68 +46,68 @@
   @keyframes shimmer{ 0%{background-position:200% 0} 100%{background-position:-200% 0} }
 
   /* ---------- layout: top header (non-sticky) + content below ---------- */
-  .layout{ display:flex; flex-direction:column; min-height:100vh; align-items:center; }
+  .layout{ display:flex; flex-direction:column; min-height:100vh; align-items:center; position:relative; z-index:1; }
   /* Top header - horizontal, flows with the page (NOT sticky) */
   .menu{
-    width:100%; max-width:1160px; background:#000;
+    width:100%; max-width:1160px; background:transparent;
     padding:28px 40px;
     display:flex; flex-direction:row; align-items:center; gap:24px;
     animation:fadeIn .7s ease .1s both;
   }
   .main{
-    width:100%; max-width:1160px; background:#000; position:relative;
+    width:100%; max-width:1160px; background:transparent; position:relative;
     padding:12px 40px 40px;
     display:flex; flex-direction:column; gap:24px;
   }
 
   /* ---------- nav links (header row) ---------- */
   .menu-link{
-    font-family:var(--font-body); font-size:18px; color:#fff;
+    font-family:var(--font-body); font-size:18px; color:var(--text);
     text-decoration:none; line-height:1.4;
     white-space:nowrap; display:inline-block; transition:opacity .25s ease;
   }
   a.menu-link:hover{ opacity:.45; }
   .menu-back{ color:var(--secondary); }
-  .menu-back:hover{ opacity:1; color:#fff; }
+  .menu-back:hover{ opacity:1; color:var(--text); }
   .menu-spacer{ flex:1; }
   .menu-meta{
     font-family:var(--font-body); font-size:13px; color:var(--secondary);
     line-height:1.5; white-space:nowrap; text-align:right;
   }
-  .menu-meta b{ color:#fff; font-weight:700; }
+  .menu-meta b{ color:var(--text); font-weight:700; }
 
   /* ---------- hero ---------- */
   .tags{ display:flex; flex-wrap:wrap; gap:8px; animation:fadeUp 1s var(--ease) both; }
   .tag{
     font-family:var(--font-body); font-size:12px; font-weight:700;
-    letter-spacing:.04em; color:#fff;
+    letter-spacing:.04em; color:var(--text);
     background:rgba(255,255,255,0.04);
     border:1px solid var(--hairline); border-radius:100px; padding:6px 14px;
   }
   .heading{
     font-family:var(--font-heading); font-weight:800; font-size:64px;
-    color:#fff; letter-spacing:-3.4px; line-height:1.02; flex-shrink:0;
-    animation:fadeUp 1s var(--ease) .06s both; max-width:15ch;
+    color:var(--text); letter-spacing:-3.4px; line-height:1.02; flex-shrink:0;
+    animation:fadeUp 1s var(--ease) .06s both; max-width:none;
   }
   .subhead{
-    font-family:var(--font-body); font-size:20px; color:#fff; line-height:1.55;
-    flex-shrink:0; max-width:52ch; animation:fadeUp 1s var(--ease) .14s both;
+    font-family:var(--font-body); font-size:20px; color:var(--text); line-height:1.55;
+    flex-shrink:0; max-width:none; animation:fadeUp 1s var(--ease) .14s both;
   }
   .subhead .dim{ color:var(--secondary); }
 
   /* ---------- generic text ---------- */
-  .lede{ font-family:var(--font-body); font-size:20px; color:#fff; line-height:1.55; max-width:58ch; flex-shrink:0; }
-  .body-text{ font-family:var(--font-body); font-size:18px; color:#fff; line-height:1.6; max-width:62ch; flex-shrink:0; }
+  .lede{ font-family:var(--font-body); font-size:20px; color:var(--text); line-height:1.55; max-width:none; flex-shrink:0; }
+  .body-text{ font-family:var(--font-body); font-size:18px; color:var(--text); line-height:1.6; max-width:none; flex-shrink:0; }
   .body-text.muted{ color:var(--secondary); }
   .body-text + .body-text{ margin-top:-8px; }
-  .body-text a, .lede a{ color:#fff; font-weight:700; text-decoration:underline; text-decoration-skip-ink:none; transition:opacity .2s ease; }
+  .body-text a, .lede a{ color:var(--text); font-weight:700; text-decoration:underline; text-decoration-skip-ink:none; transition:opacity .2s ease; }
   .body-text a:hover{ opacity:.55; }
-  em{ font-style:italic; color:#fff; }
+  em{ font-style:italic; color:var(--text); }
 
   /* ---------- section heading ---------- */
   .sec-head{
     font-family:var(--font-heading); font-weight:800; font-size:34px;
-    color:#fff; letter-spacing:-1.4px; line-height:1.1; flex-shrink:0; max-width:20ch;
+    color:var(--text); letter-spacing:-1.4px; line-height:1.1; flex-shrink:0; max-width:none;
   }
   .date-label{ /* reused as section marker, matches site's date rhythm */
     font-family:var(--font-body); font-size:18px; font-weight:400;
@@ -131,27 +142,27 @@
   .img-wrap.before-state img{ filter:grayscale(1) brightness(.85); }
   .caption{
     font-family:var(--font-body); font-size:15px; color:var(--secondary);
-    line-height:1.55; max-width:64ch; flex-shrink:0;
+    line-height:1.55; max-width:none; flex-shrink:0;
   }
-  .caption b{ color:#fff; font-weight:700; }
+  .caption b{ color:var(--text); font-weight:700; }
 
   /* ---------- TL;DR triple ---------- */
   .tldr{ display:grid; grid-template-columns:repeat(3,1fr); gap:0; border-top:1px solid var(--hairline); border-bottom:1px solid var(--hairline); }
   .tldr-cell{ padding:30px 28px 30px 0; }
   .tldr-cell + .tldr-cell{ padding-left:30px; border-left:1px solid var(--hairline-soft); }
   .tldr-cell .k{ font-family:var(--font-body); font-size:13px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--secondary); display:block; margin-bottom:12px; }
-  .tldr-cell p{ font-family:var(--font-body); font-size:16px; color:#fff; line-height:1.55; }
+  .tldr-cell p{ font-family:var(--font-body); font-size:16px; color:var(--text); line-height:1.55; }
 
   /* ---------- meta block ---------- */
   .meta{ display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--hairline-soft); border:1px solid var(--hairline-soft); border-radius:14px; overflow:hidden; }
   .meta-cell{ background:#000; padding:24px 26px; }
   .meta-cell .k{ font-family:var(--font-body); font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--secondary); display:block; margin-bottom:10px; }
-  .meta-cell .v{ font-family:var(--font-body); font-size:15px; color:#fff; line-height:1.55; }
+  .meta-cell .v{ font-family:var(--font-body); font-size:15px; color:var(--text); line-height:1.55; }
 
   /* ---------- hook quote ---------- */
   .hook{
     font-family:var(--font-heading); font-weight:800; font-size:30px; line-height:1.32;
-    letter-spacing:-1px; color:#fff; max-width:24ch; flex-shrink:0;
+    letter-spacing:-1px; color:var(--text); max-width:none; flex-shrink:0;
   }
   .hook .dim{ color:var(--secondary); }
 
@@ -161,7 +172,7 @@
   .stake.cost{ border-color:rgba(255,107,107,0.35); background:rgba(255,107,107,0.06); }
   .stake .k{ font-family:var(--font-body); font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--secondary); display:block; margin-bottom:12px; }
   .stake.cost .k{ color:var(--danger); }
-  .stake p{ font-family:var(--font-body); font-size:15.5px; color:#fff; line-height:1.55; }
+  .stake p{ font-family:var(--font-body); font-size:15.5px; color:var(--text); line-height:1.55; }
 
   /* ---------- reframe ---------- */
   .reframe{ display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--hairline); border-radius:14px; overflow:hidden; }
@@ -170,18 +181,18 @@
   .rf-col.insight{ background:#000; border-left:1px solid var(--hairline); }
   .rf-col .k{ font-family:var(--font-body); font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; margin-bottom:12px; display:block; }
   .rf-col.assume .k{ color:var(--secondary); }
-  .rf-col.insight .k{ color:#fff; }
+  .rf-col.insight .k{ color:var(--text); }
   .rf-col p{ font-family:var(--font-body); font-size:16px; line-height:1.55; }
   .rf-col.assume p{ color:var(--secondary); }
-  .rf-col.insight p{ color:#fff; }
-  .rf-arrow{ position:absolute; left:-15px; top:50%; transform:translateY(-50%); width:30px;height:30px;border-radius:50%;background:#000;border:1px solid var(--hairline);display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;z-index:3; }
+  .rf-col.insight p{ color:var(--text); }
+  .rf-arrow{ position:absolute; left:-15px; top:50%; transform:translateY(-50%); width:30px;height:30px;border-radius:50%;background:#000;border:1px solid var(--hairline);display:flex;align-items:center;justify-content:center;color:var(--text);font-size:14px;z-index:3; }
 
   /* ---------- before/after ---------- */
   .ba{ display:grid; grid-template-columns:1fr 1fr; gap:18px; align-items:start; }
   .ba .lbl{ display:flex; align-items:center; gap:9px; margin-bottom:12px; font-family:var(--font-body); font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; }
   .ba .lbl .dot{ width:7px;height:7px;border-radius:50%; }
   .ba .before .lbl{ color:var(--secondary); } .ba .before .dot{ background:var(--secondary); }
-  .ba .after .lbl{ color:#fff; } .ba .after .dot{ background:var(--danger); }
+  .ba .after .lbl{ color:var(--text); } .ba .after .dot{ background:var(--danger); }
 
   /* ---------- interactive before/after slider ---------- */
   .ba-slider{ position:relative; width:100%; flex-shrink:0; }
@@ -226,28 +237,29 @@
   /* ---------- worked example ---------- */
   .worked{ background:var(--panel); border:1px solid var(--hairline-soft); border-radius:14px; padding:28px 30px; }
   .worked .k{ font-family:var(--font-body); font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--secondary); display:block; margin-bottom:14px; }
-  .worked p{ font-family:var(--font-body); font-size:16px; color:#fff; line-height:1.6; }
+  .worked p{ font-family:var(--font-body); font-size:16px; color:var(--text); line-height:1.6; }
   .worked p + p{ margin-top:14px; }
-  .mono{ font-family:'DM Sans',sans-serif; font-weight:700; letter-spacing:.02em; color:#fff; }
+  .mono{ font-family:'DM Sans',sans-serif; font-weight:700; letter-spacing:.02em; color:var(--text); }
   .pill{ display:inline-block; font-family:var(--font-body); font-size:12px; font-weight:700; padding:2px 9px; border-radius:100px; }
   .pill.rej{ background:rgba(255,107,107,0.16); color:var(--danger); }
   .pill.app{ background:rgba(93,214,160,0.16); color:var(--ok); }
   .pill.prog{ background:rgba(122,162,255,0.16); color:var(--info); }
 
   /* ---------- decision badge + trade-off ---------- */
-  .badge{ display:inline-block; font-family:var(--font-body); font-size:12px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#fff; border:1px solid var(--hairline); border-radius:100px; padding:5px 13px; }
+  .badge{ display:inline-block; font-family:var(--font-body); font-size:12px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--text); border:1px solid var(--hairline); border-radius:100px; padding:5px 13px; }
   .tradeoff{ border-left:2px solid #fff; padding:4px 0 4px 22px; }
-  .tradeoff .k{ font-family:var(--font-heading); font-weight:800; font-size:15px; color:#fff; display:block; margin-bottom:7px; letter-spacing:-.2px; }
-  .tradeoff p{ font-family:var(--font-body); font-size:16px; color:#fff; line-height:1.6; margin:0; }
+  .tradeoff .k{ font-family:var(--font-heading); font-weight:800; font-size:15px; color:var(--text); display:block; margin-bottom:7px; letter-spacing:-.2px; }
+  .tradeoff p{ font-family:var(--font-body); font-size:16px; color:var(--text); line-height:1.6; margin:0; }
 
   /* ---------- rejected tag ---------- */
-  .rejtag{ display:inline-flex; align-items:center; gap:8px; font-family:var(--font-body); font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--danger); border:1px solid rgba(255,107,107,0.35); background:rgba(255,107,107,0.07); border-radius:100px; padding:5px 13px; }
+  .rejtag{ display:inline-flex; align-items:center; gap:9px; font-family:var(--font-body); font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--danger); }
+  .rejtag .dot{ width:7px; height:7px; border-radius:50%; background:var(--danger); flex-shrink:0; box-shadow:0 0 0 3px rgba(255,107,107,0.18); }
 
   /* ---------- gallery decision caption ---------- */
-  .cap-lead{ font-family:var(--font-heading); font-weight:800; font-size:15px; color:#fff; display:block; margin-bottom:5px; letter-spacing:-.2px; }
+  .cap-lead{ font-family:var(--font-heading); font-weight:800; font-size:15px; color:var(--text); display:block; margin-bottom:5px; letter-spacing:-.2px; }
 
   /* ---------- reflection ---------- */
-  .reflect{ font-family:var(--font-body); font-size:20px; color:#fff; line-height:1.6; max-width:60ch; flex-shrink:0; }
+  .reflect{ font-family:var(--font-body); font-size:20px; color:var(--text); line-height:1.6; max-width:none; flex-shrink:0; }
 
   /* ---------- reveal ---------- */
   .reveal{ opacity:0; transform:translateY(22px); transition:opacity .75s var(--ease), transform .75s var(--ease); }
@@ -292,16 +304,165 @@
     .stakes{ grid-template-columns:1fr; }
     .hook{ font-size:24px; }
   }
+
+</style>
+<style id="cms-style">
+  /* ============================================================
+     CONTENT MANAGER (owner-only; hidden from normal visitors)
+     Activate with #edit in the URL or Ctrl/Cmd + Shift + E
+     ============================================================ */
+  .cms-root{ display:none; }
+  body.cms-on .cms-root{ display:block; }
+  body.cms-on{ overflow-x:hidden; }
+
+  /* page edit affordances (only while panel open) */
+  body.cms-on [data-edit]{
+    outline:1px dashed rgba(122,162,255,0.40); outline-offset:5px; border-radius:2px;
+    transition:outline-color .2s ease; scroll-margin-top:24px;
+  }
+  body.cms-on [data-edit]:hover{ outline-color:rgba(122,162,255,0.9); }
+  body.cms-on [data-edit]:focus{ outline:2px solid var(--info); outline-offset:5px; }
+  body.cms-on [data-edit].cms-active{ outline:2px solid var(--ok); outline-offset:5px; }
+  body.cms-on .img-wrap, body.cms-on .ba-stage{ cursor:pointer; }
+  body.cms-on .img-wrap{ outline:1px dashed rgba(122,162,255,0.40); outline-offset:5px; }
+  body.cms-on .img-wrap::after, body.cms-on .ba-stage::after{
+    content:'Click to replace'; position:absolute; inset:0; z-index:6;
+    display:flex; align-items:center; justify-content:center;
+    background:rgba(0,0,0,0.55); color:var(--text);
+    font-family:var(--font-body); font-size:14px; font-weight:700; letter-spacing:.02em;
+    opacity:0; transition:opacity .2s ease; pointer-events:none;
+  }
+  body.cms-on .img-wrap:hover::after, body.cms-on .ba-stage:hover::after{ opacity:1; }
+  body.cms-on .ba-knob{ display:none; }
+  .cms-flash{ animation:cmsFlash .7s ease; }
+  @keyframes cmsFlash{ 0%{ box-shadow:0 0 0 3px var(--ok); } 100%{ box-shadow:0 0 0 0 transparent; } }
+
+  /* top status bar */
+  .cms-bar{
+    position:fixed; top:0; left:0; right:0; z-index:1200; height:52px;
+    display:flex; align-items:center; gap:14px; padding:0 18px;
+    background:#0b0b0b; border-bottom:1px solid var(--hairline); font-family:var(--font-body);
+  }
+  body.cms-on .layout{ margin-top:52px; }
+  .cms-dot{ width:8px; height:8px; border-radius:50%; background:var(--ok); box-shadow:0 0 0 3px rgba(93,214,160,0.2); flex-shrink:0; }
+  .cms-bar .ttl{ font-size:13px; font-weight:700; color:var(--text); letter-spacing:.02em; }
+  .cms-bar .status{ font-size:12px; color:var(--secondary); flex:1; }
+  .cms-bar .status b{ color:var(--ok); font-weight:700; }
+  .cms-bar .status .unsaved{ color:#ffcf6b; }
+
+  /* slide-in panel */
+  .cms-panel{
+    position:fixed; top:52px; right:0; bottom:0; width:400px; max-width:92vw; z-index:1150;
+    background:#0b0b0b; border-left:1px solid var(--hairline);
+    display:flex; flex-direction:column; font-family:var(--font-body);
+    transform:translateX(0); transition:transform .3s var(--ease);
+  }
+  body.cms-collapsed .cms-panel{ transform:translateX(100%); }
+  body.cms-collapsed .layout{ /* keep page where it is */ }
+  .cms-panel-head{ padding:16px 18px 12px; border-bottom:1px solid var(--hairline-soft); }
+  .cms-panel-head h2{ font-family:var(--font-heading); font-weight:800; font-size:18px; color:var(--text); letter-spacing:-.4px; }
+  .cms-panel-head p{ font-size:12px; color:var(--secondary); line-height:1.5; margin-top:5px; }
+  .cms-search{ margin:12px 18px 0; }
+  .cms-search input{
+    width:100%; font-family:var(--font-body); font-size:13px; color:var(--text);
+    background:#000; border:1px solid var(--hairline); border-radius:9px; padding:9px 12px;
+  }
+  .cms-search input::placeholder{ color:var(--secondary); }
+  .cms-search input:focus{ outline:none; border-color:var(--info); }
+
+  .cms-body{ flex:1; overflow-y:auto; padding:8px 18px 18px; }
+  .cms-sec{ margin-top:18px; }
+  .cms-sec > .cms-sec-h{
+    font-size:11px; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--secondary); margin-bottom:10px; position:sticky; top:0; background:#0b0b0b; padding:6px 0; z-index:2;
+  }
+  .cms-card{ background:#000; border:1px solid var(--hairline-soft); border-radius:11px; padding:12px; margin-bottom:10px; }
+  .cms-card.hidden{ display:none; }
+  .cms-card .lbl{ display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--secondary); margin-bottom:8px; }
+  .cms-card .lbl .kind{ color:var(--info); }
+  .cms-card .lbl .kind.img{ color:#c79bff; }
+  .cms-card textarea{
+    width:100%; min-height:62px; resize:vertical; font-family:var(--font-body);
+    font-size:13.5px; line-height:1.5; color:var(--text); background:#0d0d0d;
+    border:1px solid var(--hairline); border-radius:9px; padding:10px 11px;
+  }
+  .cms-card textarea:focus{ outline:none; border-color:var(--info); }
+  .cms-card .rich-note{ font-size:12px; color:var(--secondary); line-height:1.5; background:#0d0d0d; border:1px solid var(--hairline-soft); border-radius:9px; padding:10px 11px; }
+  .cms-card .rich-note .snip{ color:#cfcfcf; display:block; margin-top:6px; }
+  .cms-row{ display:flex; gap:8px; margin-top:9px; flex-wrap:wrap; }
+  .cms-mini{
+    font-family:var(--font-body); font-size:12px; font-weight:700; cursor:pointer;
+    padding:7px 11px; border-radius:8px; border:1px solid var(--hairline); background:#000; color:var(--text);
+    transition:opacity .2s ease;
+  }
+  .cms-mini:hover{ opacity:.65; }
+  .cms-thumb{ width:100%; aspect-ratio:3/2; object-fit:cover; border-radius:8px; background:#111; display:block; border:1px solid var(--hairline-soft); }
+
+  .cms-foot{ border-top:1px solid var(--hairline); padding:12px 18px; display:grid; grid-template-columns:1fr 1fr; gap:8px; background:#0b0b0b; }
+  .cms-btn{
+    font-family:var(--font-body); font-size:13px; font-weight:700; cursor:pointer;
+    padding:11px 12px; border-radius:9px; border:1px solid var(--hairline); background:#000; color:var(--text);
+    transition:opacity .2s ease, background .2s ease; text-align:center;
+  }
+  .cms-btn:hover{ opacity:.7; }
+  .cms-btn.primary{ background:#fff; color:#000; border-color:var(--text); grid-column:1 / -1; }
+  .cms-btn.primary:hover{ opacity:1; background:#e0e0e0; }
+  .cms-btn.danger{ color:var(--danger); border-color:rgba(255,107,107,0.4); }
+
+  .cms-fab{
+    position:fixed; bottom:24px; right:24px; z-index:1140; display:none;
+    font-family:var(--font-body); font-size:13px; font-weight:700; cursor:pointer;
+    padding:11px 16px; border-radius:100px; border:1px solid var(--hairline);
+    background:#fff; color:#000; box-shadow:0 6px 24px rgba(0,0,0,0.5);
+  }
+  body.cms-on.cms-collapsed .cms-fab{ display:inline-flex; align-items:center; gap:8px; }
+
+  @media (max-width:799px){
+    .cms-panel{ width:100%; max-width:100%; }
+    .cms-bar .status{ display:none; }
+  }
 </style>
 </head>
 <body>
 <a href="#main-content" class="skip-link">Skip to main content</a>
 
+<div class="cms-root" id="cmsRoot" aria-hidden="true">
+  <div class="cms-bar">
+    <span class="cms-dot"></span>
+    <span class="ttl">Content Manager</span>
+    <span class="status" id="cmsStatus">All changes saved on this device</span>
+    <button class="cms-mini" id="cmsToggle" type="button">Hide panel</button>
+    <button class="cms-mini" id="cmsClose" type="button">Exit</button>
+  </div>
+  <aside class="cms-panel" id="cmsPanel" aria-label="Content manager">
+    <div class="cms-panel-head">
+      <h2>Manage content</h2>
+      <p>Edit any field below, or click text and images directly on the page. Save keeps a draft on this device. Export writes a new index.html to publish.</p>
+    </div>
+    <div class="cms-search"><input type="text" id="cmsSearch" placeholder="Filter fields…" aria-label="Filter fields"></div>
+    <div class="cms-body" id="cmsBody"><!-- generated --></div>
+    <div class="cms-foot">
+      <button class="cms-btn primary" id="cmsExportHtml" type="button">Export updated HTML</button>
+      <button class="cms-btn" id="cmsSave" type="button">Save draft</button>
+      <button class="cms-btn" id="cmsExportJson" type="button">Export content (JSON)</button>
+      <button class="cms-btn" id="cmsImportJson" type="button">Import content (JSON)</button>
+      <button class="cms-btn danger" id="cmsRevert" type="button">Revert to saved</button>
+      <button class="cms-btn danger" id="cmsDiscard" type="button">Discard all</button>
+    </div>
+  </aside>
+  <button class="cms-fab" id="cmsFab" type="button">▤ Content</button>
+</div>
+<input type="file" id="cmsImgInput" accept="image/*" style="display:none" aria-hidden="true">
+<input type="file" id="cmsJsonInput" accept="application/json,.json" style="display:none" aria-hidden="true">
+
+<!-- Background gradient glow -->
+<div class="bg-glow" aria-hidden="true"></div>
+
 <div class="layout">
 
   <!-- TOP HEADER (horizontal, non-sticky) -->
   <nav class="menu" aria-label="Main navigation">
-    <a href="../" class="menu-link menu-back">← Work</a>
+    <a href="../" class="menu-link menu-back">← Back</a>
   </nav>
 
   <!-- MAIN -->
@@ -333,11 +494,11 @@
       </div>
       <div class="tldr-cell">
         <span class="k">What I did</span>
-        <p>I restructured the raw JSON view into a flow-based diagnostic tool, so the lifecycle already in the data became readable at a glance, instead of decoded by hand.</p>
+        <p>I restructured the raw JSON view into a flow-based diagnostic tool, so the transaction lifecycle that was already in the data became readable at a glance, instead of decoded by hand.</p>
       </div>
       <div class="tldr-cell">
         <span class="k">The result</span>
-        <p>The people who lived in the log, the clients' operations users and Customer Success alike, could read a stalled transaction at a glance and diagnose it without escalating.</p>
+        <p>By the end, the people who lived in the log, the clients' operations users and the Customer Success team alike, could read a stalled transaction at a glance and diagnose it without escalating.</p>
       </div>
     </div>
 
@@ -349,19 +510,19 @@
       <div class="meta reveal">
         <div class="meta-cell">
           <span class="k">Product</span>
-          <span class="v">Ownera, a platform connecting banks and financial institutions to trade tokenized digital assets. I worked on the Admin Platform; the Transaction Log was its most-used screen.</span>
+          <span class="v">Ownera, a platform connecting banks and financial institutions to trade tokenized digital assets. I worked on the Admin Platform, where finance teams manage every transaction in the system; the Transaction Log was its most-used screen.</span>
         </div>
         <div class="meta-cell">
           <span class="k">Role</span>
-          <span class="v">Sole product designer, working directly with the Director of Product and presenting iterations to the CTO, the GM (a co-founder), and the CEO.</span>
+          <span class="v">Sole product designer, working directly with the Director of Product and presenting iterations to the CTO, the GM (a co-founder), and the CEO for feedback.</span>
         </div>
         <div class="meta-cell">
           <span class="k">Discovery</span>
-          <span class="v">I ran the research myself: sitting with the operations and Customer Success teams who used the log daily, mapping where they lost time. I also scanned comparable tools in the market.</span>
+          <span class="v">I ran the research myself, sitting with the operations and Customer Success teams who used the log daily, mapping where they lost time, which statuses sent them back to ask someone else, and what they actually needed to see in order to act. I also scanned comparable tools in the market.</span>
         </div>
         <div class="meta-cell">
           <span class="k">Timeline &amp; Constraints</span>
-          <span class="v">A multi-week effort, discovery to delivery. A small front-end team, so I worked within the existing React component library, and a raw data structure I couldn't change server-side.</span>
+          <span class="v">A multi-week effort, from discovery to delivery. A small front-end team, so I worked within the existing React component library rather than building custom, and a raw data structure I couldn't change server-side.</span>
         </div>
       </div>
     </article>
@@ -373,7 +534,7 @@
     <!-- 4. HOOK -->
     <article class="entry">
       <h2 class="date-label reveal">The moment</h2>
-      <p class="hook reveal">A banker gets a call: a transfer their client was expecting hasn't gone through. They open the Transaction Log to find out why, and they hit a wall of raw JSON. <span class="dim">They can't see where it stopped, or who is holding it. So they do what everyone does with this screen: they send it to Customer Success to decode.</span></p>
+      <p class="hook reveal">A banker gets a call: a client's expected transfer never arrived. They open the Transaction Log to find out why and hit a wall of raw JSON. <span class="dim">They can't see where it stopped or who's holding it, so they do what everyone does with this screen: send it to Customer Success to decode.</span></p>
       <div class="img-wrap ratio-3x2 before-state reveal">
         <img src="assets/before-json-tree.png" alt="The old transaction log: an expandable row revealing a raw JSON tree with plan id, timestamp, status, and collapsed nodes." loading="lazy" decoding="async">
       </div>
@@ -390,11 +551,11 @@
       <div class="stakes reveal">
         <div class="stake cost">
           <span class="k">The repeating cost</span>
-          <p>Every time a transfer stalled and someone couldn't say why, the cost repeated: another escalation to Customer Success, just to decode what the screen was already showing.</p>
+          <p>Every time a transfer stalled and someone couldn't say why, the cost repeated: another escalation to Customer Success just to decode what the screen was already showing.</p>
         </div>
         <div class="stake">
           <span class="k">The deeper, strategic cost</span>
-          <p>For a platform sold to banks, a core screen that read like a developer's console wasn't a UX problem. It was a sales risk in every demo, and the kind of friction that erodes trust the moment clients rely on it.</p>
+          <p>For a platform sold to banks, a core screen that read like a developer's console wasn't a UX problem. It was a sales risk in every demo, and the kind of core-screen friction that erodes trust the moment clients rely on it.</p>
         </div>
       </div>
     </article>
@@ -415,7 +576,7 @@
         <div class="rf-col insight">
           <span class="rf-arrow">→</span>
           <span class="k">The actual insight</span>
-          <p>They arrived already knowing which transaction they needed, by its ID, not hunting for it. They wanted that one transaction's context: what happened, where it stalled, and what to do next.</p>
+          <p>They arrived already knowing which transaction they needed, by its ID, not hunting for it. They didn't want more data. They wanted that one transaction's context: what happened, where it stalled, and what to do next.</p>
         </div>
       </div>
       <p class="body-text muted reveal">A scan of comparable tools (Tokeny, Chainlink, Digital Asset) showed the same failure everywhere: plenty of data, no story. That confirmed the fix was not more filters, but a representation that made the process legible.</p>
@@ -427,8 +588,8 @@
     <article class="entry">
       <h2 class="date-label reveal">The core problem</h2>
       <h3 class="sec-head reveal">The structure was already in the data</h3>
-      <p class="lede reveal">Every transaction's JSON held the full process: the stages, the organizations involved, and each one's role and status. Nothing was missing. The old screen simply exposed the data structure directly, as a tree, and a data structure is not a process. You could read every field and still not see where it had stalled.</p>
-      <p class="body-text reveal">So I didn't define a new model. I gave the existing one a representation that fit. Each transaction became a flow: stages left to right, Plan Approval, Hold, Transfer, Release, Completed, with Roll back as the exception, and participants attached to the stage they gate. The shift was representational, not informational: same data, shown as the process it always was.</p>
+      <p class="lede reveal">Every transaction's JSON held the full process: the stages, the organizations involved, and each one's role and status. Nothing was missing. The old screen simply exposed the data structure directly, as a JSON tree, and a data structure is not a process. You could read every field and still not see where it had stalled.</p>
+      <p class="body-text reveal">So I did not define a new model. I gave the existing one a representation that fit. Each transaction became a flow: stages left to right, Plan Approval, Hold, Transfer, Release, Completed, with Roll back as the exception, and participants attached to the stage they gate, each with its role and status. The whole process, and every actor in it, became visible at a glance, including the exact point where it stopped. The shift was representational, not informational: same data, shown as the process it always was.</p>
 
       <div class="ba-slider reveal" id="baSlider">
         <div class="ba-slider-labels">
@@ -475,7 +636,7 @@
       <p class="caption reveal"><b>The monitoring view.</b> A dense, filterable table for scanning hundreds of transactions, status color-coded so problem rows surface without reading. Selecting one leads into its full-screen flow.</p>
       <div class="tradeoff reveal">
         <span class="k">The trade-off I accepted on purpose</span>
-        <p>The user leaves the table, and the list, to study one transaction, then comes back. You can't watch hundreds and read one deeply on the same surface. I accepted that context switch deliberately, because the list adds nothing during focused diagnosis, and one view doing both jobs would do neither well.</p>
+        <p>The user leaves the table, and the list, to study one transaction, then comes back. You cannot watch hundreds and read one deeply on the same surface. I accepted that context switch on purpose, because the list adds nothing during focused diagnosis, and one view doing both jobs would do neither well.</p>
       </div>
     </article>
 
@@ -484,12 +645,12 @@
     <!-- 9. WHAT DIDN'T WORK -->
     <article class="entry">
       <h2 class="date-label reveal">What didn't work</h2>
-      <span class="rejtag reveal">● early exploration · rejected</span>
+      <span class="rejtag reveal"><span class="dot"></span>Early exploration, rejected</span>
       <h3 class="sec-head reveal">Inline expansion, the safe choice</h3>
       <p class="lede reveal">My first direction kept the pattern the old screen already used: expand a transaction in place, inside the table. On paper it was the safe choice, the detail opens right where you are.</p>
       <p class="body-text reveal">It broke the moment I watched real usage. Operations users never open several transactions in parallel; they work one at a time, on the one they came for. Inline expansion is built for comparing many open rows, a need these users don't have, while cramping the single transaction they actually want to understand. So I dropped it and gave one transaction its own full screen.</p>
       <div class="img-wrap ratio-3x2 before-state reveal"><img src="assets/before-json-tree.png" alt="The rejected inline-expansion pattern: a transaction expanded in place inside the table." loading="lazy" decoding="async"></div>
-      <p class="caption reveal">The rejected pattern in its original form: detail expands in-place under the row, the same inline behaviour the old screen used. <b>Swap for a dedicated A-vs-B shot when available.</b></p>
+      <p class="caption reveal">The rejected pattern in its original form: detail expands in-place under the row, the same inline behaviour the old screen used.</p>
     </article>
 
     <div class="spacer-lg"></div>
@@ -500,7 +661,7 @@
     <article class="entry">
       <h2 class="date-label reveal">Solution &amp; impact</h2>
       <h3 class="sec-head reveal">The redesign, end to end</h3>
-      <p class="lede reveal">Two connected views: a full-screen flow for diagnosing one transaction, and a table for monitoring many. The table handled the usual high-volume needs, filtering, density, responsiveness, without making any of that the story.</p>
+      <p class="lede reveal">The redesign split the Transaction Log into two connected views: a full-screen flow for diagnosing one transaction, and a table for monitoring many. The table handled the usual high-volume needs, filtering, density, responsiveness, without making any of that the story.</p>
 
       <div class="img-wrap ratio-3x2 reveal"><img src="assets/flow-rejected-hero.png" alt="Single-transaction flow with the failure at Hold and an instruction-level rejection panel." loading="lazy" decoding="async"></div>
       <p class="caption reveal"><span class="cap-lead">Read the failure, don't decode it.</span> The flow surfaces the stall at Hold and pairs it with the instruction-level reason, Bank of America rejected as Issuer, plus a direct "Contact Issuer" action.</p>
@@ -514,7 +675,7 @@
       <div class="img-wrap ratio-3x2 reveal"><img src="assets/empty-state.png" alt="Empty state of the transaction log with a clear illustration and explanatory copy." loading="lazy" decoding="async"></div>
       <p class="caption reveal"><span class="cap-lead">The screen explains itself when there's nothing to show.</span> A considered empty state, part of treating the most-used screen as a product surface, not a data dump.</p>
 
-      <p class="body-text reveal" style="margin-top:8px">I validated it with the Customer Success team, who both used the log daily and absorbed its cost, testing each direction against the real cases they handled. The outcome held for everyone who used the screen: a transaction you used to decode, you could now simply read. The work was reviewed and endorsed up to the CTO, the GM, and the CEO.</p>
+      <p class="body-text reveal" style="margin-top:8px">I validated it with the Customer Success team, who both used the log daily and absorbed its cost, bringing them pain-point research and testing each direction against the real cases they handled. The outcome held for everyone who used the screen, the clients' operations users and CS alike: a transaction you used to decode, you could now simply read. The work was reviewed and endorsed up to the CTO, the GM, and the CEO.</p>
     </article>
 
     <div class="spacer-lg"></div>
@@ -524,7 +685,7 @@
     <!-- 11. REFLECTION -->
     <article class="entry">
       <h2 class="date-label reveal">Reflection</h2>
-      <p class="reflect reveal">With no analytics, the people closest to the pain were my instrument: if Customer Success could read a transaction without help, the design was working. If I did it again I'd still start there, but I'd also set one lightweight signal early, a simple before-and-after on how long it took to explain a failed transaction, so the improvement I could see in the room would be legible to those who weren't.</p>
+      <p class="reflect reveal">With no analytics, the people closest to the pain were my instrument: if Customer Success could read a transaction without help, the design was working. If I did it again I would still start there, but I would also set one lightweight signal early, a simple before-and-after on how long it took to explain a failed transaction, so the improvement I could see in the room would be legible to those who weren't.</p>
     </article>
 
     <div class="spacer-lg"></div>
@@ -574,7 +735,7 @@
       const r=stage.getBoundingClientRect();
       setPct(((clientX-r.left)/r.width)*100);
     }
-    function start(){ dragging=true; if(!interacted){ interacted=true; knob.classList.remove('wiggle'); } }
+    function start(){ if(document.body.classList.contains('cms-on')) return; dragging=true; if(!interacted){ interacted=true; knob.classList.remove('wiggle'); } }
     function end(){ dragging=false; }
 
     stage.addEventListener('mousedown',e=>{ start(); moveFromX(e.clientX); });
@@ -584,6 +745,350 @@
     window.addEventListener('mouseup',end);
     window.addEventListener('touchend',end);
     setPct(50);
+  })();
+
+</script>
+
+<script id="cms-script">
+  /* ============================================================
+     CONTENT MANAGER (owner-only)
+     - Enter via #edit in the URL, or Ctrl/Cmd + Shift + E
+     - Edit fields in the side panel, or click text/images on the page
+     - Save draft (this browser) -> Export updated HTML to publish
+     - Export / Import a content JSON file as a portable backlog
+     ============================================================ */
+  (function(){
+    var EDITABLE = [
+      '.heading','.subhead','.tag','.caption','.cap-lead',
+      '.tldr-cell .k','.tldr-cell p',
+      '.date-label','.sec-head',
+      '.meta-cell .k','.meta-cell .v',
+      '.hook','.lede','.body-text',
+      '.stake .k','.stake p',
+      '.rf-col .k','.rf-col p',
+      '.worked .k','.worked p',
+      '.badge','.tradeoff .k','.tradeoff p',
+      '.rejtag','.ba-chip','.ba-hint span',
+      '.reflect'
+    ].join(',');
+    var IMGS = '.img-wrap img, .ba-stage img';
+    var STORE_KEY = 'tlog_cms_draft_v1';
+
+    // ---------- access gate ----------
+    // Require a passphrase before the editor opens. Set to '' (empty) for no passphrase.
+    // This lives ONLY in your private source file; the published file ships with no editor at all.
+    var EDIT_PASSPHRASE = 'finetuning';   // <-- change this to your own secret
+    var SESSION_OK = 'tlog_cms_ok';
+    function gateOpen(){
+      if(!EDIT_PASSPHRASE) return true;
+      try{ if(sessionStorage.getItem(SESSION_OK)==='1') return true; }catch(e){}
+      for(var tries=0; tries<3; tries++){
+        var v=prompt('Enter the edit passphrase:');
+        if(v===null) return false;                 // cancelled
+        if(v===EDIT_PASSPHRASE){ try{ sessionStorage.setItem(SESSION_OK,'1'); }catch(e){} return true; }
+      }
+      alert('Incorrect passphrase.');
+      return false;
+    }
+
+    var body      = document.body;
+    var root      = document.getElementById('cmsRoot');
+    var panelBody = document.getElementById('cmsBody');
+    var statusEl  = document.getElementById('cmsStatus');
+    var searchEl  = document.getElementById('cmsSearch');
+    var imgInput  = document.getElementById('cmsImgInput');
+    var jsonInput = document.getElementById('cmsJsonInput');
+
+    var targetImg = null;
+    var dirty = false;
+    var built = false;
+    var original = new Map();   // element/img -> original innerHTML / src
+    var cardFor  = new Map();   // id -> { card, ta?, note?, thumb? }
+
+    // ---------- safe localStorage ----------
+    function lsGet(){ try{ return JSON.parse(localStorage.getItem(STORE_KEY) || 'null'); }catch(e){ return null; } }
+    function lsSet(o){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(o)); return true; }catch(e){ return false; } }
+    function lsDel(){ try{ localStorage.removeItem(STORE_KEY); }catch(e){} }
+
+    // ---------- helpers ----------
+    function escapeHtml(s){ return (s||'').replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+    function snippet(s, n){ s=(s||'').replace(/\s+/g,' ').trim(); return s.length>n ? s.slice(0,n)+'…' : s; }
+
+    function sectionTitle(el){
+      var art = el.closest('article.entry');
+      if(art){ var h=art.querySelector('.date-label'); if(h) return h.textContent.trim(); }
+      if(el.closest('.tldr')) return 'TL;DR';
+      return 'Hero';
+    }
+    function fieldLabel(el){
+      var map=[['heading','Title'],['subhead','Subtitle'],['hook','Opening line'],['sec-head','Section heading'],
+        ['lede','Lead paragraph'],['body-text','Paragraph'],['cap-lead','Caption lead'],['caption','Image caption'],
+        ['reflect','Reflection'],['date-label','Section label'],['tag','Tag'],['badge','Badge'],['rejtag','Status tag'],['ba-chip','Slider label']];
+      for(var i=0;i<map.length;i++){ if(el.classList.contains(map[i][0])) return map[i][1]; }
+      if(el.matches('.tldr-cell .k')) return 'Column title';
+      if(el.matches('.tldr-cell p')) return 'Column text';
+      if(el.matches('.meta-cell .k')) return 'Field label';
+      if(el.matches('.meta-cell .v')) return 'Field value';
+      if(el.matches('.stake .k')) return 'Card title';
+      if(el.matches('.stake p')) return 'Card text';
+      if(el.matches('.rf-col .k')) return 'Column title';
+      if(el.matches('.rf-col p')) return 'Column text';
+      if(el.matches('.worked .k')) return 'Label';
+      if(el.matches('.worked p')) return 'Paragraph';
+      if(el.matches('.tradeoff .k')) return 'Label';
+      if(el.matches('.tradeoff p')) return 'Paragraph';
+      if(el.matches('.ba-hint span')) return 'Hint';
+      return 'Text';
+    }
+
+    function assignIds(){
+      var i=0;
+      document.querySelectorAll(EDITABLE).forEach(function(el){ if(!el.dataset.cmsId) el.dataset.cmsId='f'+i; i++; });
+      var j=0;
+      document.querySelectorAll(IMGS).forEach(function(img){ if(!img.dataset.cmsImg) img.dataset.cmsImg='img'+j; j++; });
+    }
+
+    // ---------- status ----------
+    function markDirty(){ dirty=true; statusEl.innerHTML='<span class="unsaved">Unsaved changes</span>'; }
+    function markMsg(m, saved){ dirty = saved ? false : dirty; statusEl.innerHTML = saved ? '<b>'+escapeHtml(m)+'</b>' : escapeHtml(m); }
+
+    // ---------- panel build ----------
+    function textCard(el){
+      var card=document.createElement('div'); card.className='cms-card';
+      var lbl=document.createElement('div'); lbl.className='lbl';
+      lbl.innerHTML='<span class="kind">Text</span><span>'+escapeHtml(fieldLabel(el))+'</span>';
+      card.appendChild(lbl);
+      var ref={card:card};
+      if(el.children.length===0){
+        var ta=document.createElement('textarea');
+        ta.value=el.textContent;
+        ta.addEventListener('input', function(){ el.textContent=ta.value; markDirty(); });
+        card.appendChild(ta); ref.ta=ta;
+      } else {
+        var note=document.createElement('div'); note.className='rich-note';
+        note.innerHTML='Has formatting (links / highlights). Click “Edit on page”.<span class="snip">'+escapeHtml(snippet(el.textContent,90))+'</span>';
+        card.appendChild(note); ref.note=note;
+      }
+      var row=document.createElement('div'); row.className='cms-row';
+      var go=document.createElement('button'); go.className='cms-mini'; go.type='button'; go.textContent='Edit on page';
+      go.addEventListener('click', function(){ focusOnPage(el); });
+      row.appendChild(go); card.appendChild(row);
+      cardFor.set(el.dataset.cmsId, ref);
+      return card;
+    }
+    function imgCard(img){
+      var card=document.createElement('div'); card.className='cms-card';
+      var lbl=document.createElement('div'); lbl.className='lbl';
+      lbl.innerHTML='<span class="kind img">Image</span><span>'+escapeHtml(snippet(img.getAttribute('alt')||'Image',42))+'</span>';
+      card.appendChild(lbl);
+      var thumb=document.createElement('img'); thumb.className='cms-thumb'; thumb.src=img.getAttribute('src'); thumb.alt='';
+      card.appendChild(thumb);
+      var row=document.createElement('div'); row.className='cms-row';
+      var rep=document.createElement('button'); rep.className='cms-mini'; rep.type='button'; rep.textContent='Replace';
+      rep.addEventListener('click', function(){ pickImage(img); });
+      var rst=document.createElement('button'); rst.className='cms-mini'; rst.type='button'; rst.textContent='Reset';
+      rst.addEventListener('click', function(){ resetImage(img); });
+      row.appendChild(rep); row.appendChild(rst); card.appendChild(row);
+      cardFor.set(img.dataset.cmsImg, {card:card, thumb:thumb});
+      return card;
+    }
+    function buildPanel(){
+      panelBody.innerHTML='';
+      cardFor=new Map();
+      var order=[], groups={};
+      function push(sec, node){ if(!groups[sec]){ groups[sec]=[]; order.push(sec); } groups[sec].push(node); }
+      document.querySelectorAll(EDITABLE).forEach(function(el){ push(sectionTitle(el), textCard(el)); });
+      document.querySelectorAll(IMGS).forEach(function(img){ push(sectionTitle(img), imgCard(img)); });
+      order.forEach(function(sec){
+        var s=document.createElement('div'); s.className='cms-sec';
+        var h=document.createElement('div'); h.className='cms-sec-h'; h.textContent=sec; s.appendChild(h);
+        groups[sec].forEach(function(n){ s.appendChild(n); });
+        panelBody.appendChild(s);
+      });
+    }
+
+    function focusOnPage(el){
+      el.scrollIntoView({behavior:'smooth', block:'center'});
+      document.querySelectorAll('.cms-active').forEach(function(x){ x.classList.remove('cms-active'); });
+      el.classList.add('cms-active');
+      setTimeout(function(){ el.focus(); }, 200);
+    }
+
+    // ---------- images ----------
+    function pickImage(img){ targetImg=img; if(!original.has(img)) original.set(img, img.getAttribute('src')); imgInput.value=''; imgInput.click(); }
+    function setImg(img, src){
+      img.setAttribute('src', src); img.classList.add('loaded');
+      var w=img.closest('.img-wrap'); if(w){ w.classList.add('img-loaded','cms-flash'); setTimeout(function(){ w.classList.remove('cms-flash'); },700); }
+      var ref=cardFor.get(img.dataset.cmsImg); if(ref && ref.thumb) ref.thumb.src=src;
+    }
+    function resetImage(img){ if(original.has(img)){ setImg(img, original.get(img)); markDirty(); } }
+    imgInput.addEventListener('change', function(){
+      var file=imgInput.files && imgInput.files[0]; if(!file || !targetImg) return;
+      var r=new FileReader();
+      r.onload=function(ev){ setImg(targetImg, ev.target.result); targetImg=null; markDirty(); };
+      r.readAsDataURL(file);
+    });
+
+    // click images on the page to replace
+    document.addEventListener('click', function(e){
+      if(!body.classList.contains('cms-on')) return;
+      if(e.target.closest('.cms-root') || e.target.closest('[data-edit]')) return;
+      var wrap=e.target.closest('.img-wrap, .ba-stage'); if(!wrap) return;
+      var im=wrap.querySelector('img'); if(im) pickImage(im);
+    });
+
+    // sync inline edits back to panel cards
+    function wireInline(){
+      document.querySelectorAll(EDITABLE).forEach(function(el){
+        el.addEventListener('input', function(){
+          markDirty();
+          var ref=cardFor.get(el.dataset.cmsId); if(!ref) return;
+          if(ref.ta && ref.ta.value!==el.textContent) ref.ta.value=el.textContent;
+          if(ref.note){ var s=ref.note.querySelector('.snip'); if(s) s.textContent=snippet(el.textContent,90); }
+        });
+        el.addEventListener('blur', function(){ el.classList.remove('cms-active'); });
+      });
+    }
+
+    // ---------- draft ----------
+    function applyDraft(d){
+      if(!d) return false;
+      if(d.text){ Object.keys(d.text).forEach(function(id){ var el=document.querySelector('[data-cms-id="'+id+'"]'); if(el) el.innerHTML=d.text[id]; }); }
+      if(d.img){ Object.keys(d.img).forEach(function(id){ var im=document.querySelector('[data-cms-img="'+id+'"]'); if(im) setImg(im, d.img[id]); }); }
+      return true;
+    }
+    function collectDraft(){
+      var text={}, img={};
+      document.querySelectorAll('[data-cms-id]').forEach(function(el){ text[el.dataset.cmsId]=el.innerHTML; });
+      document.querySelectorAll('[data-cms-img]').forEach(function(im){ var s=im.getAttribute('src'); if(s && s.indexOf('data:')===0) img[im.dataset.cmsImg]=s; });
+      return { v:1, savedAt:new Date().toISOString(), text:text, img:img };
+    }
+    function resetAllToOriginal(){
+      original.forEach(function(val, el){ if(el.tagName==='IMG') setImg(el, val); else el.innerHTML=val; });
+    }
+
+    function save(){
+      if(lsSet(collectDraft())) markMsg('Draft saved on this device', true);
+      else alert('Could not save to this browser (private mode or storage disabled). Use “Export updated HTML” to keep your changes.');
+    }
+    function revert(){
+      resetAllToOriginal();
+      var d=lsGet();
+      if(d){ applyDraft(d); markMsg('Reverted to last saved draft', true); }
+      else markMsg('No saved draft. Reset to original.', true);
+      buildPanel();
+    }
+    function discard(){
+      if(!confirm('Discard all changes and saved draft on this device? This cannot be undone.')) return;
+      lsDel(); resetAllToOriginal(); buildPanel(); markMsg('All changes discarded', true);
+    }
+
+    // ---------- export / import ----------
+    function download(content, name, type){
+      var blob=new Blob([content], {type:type}), url=URL.createObjectURL(blob);
+      var a=document.createElement('a'); a.href=url; a.download=name; document.body.appendChild(a); a.click(); a.remove();
+      URL.revokeObjectURL(url);
+    }
+    function exportHtml(){
+      var was=body.classList.contains('cms-on');
+      exit(); // clear editing state on the live DOM
+      // Clone the page and remove every trace of the editor for the PUBLISHED file:
+      var clone=document.documentElement.cloneNode(true);
+      ['cmsRoot','cmsImgInput','cmsJsonInput','cms-script','cms-style'].forEach(function(id){
+        var n=clone.querySelector('#'+id); if(n && n.parentNode) n.parentNode.removeChild(n);
+      });
+      clone.querySelectorAll('[data-cms-id]').forEach(function(n){ n.removeAttribute('data-cms-id'); });
+      clone.querySelectorAll('[data-cms-img]').forEach(function(n){ n.removeAttribute('data-cms-img'); });
+      clone.querySelectorAll('[contenteditable]').forEach(function(n){ n.removeAttribute('contenteditable'); });
+      clone.querySelectorAll('[data-edit]').forEach(function(n){ n.removeAttribute('data-edit'); });
+      clone.querySelectorAll('[spellcheck]').forEach(function(n){ n.removeAttribute('spellcheck'); });
+      clone.querySelectorAll('.cms-active,.cms-flash').forEach(function(n){ n.classList.remove('cms-active','cms-flash'); });
+      var cb=clone.querySelector('body'); if(cb){ cb.className=cb.className.replace(/\bcms-[\w-]+\b/g,'').replace(/\s+/g,' ').trim(); }
+      var html='<!DOCTYPE html>\n'+clone.outerHTML;
+      download(html, 'index.html', 'text/html');
+      if(was) enter();
+      markMsg('Exported a clean index.html (no editor inside) — re-upload it to publish', true);
+    }
+    function exportJson(){
+      var out={ generatedAt:new Date().toISOString(), fields:[], images:[] };
+      document.querySelectorAll('[data-cms-id]').forEach(function(el){
+        out.fields.push({ id:el.dataset.cmsId, section:sectionTitle(el), label:fieldLabel(el), text:el.textContent.replace(/\s+/g,' ').trim(), html:el.innerHTML });
+      });
+      document.querySelectorAll('[data-cms-img]').forEach(function(im){
+        out.images.push({ id:im.dataset.cmsImg, alt:im.getAttribute('alt')||'', src:im.getAttribute('src') });
+      });
+      download(JSON.stringify(out, null, 2), 'transaction-log-content.json', 'application/json');
+    }
+    function importJson(){ jsonInput.value=''; jsonInput.click(); }
+    jsonInput.addEventListener('change', function(){
+      var file=jsonInput.files && jsonInput.files[0]; if(!file) return;
+      var r=new FileReader();
+      r.onload=function(ev){
+        try{
+          var data=JSON.parse(ev.target.result);
+          (data.fields||[]).forEach(function(f){ var el=document.querySelector('[data-cms-id="'+f.id+'"]'); if(el && typeof f.html==='string') el.innerHTML=f.html; });
+          (data.images||[]).forEach(function(im){ var el=document.querySelector('[data-cms-img="'+im.id+'"]'); if(el && im.src) setImg(el, im.src); });
+          buildPanel(); markDirty(); markMsg('Imported content from file', false);
+        }catch(err){ alert('That file is not valid content JSON.'); }
+      };
+      r.readAsText(file);
+    });
+
+    // ---------- enter / exit ----------
+    function enter(){
+      body.classList.add('cms-on'); body.classList.remove('cms-collapsed');
+      root.setAttribute('aria-hidden','false');
+      document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('visible'); });
+      assignIds();
+      document.querySelectorAll(EDITABLE).forEach(function(el){
+        el.setAttribute('data-edit',''); el.setAttribute('contenteditable','true'); el.spellcheck=false;
+        if(!original.has(el)) original.set(el, el.innerHTML);
+      });
+      document.querySelectorAll(IMGS).forEach(function(img){ if(!original.has(img)) original.set(img, img.getAttribute('src')); });
+      var d=lsGet();
+      if(d) applyDraft(d);
+      buildPanel();
+      if(!built){ wireInline(); built=true; }
+      syncToggle();
+      markMsg(d ? 'Draft restored from this device' : 'All changes saved on this device', true);
+    }
+    function exit(){
+      body.classList.remove('cms-on','cms-collapsed');
+      root.setAttribute('aria-hidden','true');
+      document.querySelectorAll('[data-edit]').forEach(function(el){ el.removeAttribute('data-edit'); el.removeAttribute('contenteditable'); el.classList.remove('cms-active'); });
+      if(location.hash==='#edit'){ history.replaceState(null,'', location.pathname + location.search); }
+    }
+
+    // ---------- panel chrome ----------
+    var toggleBtn=document.getElementById('cmsToggle');
+    var closeBtn =document.getElementById('cmsClose');
+    var fab      =document.getElementById('cmsFab');
+    function syncToggle(){ if(toggleBtn) toggleBtn.textContent = body.classList.contains('cms-collapsed') ? 'Show panel' : 'Hide panel'; }
+    if(toggleBtn) toggleBtn.addEventListener('click', function(){ body.classList.toggle('cms-collapsed'); syncToggle(); });
+    if(fab)       fab.addEventListener('click', function(){ body.classList.remove('cms-collapsed'); syncToggle(); });
+    if(closeBtn)  closeBtn.addEventListener('click', exit);
+
+    document.getElementById('cmsSave').addEventListener('click', save);
+    document.getElementById('cmsRevert').addEventListener('click', revert);
+    document.getElementById('cmsDiscard').addEventListener('click', discard);
+    document.getElementById('cmsExportHtml').addEventListener('click', exportHtml);
+    document.getElementById('cmsExportJson').addEventListener('click', exportJson);
+    document.getElementById('cmsImportJson').addEventListener('click', importJson);
+    searchEl.addEventListener('input', function(){
+      var q=searchEl.value.toLowerCase().trim();
+      document.querySelectorAll('.cms-card').forEach(function(c){ c.classList.toggle('hidden', !!q && c.textContent.toLowerCase().indexOf(q)===-1); });
+    });
+
+    // ---------- entry points ----------
+    if(location.hash==='#edit'){ if(gateOpen()) enter(); }
+    window.addEventListener('keydown', function(e){
+      if((e.metaKey||e.ctrlKey) && e.shiftKey && (e.key==='E'||e.key==='e')){
+        e.preventDefault();
+        if(body.classList.contains('cms-on')) exit();
+        else if(gateOpen()) enter();
+      }
+    });
+    window.addEventListener('beforeunload', function(e){ if(dirty){ e.preventDefault(); e.returnValue=''; } });
   })();
 </script>
 </body>
