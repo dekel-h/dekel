@@ -118,6 +118,7 @@
     .main {
       order: 1;
       background: #000;
+      position: relative;
       flex: 0 0 1080px;
       padding: 40px;
       display: flex;
@@ -246,6 +247,105 @@
     .work-text.reveal                   { transition-delay: 0.07s; }
     .img-wrap.reveal                    { transition-delay: 0.14s; }
     .img-wrap.reveal + .img-wrap.reveal { transition-delay: 0.22s; }
+    .case-img-link.reveal               { transition-delay: 0.22s; }
+
+    /* ============================================================
+       CLICKABLE CASE-STUDY IMAGE
+       Only the Transaction Log image links out — signals affordance
+       with lift, deeper shadow, zoom and a CTA overlay.
+    ============================================================ */
+    .case-img-link {
+      display: block;
+      position: relative;
+      cursor: pointer;
+      outline: none;
+      text-decoration: none;
+      transition:
+        transform 0.45s var(--ease),
+        box-shadow 0.45s var(--ease);
+      will-change: transform;
+    }
+    .case-img-link .img-wrap {
+      transition: box-shadow 0.45s var(--ease);
+    }
+    .case-img-link .img-wrap img {
+      transition:
+        transform 0.6s var(--ease),
+        opacity 0.65s ease;
+    }
+    .case-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-start;
+      padding: 20px;
+      background: linear-gradient(
+        to top,
+        rgba(0,0,0,0.55) 0%,
+        rgba(0,0,0,0.12) 35%,
+        rgba(0,0,0,0) 60%
+      );
+      opacity: 0;
+      transition: opacity 0.4s var(--ease);
+      pointer-events: none;
+      z-index: 3;
+    }
+    .case-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #fff;
+      color: #000;
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 700;
+      padding: 10px 16px;
+      border-radius: 100px;
+      transform: translateY(8px);
+      transition: transform 0.4s var(--ease);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+    }
+    .case-cta svg {
+      width: 15px; height: 15px;
+      stroke: #000; fill: none;
+      stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round;
+      transition: transform 0.4s var(--ease);
+    }
+    .case-img-link:hover,
+    .case-img-link:focus-visible {
+      transform: translateY(-4px);
+    }
+    .case-img-link:hover .img-wrap,
+    .case-img-link:focus-visible .img-wrap {
+      box-shadow: 0 18px 50px rgba(0,0,0,0.6);
+    }
+    .case-img-link:hover .img-wrap img,
+    .case-img-link:focus-visible .img-wrap img {
+      transform: scale(1.03);
+    }
+    .case-img-link:hover .case-overlay,
+    .case-img-link:focus-visible .case-overlay {
+      opacity: 1;
+    }
+    .case-img-link:hover .case-cta,
+    .case-img-link:focus-visible .case-cta {
+      transform: translateY(0);
+    }
+    .case-img-link:hover .case-cta svg {
+      transform: translateX(3px);
+    }
+    .case-img-link:active {
+      transform: translateY(-1px) scale(0.992);
+      transition-duration: 0.12s;
+    }
+    .case-img-link:active .img-wrap {
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    }
+    .case-img-link:focus-visible {
+      outline: 2px solid #fff;
+      outline-offset: 4px;
+    }
 
     /* ============================================================
        CONTENT ELEMENTS
@@ -567,9 +667,16 @@
         <div class="img-wrap ratio-3x2 reveal">
           <img src="images/003-Ownera-client.png" alt="Ownera financial platform dashboard showing portfolio and analytics overview" loading="eager" fetchpriority="high" decoding="async">
         </div>
-        <div class="img-wrap ratio-3x2 reveal">
-          <img src="images/004-Ownera-admin.png" alt="Ownera detailed interface showing financial infrastructure components" loading="lazy" decoding="async">
-        </div>
+        <a href="transaction-log.html" class="case-img-link reveal" aria-label="Read the Transaction Log case study">
+          <div class="img-wrap ratio-3x2">
+            <img src="images/004-Ownera-admin.png" alt="Ownera Transaction Log redesign — open the full case study" loading="lazy" decoding="async">
+          </div>
+          <span class="case-overlay" aria-hidden="true">
+            <span class="case-cta">View case study
+              <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </span>
+          </span>
+        </a>
       </article>
 
       <div class="spacer"></div>
@@ -673,6 +780,7 @@
     btn.addEventListener('click', () => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
+
   </script>
 </body>
 </html>
