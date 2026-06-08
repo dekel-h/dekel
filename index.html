@@ -594,6 +594,17 @@
         top: 0;
         z-index: 100;
         animation: fadeIn 0.5s ease both;
+        transition: background 0.25s ease, backdrop-filter 0.25s ease, box-shadow 0.25s ease;
+      }
+
+      /* After scrolling a little, fade in a frosted-glass top bar:
+         60% black tint + backdrop blur so content blurs through it,
+         with a faint hairline edge. Keeps the nav readable on scroll. */
+      .menu.scrolled {
+        background: rgba(0, 0, 0, 0.6);
+        -webkit-backdrop-filter: blur(14px) saturate(140%);
+                backdrop-filter: blur(14px) saturate(140%);
+        box-shadow: 0 1px 0 rgba(255, 255, 255, 0.07);
       }
 
       .menu-link  { text-align: left; width: auto; }
@@ -796,11 +807,13 @@
       }
     });
 
-    /* ── Scroll-to-top button ────────────────────────────────────── */
+    /* ── Scroll-to-top button + top-bar scrim ────────────────────── */
     const btn = document.getElementById('backToTop');
+    const menuBar = document.querySelector('.menu');
 
     window.addEventListener('scroll', () => {
       btn.classList.toggle('visible', window.scrollY > 320);
+      menuBar.classList.toggle('scrolled', window.scrollY > 20);
     }, { passive: true });
 
     btn.addEventListener('click', () => {
