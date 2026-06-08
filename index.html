@@ -6,7 +6,7 @@
 
   <!-- ── Primary SEO ─────────────────────────────────────────── -->
   <!-- TODO: replace every https://dekelhillel.com with your real domain -->
-  <title>Dekel Hillel — Senior Product Designer</title>
+  <title>Dekel Hillel, Senior Product Designer</title>
   <meta name="description" content="A Senior Product Designer focused on architecting complex B2B infrastructure from the ground up. An expert at translating high-scale data platforms into intuitive tools, with proven experience leading design at Ownera, Placer.ai, and SimilarWeb.">
   <meta name="author" content="Dekel Hillel">
   <meta name="robots" content="index, follow">
@@ -16,20 +16,20 @@
   <meta property="og:type"        content="website">
   <meta property="og:url"         content="https://dekelhillel.com/">
   <meta property="og:site_name"   content="Dekel Hillel">
-  <meta property="og:title"       content="Dekel Hillel — Senior Product Designer">
+  <meta property="og:title"       content="Dekel Hillel, Senior Product Designer">
   <meta property="og:description" content="A Senior Product Designer focused on architecting complex B2B infrastructure from the ground up. An expert at translating high-scale data platforms into intuitive tools, with proven experience leading design at Ownera, Placer.ai, and SimilarWeb.">
   <meta property="og:image"       content="https://dekelhillel.com/og-image.png">
   <meta property="og:image:width"  content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt"   content="Dekel Hillel — Senior Product Designer">
+  <meta property="og:image:alt"   content="Dekel Hillel, Senior Product Designer">
   <meta property="og:locale"      content="en_US">
 
   <!-- ── Twitter / X Card ────────────────────────────────────── -->
   <meta name="twitter:card"        content="summary_large_image">
-  <meta name="twitter:title"       content="Dekel Hillel — Senior Product Designer">
+  <meta name="twitter:title"       content="Dekel Hillel, Senior Product Designer">
   <meta name="twitter:description" content="A Senior Product Designer focused on architecting complex B2B infrastructure from the ground up.">
   <meta name="twitter:image"       content="https://dekelhillel.com/og-image.png">
-  <meta name="twitter:image:alt"   content="Dekel Hillel — Senior Product Designer">
+  <meta name="twitter:image:alt"   content="Dekel Hillel, Senior Product Designer">
 
   <!-- ── Theme color (mobile browser chrome) ─────────────────── -->
   <meta name="theme-color" content="#000000">
@@ -56,7 +56,7 @@
   }
   </script>
 
-  <!-- ── Google Fonts — async (non-render-blocking) ──────────── -->
+  <!-- ── Google Fonts - async (non-render-blocking) ──────────── -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Manrope:wght@800&family=DM+Sans:opsz,wght@9..40,400;9..40,700&display=swap">
@@ -72,7 +72,7 @@
     }
 
     :root {
-      --secondary: #767676; /* was #5f5c62 — lightened to pass WCAG 4.5:1 on black */
+      --secondary: #767676; /* was #5f5c62 - lightened to pass WCAG 4.5:1 on black */
       --font-heading: 'Manrope', sans-serif;
       --font-body: 'DM Sans', sans-serif;
       --ease: cubic-bezier(0.16, 1, 0.3, 1);
@@ -105,7 +105,7 @@
 
     /* ============================================================
        DESKTOP LAYOUT
-       Body scrolls — menu is position:sticky, content flows freely.
+       Body scrolls - menu is position:sticky, content flows freely.
        Scrolling works from anywhere on the canvas.
     ============================================================ */
     .layout {
@@ -114,7 +114,7 @@
       min-height: 100vh;
     }
 
-    /* Left — content (grows with page) */
+    /* Left - content (grows with page) */
     .main {
       order: 1;
       background: #000;
@@ -126,7 +126,7 @@
       gap: 24px;
     }
 
-    /* Right — sticky sidebar */
+    /* Right - sticky sidebar */
     .menu {
       order: 2;
       background: #000;
@@ -191,7 +191,7 @@
     .menu-spacer { height: 24px; flex-shrink: 0; }
 
     /* ============================================================
-       HERO — animates in on load
+       HERO - animates in on load
     ============================================================ */
     .heading {
       font-family: var(--font-heading);
@@ -251,7 +251,7 @@
 
     /* ============================================================
        CLICKABLE CASE-STUDY IMAGE
-       Only the Transaction Log image links out — signals affordance
+       Only the Transaction Log image links out - signals affordance
        with lift, deeper shadow, zoom and a CTA overlay.
     ============================================================ */
     .case-img-link {
@@ -380,7 +380,7 @@
     }
 
     /* ============================================================
-       IMAGES — shimmer skeleton + fade-in on load
+       IMAGES - shimmer skeleton + fade-in on load
     ============================================================ */
     @keyframes shimmer {
       0%   { background-position: 200% 0; }
@@ -395,7 +395,7 @@
       background: #0d0d0d;
     }
 
-    /* Shimmer overlay — visible while image is loading */
+    /* Shimmer overlay - visible while image is loading */
     .img-wrap::before {
       content: '';
       position: absolute;
@@ -412,13 +412,13 @@
       transition: opacity 0.5s ease;
     }
 
-    /* Once loaded — shimmer fades out */
+    /* Once loaded - shimmer fades out */
     .img-wrap.img-loaded::before {
       opacity: 0;
       animation-play-state: paused;
     }
 
-    /* Reserve space before load — prevents layout shift */
+    /* Reserve space before load - prevents layout shift */
     .img-wrap.ratio-3x2 { aspect-ratio: 3 / 2; }
     .img-wrap.ratio-3x1 { aspect-ratio: 3 / 1; }
 
@@ -510,7 +510,7 @@
     }
 
     /* ============================================================
-       FOCUS VISIBLE — keyboard navigation indicator
+       FOCUS VISIBLE - keyboard navigation indicator
     ============================================================ */
     :focus-visible {
       outline: 2px solid #fff;
@@ -525,7 +525,7 @@
     }
 
     /* ============================================================
-       TOUCH TARGETS — minimum 44×44px on mobile
+       TOUCH TARGETS - minimum 44×44px on mobile
     ============================================================ */
     @media (max-width: 1316px) {
       a.menu-link, .blog-label {
@@ -536,7 +536,7 @@
     }
 
     /* ============================================================
-       BOTTOM NAV — mobile only
+       BOTTOM NAV - mobile only
     ============================================================ */
     .bottom-nav { display: none; }
 
@@ -589,7 +589,7 @@
          a.menu-link { display:flex } touch-target rule above. */
       a.menu-link.menu-contact { display: none; }
 
-      /* Bottom footer — non-sticky, flows at end of page */
+      /* Bottom footer - non-sticky, flows at end of page */
       .bottom-nav {
         order: 3;
         display: flex;
@@ -647,12 +647,12 @@
       <div class="bio">
         <p>
           Most recently, I led product design at <a href="https://www.ownera.io/" target="_blank" rel="noopener noreferrer">Ownera</a>, where I built the foundations for complex financial systems.<br>
-          Before that, at <a href="https://www.placer.ai/" target="_blank" rel="noopener noreferrer">Placer.ai</a>, I built the company's "Lite" product from the ground up—distilling a massive data platform into a simple, high-value tool for new users.<br>
+          Before that, at <a href="https://www.placer.ai/" target="_blank" rel="noopener noreferrer">Placer.ai</a>, I built the company's "Lite" product from the ground up, distilling a massive data platform into a simple, high-value tool for new users.<br>
           I gained my experience in high-scale products at <a href="https://www.similarweb.com/" target="_blank" rel="noopener noreferrer">SimilarWeb</a>,<br>
           and along the way. I joined <a href="https://www.bezalel.ac.il/" target="_blank" rel="noopener noreferrer">Bezalel Academy</a> as a guest lecturer to lead an intensive UX/UI course for the next generation of designers.
         </p>
         <p>
-          In many parts of my life, I'm a generalist. I love taking products from 0 to 1, architecting infrastructures from scratch, and pouring myself into the fine details to ensure the highest quality. I'm good at helping teams be more ambitious together—to imagine novel solutions, to ship better products, and most importantly, to have fun through it all.
+          In many parts of my life, I'm a generalist. I love taking products from 0 to 1, architecting infrastructures from scratch, and pouring myself into the fine details to ensure the highest quality. I'm good at helping teams be more ambitious together: to imagine novel solutions, to ship better products, and most importantly, to have fun through it all.
         </p>
       </div>
 
@@ -667,9 +667,9 @@
         <div class="img-wrap ratio-3x2 reveal">
           <img src="images/003-Ownera-client.png" alt="Ownera financial platform dashboard showing portfolio and analytics overview" loading="eager" fetchpriority="high" decoding="async">
         </div>
-        <a href="transaction-log.html" class="case-img-link reveal" aria-label="Read the Transaction Log case study">
+        <a href="transaction-log/" class="case-img-link reveal" aria-label="Read the Transaction Log case study">
           <div class="img-wrap ratio-3x2">
-            <img src="images/004-Ownera-admin.png" alt="Ownera Transaction Log redesign — open the full case study" loading="lazy" decoding="async">
+            <img src="images/004-Ownera-admin.png" alt="Ownera Transaction Log redesign, open the full case study" loading="lazy" decoding="async">
           </div>
           <span class="case-overlay" aria-hidden="true">
             <span class="case-cta">View case study
@@ -720,7 +720,7 @@
 
     </main>
 
-    <!-- BOTTOM NAV — mobile only -->
+    <!-- BOTTOM NAV - mobile only -->
     <nav class="bottom-nav" aria-label="Contact">
       <a href="mailto:h.dekel@gmail.com" class="menu-link">Email</a>
       <a href="https://www.linkedin.com/in/dekelhillel/" class="menu-link" target="_blank" rel="noopener noreferrer">LinkedIn</a>
@@ -761,7 +761,7 @@
         img.classList.add('loaded');
         img.closest('.img-wrap').classList.add('img-loaded');
       };
-      /* Already cached by browser — fire immediately */
+      /* Already cached by browser - fire immediately */
       if (img.complete && img.naturalWidth > 0) {
         markLoaded();
       } else {
