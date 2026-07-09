@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Designing for Investors Who Expect More, Dekel Hillel</title>
+<meta name="description" content="Designing for Investors Who Expect More. The full investor experience on an institutional digital-asset platform: portfolio, invest flow, trading, and account management.">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@800&family=DM+Sans:opsz,wght@9..40,400;9..40,700&display=swap">
+<style>
+  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+
+  :root{
+    --secondary:#767676;            /* lightened grey from the live site */
+    --text:#fff;                    /* primary text color token */
+    --font-heading:'Manrope', sans-serif;
+    --font-body:'DM Sans', sans-serif;
+    --ease:cubic-bezier(0.16, 1, 0.3, 1);
+    --hairline:rgba(255,255,255,0.14);
+    --hairline-soft:rgba(255,255,255,0.08);
+    --panel:#0d0d0d;
+    --danger:#ff6b6b;
+    --ok:#5dd6a0;
+    --info:#7aa2ff;
+  }
+
+  html{ scroll-behavior:smooth; background:#1D1D1F; }
+  body{ background:#1D1D1F; overflow-y:auto; overflow-x:hidden; position:relative; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+
+  /* Background gradient glow: aurora at the top, fades to black */
+  .bg-glow{
+    position:absolute; top:0; left:0; right:0; height:820px; z-index:0; pointer-events:none;
+    background-image:url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTMxNyIgaGVpZ2h0PSI3OTUiIHZpZXdCb3g9IjAgMCAxMzE3IDc5NSIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXAwXzUyNV80MTApIj4KPGcgZmlsdGVyPSJ1cmwoI2ZpbHRlcjBfZl81MjVfNDEwKSI+CjxlbGxpcHNlIGN4PSIyOTkuMTYiIGN5PSItMTMwLjUyMiIgcng9IjgyOS45NjgiIHJ5PSI4NDAuMjAxIiB0cmFuc2Zvcm09InJvdGF0ZSgtMC41OTE2MjIgMjk5LjE2IC0xMzAuNTIyKSIgZmlsbD0idXJsKCNwYWludDBfbGluZWFyXzUyNV80MTApIi8+CjwvZz4KPGcgZmlsdGVyPSJ1cmwoI2ZpbHRlcjFfZl81MjVfNDEwKSI+CjxlbGxpcHNlIGN4PSI3ODUuOTQ1IiBjeT0iLTY1OS4zNDMiIHJ4PSI3ODUuOTQ1IiByeT0iNzcwLjU2NyIgZmlsbD0iIzAwQzhGRiIvPgo8L2c+CjxnIGZpbHRlcj0idXJsKCNmaWx0ZXIyX2ZfNTI1XzQxMCkiPgo8ZWxsaXBzZSBjeD0iNDQzLjQyNCIgY3k9Ii0xNTEuMjQ5IiByeD0iNDUxLjQyOCIgcnk9IjQ1Ni42OTUiIGZpbGw9IiM5MTM3RkYiLz4KPC9nPgo8ZyBmaWx0ZXI9InVybCgjZmlsdGVyM19mXzUyNV80MTApIj4KPGVsbGlwc2UgY3g9Ii0yMC4wMTIiIGN5PSItMjE5LjkyMSIgcng9IjQzNC4xNTUiIHJ5PSI0MzkuNDIxIiBmaWxsPSIjMDAzNjZBIi8+CjwvZz4KPGcgZmlsdGVyPSJ1cmwoI2ZpbHRlcjRfZl81MjVfNDEwKSI+CjxwYXRoIGQ9Ik0tMzE1LjEzOSA3NTYuMzM0QzU2LjYyNDYgOTA0LjUzIDYwNS40MTYgNzU2LjMzNCA4ODkuNDYxIDIzNC43MDdDNDc2LjA3NSA3MDcuMzcxIDE0Ljg2MzQgNjc3LjgyNiAtMzE1LjEzOSA2MDYuMDQ3TC0zMTUuMTM5IDc1Ni4zMzRaIiBmaWxsPSJ1cmwoI3BhaW50MV9saW5lYXJfNTI1XzQxMCkiIGZpbGwtb3BhY2l0eT0iMC42Ii8+CjwvZz4KPGcgZmlsdGVyPSJ1cmwoI2ZpbHRlcjVfZl81MjVfNDEwKSI+CjxwYXRoIGQ9Ik0xMTY0LjI4IC02NjAuNDk5QzExNzEuODEgLTM0MS4xODQgOTQ4Ljc1NiA3OS4xMTM2IDU0OS4zODIgMjM0LjczMkM5NDcuNzkzIC0zMS42MTg0IDEwMzYuOTIgLTQwNi4yODcgMTA2OC4zOCAtNjgxLjQxNUwxMTY0LjI4IC02NjAuNDk5WiIgZmlsbD0idXJsKCNwYWludDJfbGluZWFyXzUyNV80MTApIiBmaWxsLW9wYWNpdHk9IjAuNSIvPgo8L2c+CjxnIGZpbHRlcj0idXJsKCNmaWx0ZXI2X2ZfNTI1XzQxMCkiPgo8cGF0aCBkPSJNLTUyOS42NzYgNjI5LjQ5MkMtMTQyLjA2MiA3MjkuMTIzIDE5MC44NTMgNDkxLjAzMSA1MDUuMTQ2IDIzNC42NjdDMTA4LjQ4OCA0ODEuOTczIC0yMDYuMzU1IDYwOS42MSAtNTQyLjgxMyA1ODAuNDU0TC01MjkuNjc2IDYyOS40OTJaIiBmaWxsPSJ1cmwoI3BhaW50M19saW5lYXJfNTI1XzQxMCkiLz4KPC9nPgo8L2c+CjxkZWZzPgo8ZmlsdGVyIGlkPSJmaWx0ZXIwX2ZfNTI1XzQxMCIgeD0iLTk1Mi4xMTUiIHk9Ii0xMzkyLjAzIiB3aWR0aD0iMjUwMi41NSIgaGVpZ2h0PSIyNTIzLjAxIiBmaWx0ZXJVbml0cz0idXNlclNwYWNlT25Vc2UiIGNvbG9yLWludGVycG9sYXRpb24tZmlsdGVycz0ic1JHQiI+CjxmZUZsb29kIGZsb29kLW9wYWNpdHk9IjAiIHJlc3VsdD0iQmFja2dyb3VuZEltYWdlRml4Ii8+CjxmZUJsZW5kIG1vZGU9Im5vcm1hbCIgaW49IlNvdXJjZUdyYXBoaWMiIGluMj0iQmFja2dyb3VuZEltYWdlRml4IiByZXN1bHQ9InNoYXBlIi8+CjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjIxMC42NTMiIHJlc3VsdD0iZWZmZWN0MV9mb3JlZ3JvdW5kQmx1cl81MjVfNDEwIi8+CjwvZmlsdGVyPgo8ZmlsdGVyIGlkPSJmaWx0ZXIxX2ZfNTI1XzQxMCIgeD0iLTQyMS4zMDUiIHk9Ii0xODUxLjIxIiB3aWR0aD0iMjQxNC41IiBoZWlnaHQ9IjIzODMuNzQiIGZpbHRlclVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgY29sb3ItaW50ZXJwb2xhdGlvbi1maWx0ZXJzPSJzUkdCIj4KPGZlRmxvb2QgZmxvb2Qtb3BhY2l0eT0iMCIgcmVzdWx0PSJCYWNrZ3JvdW5kSW1hZ2VGaXgiLz4KPGZlQmxlbmQgbW9kZT0ibm9ybWFsIiBpbj0iU291cmNlR3JhcGhpYyIgaW4yPSJCYWNrZ3JvdW5kSW1hZ2VGaXgiIHJlc3VsdD0ic2hhcGUiLz4KPGZlR2F1c3NpYW5CbHVyIHN0ZERldmlhdGlvbj0iMjEwLjY1MyIgcmVzdWx0PSJlZmZlY3QxX2ZvcmVncm91bmRCbHVyXzUyNV80MTAiLz4KPC9maWx0ZXI+CjxmaWx0ZXIgaWQ9ImZpbHRlcjJfZl81MjVfNDEwIiB4PSItNDI5LjMxIiB5PSItMTAyOS4yNSIgd2lkdGg9IjE3NDUuNDciIGhlaWdodD0iMTc1NiIgZmlsdGVyVW5pdHM9InVzZXJTcGFjZU9uVXNlIiBjb2xvci1pbnRlcnBvbGF0aW9uLWZpbHRlcnM9InNSR0IiPgo8ZmVGbG9vZCBmbG9vZC1vcGFjaXR5PSIwIiByZXN1bHQ9IkJhY2tncm91bmRJbWFnZUZpeCIvPgo8ZmVCbGVuZCBtb2RlPSJub3JtYWwiIGluPSJTb3VyY2VHcmFwaGljIiBpbjI9IkJhY2tncm91bmRJbWFnZUZpeCIgcmVzdWx0PSJzaGFwZSIvPgo8ZmVHYXVzc2lhbkJsdXIgc3RkRGV2aWF0aW9uPSIyMTAuNjUzIiByZXN1bHQ9ImVmZmVjdDFfZm9yZWdyb3VuZEJsdXJfNTI1XzQxMCIvPgo8L2ZpbHRlcj4KPGZpbHRlciBpZD0iZmlsdGVyM19mXzUyNV80MTAiIHg9Ii04NzUuNDcyIiB5PSItMTA4MC42NSIgd2lkdGg9IjE3MTAuOTIiIGhlaWdodD0iMTcyMS40NSIgZmlsdGVyVW5pdHM9InVzZXJTcGFjZU9uVXNlIiBjb2xvci1pbnRlcnBvbGF0aW9uLWZpbHRlcnM9InNSR0IiPgo8ZmVGbG9vZCBmbG9vZC1vcGFjaXR5PSIwIiByZXN1bHQ9IkJhY2tncm91bmRJbWFnZUZpeCIvPgo8ZmVCbGVuZCBtb2RlPSJub3JtYWwiIGluPSJTb3VyY2VHcmFwaGljIiBpbjI9IkJhY2tncm91bmRJbWFnZUZpeCIgcmVzdWx0PSJzaGFwZSIvPgo8ZmVHYXVzc2lhbkJsdXIgc3RkRGV2aWF0aW9uPSIyMTAuNjUzIiByZXN1bHQ9ImVmZmVjdDFfZm9yZWdyb3VuZEJsdXJfNTI1XzQxMCIvPgo8L2ZpbHRlcj4KPGZpbHRlciBpZD0iZmlsdGVyNF9mXzUyNV80MTAiIHg9Ii00NDEuNTMxIiB5PSIxMDguMzE1IiB3aWR0aD0iMTQ1Ny4zOCIgaGVpZ2h0PSI4MjguODM1IiBmaWx0ZXJVbml0cz0idXNlclNwYWNlT25Vc2UiIGNvbG9yLWludGVycG9sYXRpb24tZmlsdGVycz0ic1JHQiI+CjxmZUZsb29kIGZsb29kLW9wYWNpdHk9IjAiIHJlc3VsdD0iQmFja2dyb3VuZEltYWdlRml4Ii8+CjxmZUJsZW5kIG1vZGU9Im5vcm1hbCIgaW49IlNvdXJjZUdyYXBoaWMiIGluMj0iQmFja2dyb3VuZEltYWdlRml4IiByZXN1bHQ9InNoYXBlIi8+CjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjYzLjE5NTgiIHJlc3VsdD0iZWZmZWN0MV9mb3JlZ3JvdW5kQmx1cl81MjVfNDEwIi8+CjwvZmlsdGVyPgo8ZmlsdGVyIGlkPSJmaWx0ZXI1X2ZfNTI1XzQxMCIgeD0iNDIyLjk5IiB5PSItODA3LjgwNiIgd2lkdGg9Ijg2Ny44NjciIGhlaWdodD0iMTE2OC45MyIgZmlsdGVyVW5pdHM9InVzZXJTcGFjZU9uVXNlIiBjb2xvci1pbnRlcnBvbGF0aW9uLWZpbHRlcnM9InNSR0IiPgo8ZmVGbG9vZCBmbG9vZC1vcGFjaXR5PSIwIiByZXN1bHQ9IkJhY2tncm91bmRJbWFnZUZpeCIvPgo8ZmVCbGVuZCBtb2RlPSJub3JtYWwiIGluPSJTb3VyY2VHcmFwaGljIiBpbjI9IkJhY2tncm91bmRJbWFnZUZpeCIgcmVzdWx0PSJzaGFwZSIvPgo8ZmVHYXVzc2lhbkJsdXIgc3RkRGV2aWF0aW9uPSI2My4xOTU4IiByZXN1bHQ9ImVmZmVjdDFfZm9yZWdyb3VuZEJsdXJfNTI1XzQxMCIvPgo8L2ZpbHRlcj4KPGZpbHRlciBpZD0iZmlsdGVyNl9mXzUyNV80MTAiIHg9Ii02OTAuMjY5IiB5PSI4Ny4yMTAyIiB3aWR0aD0iMTM0Mi44NyIgaGVpZ2h0PSI3MTIuOTMzIiBmaWx0ZXJVbml0cz0idXNlclNwYWNlT25Vc2UiIGNvbG9yLWludGVycG9sYXRpb24tZmlsdGVycz0ic1JHQiI+CjxmZUZsb29kIGZsb29kLW9wYWNpdHk9IjAiIHJlc3VsdD0iQmFja2dyb3VuZEltYWdlRml4Ii8+CjxmZUJsZW5kIG1vZGU9Im5vcm1hbCIgaW49IlNvdXJjZUdyYXBoaWMiIGluMj0iQmFja2dyb3VuZEltYWdlRml4IiByZXN1bHQ9InNoYXBlIi8+CjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjczLjcyODQiIHJlc3VsdD0iZWZmZWN0MV9mb3JlZ3JvdW5kQmx1cl81MjVfNDEwIi8+CjwvZmlsdGVyPgo8bGluZWFyR3JhZGllbnQgaWQ9InBhaW50MF9saW5lYXJfNTI1XzQxMCIgeDE9IjgxLjgyNDMiIHkxPSIzMDMuNzA0IiB4Mj0iMjk5LjE2IiB5Mj0iNzA5LjY3OSIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgo8c3RvcC8+CjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzA5MjU0MCIvPgo8L2xpbmVhckdyYWRpZW50Pgo8bGluZWFyR3JhZGllbnQgaWQ9InBhaW50MV9saW5lYXJfNTI1XzQxMCIgeDE9IjI4OS44NTgiIHkxPSI2MjguMzc3IiB4Mj0iLTMzNi42MjMiIHkyPSI4ODcuMjY5IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wLz4KPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLW9wYWNpdHk9IjAiLz4KPC9saW5lYXJHcmFkaWVudD4KPGxpbmVhckdyYWRpZW50IGlkPSJwYWludDJfbGluZWFyXzUyNV80MTAiIHgxPSI5NDAuOTgxIiB5MT0iLTE5Mi4yMjciIHgyPSIxMzA2LjgyIiB5Mj0iLTYxMi41NzUiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KPHN0b3AvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3Atb3BhY2l0eT0iMCIvPgo8L2xpbmVhckdyYWRpZW50Pgo8bGluZWFyR3JhZGllbnQgaWQ9InBhaW50M19saW5lYXJfNTI1XzQxMCIgeDE9IjU0LjA5MjgiIHkxPSI0MjUuNTA5IiB4Mj0iLTUzNC4zMDUiIHkyPSI3NjIuMDk2IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wLz4KPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLW9wYWNpdHk9IjAiLz4KPC9saW5lYXJHcmFkaWVudD4KPGNsaXBQYXRoIGlkPSJjbGlwMF81MjVfNDEwIj4KPHJlY3Qgd2lkdGg9IjEzMTciIGhlaWdodD0iNzk0LjE2IiBmaWxsPSJ3aGl0ZSIvPgo8L2NsaXBQYXRoPgo8L2RlZnM+Cjwvc3ZnPgo=');
+    background-size:cover; background-position:top center; background-repeat:no-repeat;
+    -webkit-mask-image:linear-gradient(to bottom, #000 0%, #000 78%, transparent 100%);
+            mask-image:linear-gradient(to bottom, #000 0%, #000 78%, transparent 100%);
+  }
+  @media (max-width:799px){ .bg-glow{ height:540px; } }
+  ::selection{ background:#fff; color:#000; }
+
+  /* ---------- keyframes ---------- */
+  @keyframes fadeUp { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+  @keyframes shimmer{ 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+  /* ---------- layout: top header (non-sticky) + content below ---------- */
+  .layout{ display:flex; flex-direction:column; min-height:100vh; align-items:center; position:relative; z-index:1; }
+  /* Top header - horizontal, flows with the page (NOT sticky) */
+  .menu{
+    width:100%; max-width:1160px; background:transparent;
+    padding:28px 40px;
+    display:flex; flex-direction:row; align-items:center; gap:24px;
+    animation:fadeIn .7s ease .1s both;
+  }
+  .main{
+    width:100%; max-width:1160px; background:transparent; position:relative;
+    padding:12px 40px 40px;
+    display:flex; flex-direction:column; gap:24px;
+  }
+
+  /* ---------- nav links (header row) ---------- */
+  .menu-link{
+    font-family:var(--font-body); font-size:18px; color:var(--text);
+    text-decoration:none; line-height:1.4;
+    white-space:nowrap; display:inline-block; transition:opacity .25s ease;
+  }
+  a.menu-link:hover{ opacity:.45; }
+  .menu-back{ color:var(--secondary); transition:color .25s ease, opacity .25s ease; }
+  .menu-back .back-arrow{ display:inline-block; transition:transform .25s var(--ease); }
+  a.menu-back:hover{ opacity:1; color:var(--text); }
+  a.menu-back:hover .back-arrow{ transform:translateX(-4px); }
+  .menu-spacer{ flex:1; }
+  .menu-meta{
+    font-family:var(--font-body); font-size:13px; color:var(--secondary);
+    line-height:1.5; white-space:nowrap; text-align:right;
+  }
+  .menu-meta b{ color:var(--text); font-weight:700; }
+
+  /* ---------- hero ---------- */
+  .tags{ display:flex; flex-wrap:wrap; gap:8px; animation:fadeUp 1s var(--ease) both; }
+  .tag{
+    font-family:var(--font-body); font-size:12px; font-weight:700;
+    letter-spacing:.04em; color:var(--text);
+    background:rgba(255,255,255,0.04);
+    border:1px solid var(--hairline); border-radius:100px; padding:6px 14px;
+  }
+  .heading{
+    font-family:var(--font-heading); font-weight:800; font-size:64px;
+    color:var(--text); letter-spacing:-3.4px; line-height:1.02; flex-shrink:0;
+    animation:fadeUp 1s var(--ease) .06s both; max-width:none;
+  }
+  .subhead{
+    font-family:var(--font-body); font-size:20px; color:var(--text); line-height:1.55;
+    flex-shrink:0; max-width:none; animation:fadeUp 1s var(--ease) .14s both;
+  }
+  .subhead .dim{ color:var(--secondary); }
+
+  /* ---------- generic text ---------- */
+  .lede{ font-family:var(--font-body); font-size:20px; color:var(--text); line-height:1.55; max-width:none; flex-shrink:0; }
+  .body-text{ font-family:var(--font-body); font-size:18px; color:var(--text); line-height:1.6; max-width:none; flex-shrink:0; }
+  .body-text.muted{ color:var(--secondary); }
+  .body-text + .body-text{ margin-top:-8px; }
+  .body-text a, .lede a{ color:var(--text); font-weight:700; text-decoration:underline; text-decoration-skip-ink:none; transition:opacity .2s ease; }
+  .body-text a:hover{ opacity:.55; }
+  em{ font-style:italic; color:var(--text); }
+
+  /* ---------- section heading ---------- */
+  .sec-head{
+    font-family:var(--font-heading); font-weight:800; font-size:34px;
+    color:var(--text); letter-spacing:-1.4px; line-height:1.1; flex-shrink:0; max-width:none;
+  }
+  .date-label{ /* reused as section marker, matches site's date rhythm */
+    font-family:var(--font-body); font-size:18px; font-weight:400;
+    color:var(--secondary); line-height:1.4; flex-shrink:0;
+  }
+
+  /* ---------- spacers ---------- */
+  .spacer{ height:24px; flex-shrink:0; }
+  .spacer-lg{ height:56px; flex-shrink:0; }
+  .rule{ height:1px; background:var(--hairline-soft); flex-shrink:0; margin:8px 0; }
+
+  /* ---------- work-entry rhythm ---------- */
+  .entry{ display:flex; flex-direction:column; gap:24px; flex-shrink:0; }
+
+  /* ---------- images (shimmer + fade, from site) ---------- */
+  .img-wrap{ position:relative; width:100%; flex-shrink:0; overflow:hidden; background:var(--panel); }
+  .img-wrap::before{
+    content:''; position:absolute; inset:0;
+    background:linear-gradient(90deg, transparent 0%, #1c1c1c 40%, transparent 100%);
+    background-size:200% 100%; animation:shimmer 1.6s ease-in-out infinite; z-index:1;
+    transition:opacity .5s ease;
+  }
+  .img-wrap.img-loaded::before{ opacity:0; animation-play-state:paused; }
+  .img-wrap.ratio-3x2{ aspect-ratio:3/2; }
+  .img-wrap img{
+    position:relative; z-index:2; width:100%; height:100%; display:block; object-fit:cover;
+    opacity:0; transform:scale(1.018);
+    transition:opacity .65s ease, transform .75s var(--ease); will-change:opacity, transform;
+  }
+  .img-wrap img.loaded{ opacity:1; transform:scale(1); }
+  /* desaturated "before" state */
+  .img-wrap.before-state img{ filter:grayscale(1) brightness(.85); }
+  .caption{
+    font-family:var(--font-body); font-size:15px; color:var(--secondary);
+    line-height:1.55; max-width:none; flex-shrink:0;
+  }
+  .caption b{ color:var(--text); font-weight:700; }
+
+  /* ---------- TL;DR triple ---------- */
+  .tldr{ display:grid; grid-template-columns:repeat(3,1fr); gap:0; border-top:1px solid var(--hairline); border-bottom:1px solid var(--hairline); }
+  .tldr-cell{ padding:30px 28px 30px 0; }
+  .tldr-cell + .tldr-cell{ padding-left:30px; border-left:1px solid var(--hairline-soft); }
+  .tldr-cell .k{ font-family:var(--font-body); font-size:13px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--secondary); display:block; margin-bottom:12px; }
+  .tldr-cell p{ font-family:var(--font-body); font-size:16px; color:var(--text); line-height:1.55; }
+
+  /* ---------- meta block ---------- */
+  .meta{ display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--hairline-soft); border:1px solid var(--hairline-soft); border-radius:14px; overflow:hidden; }
+  .meta-cell{ background:#1D1D1F; padding:24px 26px; }
+  .meta-cell .k{ font-family:var(--font-body); font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--secondary); display:block; margin-bottom:10px; }
+  .meta-cell .v{ font-family:var(--font-body); font-size:15px; color:var(--text); line-height:1.55; }
+
+  /* ---------- hook quote ---------- */
+  .hook{
+    font-family:var(--font-heading); font-weight:800; font-size:30px; line-height:1.32;
+    letter-spacing:-1px; color:var(--text); max-width:none; flex-shrink:0;
+  }
+  .hook .dim{ color:var(--secondary); }
+
+  /* ---------- stakes ---------- */
+  .stakes{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .stake{ border:1px solid var(--hairline-soft); border-radius:14px; padding:26px 24px; }
+  .stake.cost{ border-color:rgba(255,107,107,0.35); background:rgba(255,107,107,0.06); }
+  .stake .k{ font-family:var(--font-body); font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--secondary); display:block; margin-bottom:12px; }
+  .stake.cost .k{ color:var(--danger); }
+  .stake p{ font-family:var(--font-body); font-size:15.5px; color:var(--text); line-height:1.55; }
+
+  /* ---------- reframe ---------- */
+  .reframe{ display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--hairline); border-radius:14px; overflow:hidden; }
+  .rf-col{ padding:30px 30px; position:relative; }
+  .rf-col.assume{ background:var(--panel); }
+  .rf-col.insight{ background:#1D1D1F; border-left:1px solid var(--hairline); }
+  .rf-col .k{ font-family:var(--font-body); font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; margin-bottom:12px; display:block; }
+  .rf-col.assume .k{ color:var(--secondary); }
+  .rf-col.insight .k{ color:var(--text); }
+  .rf-col p{ font-family:var(--font-body); font-size:16px; line-height:1.55; }
+  .rf-col.assume p{ color:var(--secondary); }
+  .rf-col.insight p{ color:var(--text); }
+  .rf-arrow{ position:absolute; left:-15px; top:50%; transform:translateY(-50%); width:30px;height:30px;border-radius:50%;background:#1D1D1F;border:1px solid var(--hairline);display:flex;align-items:center;justify-content:center;color:var(--text);font-size:14px;z-index:3; }
+
+  /* ---------- before/after ---------- */
+  .ba{ display:grid; grid-template-columns:1fr 1fr; gap:18px; align-items:start; }
+  .ba .lbl{ display:flex; align-items:center; gap:9px; margin-bottom:12px; font-family:var(--font-body); font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; }
+  .ba .lbl .dot{ width:7px;height:7px;border-radius:50%; }
+  .ba .before .lbl{ color:var(--secondary); } .ba .before .dot{ background:var(--secondary); }
+  .ba .after .lbl{ color:var(--text); } .ba .after .dot{ background:var(--danger); }
+
+  /* ---------- interactive before/after slider ---------- */
+  .ba-slider{ position:relative; width:100%; flex-shrink:0; }
+  .ba-slider-labels{ display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+  .ba-chip{ font-family:var(--font-body); font-size:13px; font-weight:700; padding:6px 13px; border-radius:8px; }
+  .ba-chip.before{ background:rgba(255,255,255,0.06); color:var(--secondary); border:1px solid var(--hairline); }
+  .ba-chip.after{ background:#fff; color:#000; }
+  .ba-stage{
+    position:relative; width:100%; overflow:hidden;
+    box-shadow:0 4px 16px rgba(0,0,0,0.4); user-select:none; cursor:ew-resize; touch-action:none;
+    background:var(--panel);
+  }
+  .ba-stage img{ width:100%; height:auto; display:block; pointer-events:none; }
+  .ba-after-layer img{ display:block; width:100%; height:auto; }
+  .ba-before-layer{
+    position:absolute; inset:0; overflow:hidden; background:#1D1D1F; pointer-events:none;
+    clip-path:inset(0 50% 0 0); will-change:clip-path;
+  }
+  .ba-before-layer img{ filter:grayscale(1) brightness(.85); }
+  .ba-handle{
+    position:absolute; top:0; bottom:0; width:2px; background:#fff;
+    transform:translateX(-50%); left:50%; will-change:left; box-shadow:0 0 12px rgba(0,0,0,.5);
+  }
+  .ba-knob{
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    width:44px; height:44px; background:#fff; border-radius:50%;
+    box-shadow:0 4px 16px rgba(0,0,0,0.45); display:flex; align-items:center; justify-content:center;
+    gap:3px; cursor:grab; transition:transform .15s var(--ease);
+  }
+  .ba-knob:active{ cursor:grabbing; transform:translate(-50%,-50%) scale(.95); }
+  .ba-stage:hover .ba-knob{ transform:translate(-50%,-50%) scale(1.08); }
+  .ba-knob svg{ width:14px; height:14px; stroke:#000; fill:none; stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+  .ba-knob.wiggle{ animation:knobWiggle 2s ease-in-out 3s infinite; }
+  @keyframes knobWiggle{ 0%,100%{transform:translate(-50%,-50%) scale(1)} 20%,60%{transform:translate(-50%,-50%) scale(1.06)} }
+  .ba-hint{ margin-top:14px; text-align:center; }
+  .ba-hint span{
+    display:inline-flex; align-items:center; gap:8px; font-family:var(--font-body); font-size:13px; font-weight:700;
+    color:#000; background:#fff; padding:8px 16px; border-radius:100px;
+  }
+  .ba-hint svg{ width:15px; height:15px; stroke:#000; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+
+  /* ---------- worked example ---------- */
+  .worked{ background:var(--panel); border:1px solid var(--hairline-soft); border-radius:14px; padding:28px 30px; }
+  .worked .k{ font-family:var(--font-body); font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--secondary); display:block; margin-bottom:14px; }
+  .worked p{ font-family:var(--font-body); font-size:16px; color:var(--text); line-height:1.6; }
+  .worked p + p{ margin-top:14px; }
+  .mono{ font-family:'DM Sans',sans-serif; font-weight:700; letter-spacing:.02em; color:var(--text); }
+  .pill{ display:inline-block; font-family:var(--font-body); font-size:12px; font-weight:700; padding:2px 9px; border-radius:100px; }
+  .pill.rej{ background:rgba(255,107,107,0.16); color:var(--danger); }
+  .pill.app{ background:rgba(93,214,160,0.16); color:var(--ok); }
+  .pill.prog{ background:rgba(122,162,255,0.16); color:var(--info); }
+
+  /* ---------- decision badge + trade-off ---------- */
+  .badge{ display:inline-block; font-family:var(--font-body); font-size:12px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--text); border:1px solid var(--hairline); border-radius:100px; padding:5px 13px; }
+  .tradeoff{ border-left:2px solid #fff; padding:4px 0 4px 22px; }
+  .tradeoff .k{ font-family:var(--font-heading); font-weight:800; font-size:15px; color:var(--text); display:block; margin-bottom:7px; letter-spacing:-.2px; }
+  .tradeoff p{ font-family:var(--font-body); font-size:16px; color:var(--text); line-height:1.6; margin:0; }
+
+  /* ---------- rejected tag ---------- */
+  .rejtag{ display:inline-flex; align-items:center; gap:9px; font-family:var(--font-body); font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--danger); }
+  .rejtag .dot{ width:7px; height:7px; border-radius:50%; background:var(--danger); flex-shrink:0; box-shadow:0 0 0 3px rgba(255,107,107,0.18); }
+
+  /* ---------- gallery decision caption ---------- */
+  .cap-lead{ font-family:var(--font-heading); font-weight:800; font-size:15px; color:var(--text); display:block; margin-bottom:5px; letter-spacing:-.2px; }
+
+  /* ---------- reflection ---------- */
+  .reflect{ font-family:var(--font-body); font-size:20px; color:var(--text); line-height:1.6; max-width:none; flex-shrink:0; }
+
+  /* ---------- reveal ---------- */
+  .reveal{ opacity:0; transform:translateY(22px); transition:opacity .75s var(--ease), transform .75s var(--ease); }
+  .reveal.visible{ opacity:1; transform:translateY(0); }
+  .entry .reveal:nth-child(2){ transition-delay:.07s; }
+  .entry .reveal:nth-child(3){ transition-delay:.14s; }
+
+  /* ---------- back to top ---------- */
+  .back-to-top{ position:fixed; bottom:40px; right:40px; width:44px;height:44px; background:#fff;color:#000;border:none;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:200;opacity:0;transform:translateY(12px);transition:opacity .35s ease,transform .35s var(--ease);pointer-events:none; }
+  .back-to-top svg{ width:18px;height:18px;stroke:#000;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round; }
+  .back-to-top:hover{ background:#e0e0e0; }
+  .back-to-top.visible{ opacity:1;transform:translateY(0);pointer-events:auto; }
+
+  /* ---------- skip link ---------- */
+  .skip-link{ position:fixed; top:-100%; left:16px; z-index:999; background:#fff;color:#000;font-family:var(--font-body);font-size:16px;font-weight:700;padding:12px 20px;border-radius:4px;text-decoration:none;transition:top .15s ease; }
+  .skip-link:focus{ top:16px; }
+  :focus-visible{ outline:2px solid #fff; outline-offset:4px; border-radius:2px; }
+
+  /* ---------- tablet ≤1316px ---------- */
+  @media (max-width:1316px){
+    .heading,.subhead,.tags{ animation:none; opacity:1; transform:none; }
+    .menu{ padding:20px 24px; gap:16px; }
+    .main{ padding:8px 24px 40px; }
+    .back-to-top{ bottom:24px; right:24px; }
+  }
+
+  /* ---------- mobile ≤799px ---------- */
+  @media (max-width:799px){
+    .menu{ flex-wrap:wrap; gap:12px; padding:18px 20px; }
+    .menu-meta{ display:none; }
+    .heading{ font-size:42px; letter-spacing:-2px; }
+    .sec-head{ font-size:28px; letter-spacing:-1px; }
+    .subhead,.lede,.reflect{ font-size:18px; }
+    .tldr{ grid-template-columns:1fr; }
+    .tldr-cell{ padding:24px 0; }
+    .tldr-cell + .tldr-cell{ padding-left:0; border-left:none; border-top:1px solid var(--hairline-soft); }
+    .meta{ grid-template-columns:1fr; }
+    .reframe{ grid-template-columns:1fr; }
+    .rf-col.insight{ border-left:none; border-top:1px solid var(--hairline); }
+    .rf-arrow{ left:50%; top:-15px; transform:translateX(-50%) rotate(90deg); }
+    .ba{ grid-template-columns:1fr; gap:26px; }
+    .stakes{ grid-template-columns:1fr; }
+    .hook{ font-size:24px; }
+  }
+
+</style>
+</head>
+<body>
+<a href="#main-content" class="skip-link">Skip to main content</a>
+
+<!-- Background gradient glow -->
+<div class="bg-glow" aria-hidden="true"></div>
+
+<div class="layout">
+
+  <!-- TOP HEADER (horizontal, non-sticky) -->
+  <nav class="menu" aria-label="Main navigation">
+    <a href="../" class="menu-link menu-back"><span class="back-arrow" aria-hidden="true">&#8592;</span> Back</a>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="main" id="main-content">
+
+    <!-- 1. HERO -->
+    <div class="tags">
+      <span class="tag">FinTech</span>
+      <span class="tag">Information Architecture</span>
+      <span class="tag">Design Systems</span>
+      <span class="tag">White-label</span>
+    </div>
+    <h1 class="heading">Designing for Investors Who Expect More</h1>
+    <p class="subhead">The full investor experience on a digital-asset platform backed by J.P. Morgan, <span class="dim">portfolio, invest flow, trading, transactions, and account management.</span></p>
+
+    <div class="spacer-lg"></div>
+
+    <!-- 2. TL;DR -->
+    <div class="tldr reveal">
+      <div class="tldr-cell">
+        <span class="k">The problem</span>
+        <p>The investor app was built by engineers before design existed. Confusing structure, cramped side panels, hidden costs, and components that collapsed under real data.</p>
+      </div>
+      <div class="tldr-cell">
+        <span class="k">What I did</span>
+        <p>Restructured the core IA (Assets &rarr; Portfolio), redesigned the asset panel around focus, made every cost transparent in the invest flow, and rebuilt the underlying components to scale, across data volumes and across bank brands.</p>
+      </div>
+      <div class="tldr-cell">
+        <span class="k">The result</span>
+        <p>A production-ready investor experience that matches what high-net-worth users expect from a platform holding their money.</p>
+      </div>
+    </div>
+
+    <div class="spacer-lg"></div>
+
+    <!-- 3. ROLE & CONTEXT -->
+    <article class="entry">
+      <h2 class="date-label reveal">Role &amp; Context</h2>
+      <div class="meta reveal">
+        <div class="meta-cell">
+          <span class="k">Product</span>
+          <span class="v">Ownera, a fintech platform connecting banks and financial institutions to trade tokenized digital assets, backed by J.P. Morgan. Alongside the Admin Platform, it offers an investor-facing app, the screens where end investors meet their money.</span>
+        </div>
+        <div class="meta-cell">
+          <span class="k">Role</span>
+          <span class="v">Sole product designer across both the Admin Platform and the investor app.</span>
+        </div>
+        <div class="meta-cell">
+          <span class="k">Scope</span>
+          <span class="v">End-to-end: portfolio, invest flow, trading, transactions, and account management.</span>
+        </div>
+        <div class="meta-cell">
+          <span class="k">Audience &amp; Status</span>
+          <span class="v">High-net-worth end investors. Shipped to production.</span>
+        </div>
+      </div>
+    </article>
+
+    <div class="spacer-lg"></div>
+    <div class="rule"></div>
+    <div class="spacer"></div>
+
+    <!-- 4. HOOK -->
+    <article class="entry">
+      <h2 class="date-label reveal">The moment</h2>
+      <p class="hook reveal">Picture the user: a private investor with serious net worth, evaluating digital-asset opportunities on a platform backed by J.P. Morgan. He opens &ldquo;Assets&rdquo;, and can&rsquo;t tell what he actually owns. <span class="dim">The tab mixed owned investments with potential opportunities, and the details he needs live in a narrow side panel with an endless scroll. Everything about his money is there; nothing about it feels like it respects his money.</span></p>
+    </article>
+
+    <div class="spacer-lg"></div>
+    <div class="rule"></div>
+    <div class="spacer"></div>
+
+    <!-- 5. DECISION 01 -->
+    <article class="entry">
+      <h2 class="date-label reveal">Decision 01</h2>
+      <h3 class="sec-head reveal">Portfolio, not Assets</h3>
+      <p class="lede reveal">The word &ldquo;Assets&rdquo; was the root confusion: it meant &ldquo;what I own&rdquo; to users but contained opportunities too.</p>
+      <p class="body-text reveal">I split the model: Portfolio (what you own) and Trade (what&rsquo;s in motion), and surfaced the two answers investors open the screen for, total balance on top, allocation in the center. Naming is architecture: one renamed tab removed the recurring &ldquo;where are my assets?&rdquo; confusion Customer Success kept hearing.</p>
+    </article>
+
+    <div class="spacer-lg"></div>
+
+    <!-- 6. DECISION 02 -->
+    <article class="entry">
+      <h2 class="date-label reveal">Decision 02</h2>
+      <h3 class="sec-head reveal">Fighting for focus, landing on a compromise</h3>
+      <p class="lede reveal">The side panel had a real-estate problem: critical financial context, balance, purchase history, buried under long scrolls.</p>
+      <p class="body-text reveal">Benchmarking leading investment platforms showed a consistent pattern: every asset gets a full screen with room to breathe, and people investing significant capital expect their asset to be treated like one. I pushed for a full-page asset view. It didn&rsquo;t make the roadmap cut, prioritization went elsewhere, so I designed the compromise that kept the principle alive.</p>
+      <div class="tradeoff reveal">
+        <span class="k">The compromise I accepted on purpose</span>
+        <p>An expandable panel, giving each asset the option of focus without rebuilding the navigation. Not the screen I fought for, but the user got most of the value, and the full-page direction stayed documented as the next step.</p>
+      </div>
+    </article>
+
+    <div class="spacer-lg"></div>
+
+    <!-- 7. DECISION 03 -->
+    <article class="entry">
+      <h2 class="date-label reveal">Decision 03</h2>
+      <h3 class="sec-head reveal">Components that scale, in two directions</h3>
+      <p class="lede reveal">The original components collapsed under real-world data volumes.</p>
+      <p class="body-text reveal">I built a Box component system, one flexible container for varied financial information, designed to hold scale instead of fighting it. And scale meant two things here: data volume, and brands, the app was designed as a white-label system that institutions could wrap in their own identity, demonstrated with example bank skins. Less invention, more discipline: a small system engineering could ship fast, and any bank could own.</p>
+    </article>
+
+    <div class="spacer-lg"></div>
+
+    <!-- 8. DECISION 04 -->
+    <article class="entry">
+      <h2 class="date-label reveal">Decision 04</h2>
+      <h3 class="sec-head reveal">No surprises with money</h3>
+      <p class="lede reveal">In the invest flow, I explored competing directions (A/B variants of the same steps) and landed on one principle: total cost transparency.</p>
+      <p class="body-text reveal">Fees and FX exposed upfront, before commitment, and a deterministic review step before anything final. For users investing serious capital, trust isn&rsquo;t a brand value, it&rsquo;s a UI decision: they should never meet a number for the first time after clicking.</p>
+    </article>
+
+    <div class="spacer-lg"></div>
+    <div class="rule"></div>
+    <div class="spacer"></div>
+
+    <!-- 9. WHAT CHANGED -->
+    <article class="entry">
+      <h2 class="date-label reveal">What changed</h2>
+      <h3 class="sec-head reveal">From engineering build to production-ready product</h3>
+      <p class="lede reveal">The app went from an engineering build to a production-ready product: restructured IA, focused asset views, transparent costs, and full production coverage, empty states, loading skeletons, error and pending states, responsive down to mobile.</p>
+      <p class="body-text reveal">No formal metrics were set up; the honest evidence is the product reaching production and the &ldquo;missing assets&rdquo; confusion disappearing from Customer Success conversations.</p>
+    </article>
+
+    <div class="spacer-lg"></div>
+    <div class="rule"></div>
+    <div class="spacer"></div>
+
+    <!-- 10. REFLECTION -->
+    <article class="entry">
+      <h2 class="date-label reveal">Reflection</h2>
+      <p class="reflect reveal">Next time, I&rsquo;d define one signal upfront: how often users bounce between tabs before acting, so the improvement I could see in the product would be legible to everyone who wasn&rsquo;t in the room.</p>
+    </article>
+
+    <div class="spacer-lg"></div>
+
+  </main>
+</div>
+
+<!-- back to top -->
+<button class="back-to-top" id="toTop" aria-label="Back to top">
+  <svg viewBox="0 0 24 24"><polyline points="6 14 12 8 18 14"></polyline></svg>
+</button>
+
+<script>
+  // scroll reveal
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); } });
+  }, { threshold:.12, rootMargin:'0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+  // back to top
+  const toTop=document.getElementById('toTop');
+  window.addEventListener('scroll',()=>{ toTop.classList.toggle('visible', window.scrollY>600); });
+  toTop.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+</script>
+</body>
+</html>
