@@ -477,6 +477,11 @@
   var bends = createColorBends();
   var dotField = createDotField();
 
+  var heroBg = hero.querySelector('.hero-bg');
+  var markReady = function () {
+    if (heroBg) heroBg.classList.add('fx-ready');
+  };
+
   var resizeTimer;
   window.addEventListener('resize', function () {
     clearTimeout(resizeTimer);
@@ -490,6 +495,7 @@
   function renderOnce() {
     if (bends) bends.render(0, 0);
     if (dotField) dotField.render();
+    markReady();
   }
 
   if (reduceMotion) {
@@ -508,6 +514,7 @@
     last = now;
     if (bends) bends.render(elapsed, dt);
     if (dotField) dotField.render();
+    markReady();  /* first frame is on screen — fade the layers in */
     rafId = requestAnimationFrame(loop);
   }
 

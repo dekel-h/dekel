@@ -190,6 +190,16 @@
       position: absolute;
       inset: 0;
       overflow: hidden;
+      /* Preloading state: layers stay hidden (showing the #110F18
+         background) until the first frame has rendered, preventing
+         the white-canvas flash on hard refresh */
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+
+    .hero-bg.fx-ready .hero-bends,
+    .hero-bg.fx-ready .hero-dots {
+      opacity: 1;
     }
 
     .hero-bends { z-index: 0; }
