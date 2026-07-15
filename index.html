@@ -351,6 +351,12 @@
       animation: shimmer 1.4s ease-in-out infinite;
     }
 
+    .shot picture {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
     .shot img {
       display: block;
       width: 100%;
@@ -590,8 +596,10 @@
       </a>
 
       <a class="shot" href="transaction-log/" data-reveal>
-        <img src="images/004-Ownera-admin.png" alt="Ownera admin platform — transaction log detail with lifecycle flow and instruction approvals" loading="lazy">
-      </a>
+        <picture>
+          <source type="image/webp" srcset="images/004-Ownera-admin-960.webp 960w, images/004-Ownera-admin.webp 1920w" sizes="(max-width: 700px) calc(100vw - 96px), (max-width: 1319px) calc(100vw - 192px), 1045px">
+          <img src="images/004-Ownera-admin.png" alt="Ownera admin platform — transaction log detail with lifecycle flow and instruction approvals" loading="lazy" decoding="async" width="1920" height="1280">
+        </picture>      </a>
 
       <a class="case-link" href="ownera-investor/" data-reveal>
         <span>Designing for Investors Who Expect More</span>
@@ -601,8 +609,10 @@
       </a>
 
       <a class="shot" href="ownera-investor/" data-reveal>
-        <img src="images/003-Ownera-client.png" alt="Ownera investor platform — portfolio view with asset table and investment panel" loading="lazy">
-      </a>
+        <picture>
+          <source type="image/webp" srcset="images/003-Ownera-client-960.webp 960w, images/003-Ownera-client.webp 1920w" sizes="(max-width: 700px) calc(100vw - 96px), (max-width: 1319px) calc(100vw - 192px), 1045px">
+          <img src="images/003-Ownera-client.png" alt="Ownera investor platform — portfolio view with asset table and investment panel" loading="lazy" decoding="async" width="1920" height="1280">
+        </picture>      </a>
 
       <p class="note" data-reveal>Beyond the two case studies: 40+ shipped features across the Admin and Investor platforms, on a design system I built from scratch.</p>
 
@@ -615,8 +625,10 @@
       </section>
 
       <div class="shot" data-reveal>
-        <img src="images/002-Placer.png" alt="Placer.ai Lite platform — Costco Wholesale overview with visit trend chart" loading="lazy">
-      </div>
+        <picture>
+          <source type="image/webp" srcset="images/002-Placer-960.webp 960w, images/002-Placer.webp 1920w" sizes="(max-width: 700px) calc(100vw - 96px), (max-width: 1319px) calc(100vw - 192px), 1045px">
+          <img src="images/002-Placer.png" alt="Placer.ai Lite platform — Costco Wholesale overview with visit trend chart" loading="lazy" decoding="async" width="1920" height="1280">
+        </picture>      </div>
 
       <p class="notable" data-reveal><span class="label">Notable projects: </span><a href="placer-lite/">Lite Platform</a> • Design System &amp; React Transformation • Marketplace • Embedded Widgets</p>
 
@@ -629,11 +641,17 @@
       </section>
 
       <div class="shot" data-reveal>
-        <img src="images/001-SimilarWeb.png" alt="SimilarWeb browser extension redesign — traffic insights for amazon.com and cnn.com" loading="lazy">
+        <picture>
+          <source type="image/webp" srcset="images/001-SimilarWeb-960.webp 960w, images/001-SimilarWeb.webp 1920w" sizes="(max-width: 700px) calc(100vw - 96px), (max-width: 1319px) calc(100vw - 192px), 1045px">
+          <img src="images/001-SimilarWeb.png" alt="SimilarWeb browser extension redesign — traffic insights for amazon.com and cnn.com" loading="lazy" decoding="async" width="1920" height="1280">
+        </picture>
       </div>
 
       <div class="shot" data-reveal>
-        <img src="images/002-SimilarWeb.png" alt="SimilarWeb onboarding — creating a competitive arena" loading="lazy">
+        <picture>
+          <source type="image/webp" srcset="images/002-SimilarWeb-960.webp 960w, images/002-SimilarWeb.webp 1920w" sizes="(max-width: 700px) calc(100vw - 96px), (max-width: 1319px) calc(100vw - 192px), 1045px">
+          <img src="images/002-SimilarWeb.png" alt="SimilarWeb onboarding — creating a competitive arena" loading="lazy" decoding="async" width="1920" height="1280">
+        </picture>
       </div>
 
       <p class="notable" data-reveal><span class="label">Notable projects: </span>SimilarWeb Extension Redesign • Registration Funnel &amp; Onboarding • Cross-Platform B2C Products</p>
@@ -656,18 +674,50 @@
   <script>
     (function () {
       var dot = document.querySelector('.back-dot');
-      dot.addEventListener('click', function () {
-        if (window.__lenis) {
-          window.__lenis.scrollTo(0);
-        } else {
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-      });
       var onScroll = function () {
         dot.classList.toggle('expanded', window.scrollY > 100);
       };
       window.addEventListener('scroll', onScroll, { passive: true });
       onScroll();
+
+      // Eased scroll-to-top: duration scales with distance and the
+      // curve matches the site's expo-out easing, so long mobile
+      // pages glide instead of snapping to the top. Routed through
+      // Lenis when it's running so the two never fight.
+      var easeOutQuart = function (t) { return 1 - Math.pow(1 - t, 4); };
+      var scrollAnim = null;
+      dot.addEventListener('click', function () {
+        if (scrollAnim) cancelAnimationFrame(scrollAnim);
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          if (window.__lenis) window.__lenis.scrollTo(0, { immediate: true });
+          else window.scrollTo(0, 0);
+          return;
+        }
+        var startY = window.scrollY;
+        var duration = Math.max(500, Math.min(1300, 400 + startY * 0.12));
+
+        if (window.__lenis) {
+          window.__lenis.scrollTo(0, { duration: duration / 1000, easing: easeOutQuart });
+          return;
+        }
+
+        var t0 = performance.now();
+        var root = document.documentElement;
+        var prevBehavior = root.style.scrollBehavior;
+        root.style.scrollBehavior = 'auto';  /* bypass CSS smooth scrolling */
+
+        var step = function (now) {
+          var p = Math.min(1, (now - t0) / duration);
+          window.scrollTo(0, Math.round(startY * (1 - easeOutQuart(p))));
+          if (p < 1) {
+            scrollAnim = requestAnimationFrame(step);
+          } else {
+            scrollAnim = null;
+            root.style.scrollBehavior = prevBehavior;
+          }
+        };
+        scrollAnim = requestAnimationFrame(step);
+      });
 
       // Reveal images once loaded; the .shot wrapper shows a
       // shimmering skeleton until then.

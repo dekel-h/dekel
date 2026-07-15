@@ -14,6 +14,10 @@
 
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var DPR = Math.min(window.devicePixelRatio || 1, 2);
+  /* The shader is soft gradients + grain — rendering it at 1x and
+     letting the browser upscale is visually identical but cuts the
+     per-frame fragment work up to 4x on retina/mobile screens. */
+  var SHADER_DPR = 1;
 
   /* ==========================================================
      ColorBends — props from the React Bits homepage hero demo
@@ -241,8 +245,8 @@
     function resize() {
       var w = bendsHost.clientWidth || 1;
       var h = bendsHost.clientHeight || 1;
-      canvas.width = Math.round(w * DPR);
-      canvas.height = Math.round(h * DPR);
+      canvas.width = Math.round(w * SHADER_DPR);
+      canvas.height = Math.round(h * SHADER_DPR);
       gl.viewport(0, 0, canvas.width, canvas.height);
       gl.uniform2f(U.uCanvas, w, h);
     }
