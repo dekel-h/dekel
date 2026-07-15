@@ -344,11 +344,17 @@
        the user starts scrolling, and back when they return to top.
     ============================================================ */
     .dot-rail {
+      /* per-breakpoint tuning happens through these variables */
+      --fab-edge: 40px;   /* offset from the viewport corner */
+      --fab-size: 48px;   /* expanded button size */
+      --fab-dot:  24px;   /* resting dot size */
+      --fab-icon: 28.8px; /* chevron size */
+
       position: fixed;
-      right: 40px;
-      bottom: 40px;
-      width: 48px;
-      height: 48px;
+      right: calc(var(--fab-edge) + env(safe-area-inset-right, 0px));
+      bottom: calc(var(--fab-edge) + env(safe-area-inset-bottom, 0px));
+      width: var(--fab-size);
+      height: var(--fab-size);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -360,8 +366,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 24px;
-      height: 24px;
+      width: var(--fab-dot);
+      height: var(--fab-dot);
       border-radius: 118.8px;
       border: none;
       background: #fff;
@@ -374,8 +380,8 @@
     }
 
     .back-dot svg {
-      width: 28.8px;
-      height: 28.8px;
+      width: var(--fab-icon);
+      height: var(--fab-icon);
       flex-shrink: 0;
       opacity: 0;
       transform: translateY(8px) scale(0.4);
@@ -385,8 +391,8 @@
     }
 
     .back-dot.expanded {
-      width: 48px;
-      height: 48px;
+      width: var(--fab-size);
+      height: var(--fab-size);
     }
 
     .back-dot.expanded svg {
@@ -427,7 +433,7 @@
       }
 
       .dot-rail {
-        display: none;
+        --fab-edge: 24px;
       }
     }
 
@@ -457,6 +463,13 @@
       .case-link span {
         flex: 1 0 0;
         min-width: 1px;
+      }
+
+      .dot-rail {
+        --fab-edge: 24px;
+        --fab-size: 40px;
+        --fab-dot:  20px;
+        --fab-icon: 24px;
       }
     }
   </style>
