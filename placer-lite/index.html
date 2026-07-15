@@ -27,6 +27,8 @@
   }
 
   html{ scroll-behavior:smooth; background:#1D1D1F; }
+  /* Lenis drives scrolling when active; native smooth scroll must be off */
+  .lenis.lenis-smooth{ scroll-behavior:auto !important; }
   body{ background:#1D1D1F; overflow-y:auto; overflow-x:hidden; position:relative; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
 
   /* Background gradient glow: aurora at the top, fades to black */
@@ -487,7 +489,11 @@
   // back to top
   const toTop=document.getElementById('toTop');
   window.addEventListener('scroll',()=>{ toTop.classList.toggle('visible', window.scrollY>600); });
-  toTop.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+  toTop.addEventListener('click',()=>window.__lenis ? window.__lenis.scrollTo(0) : window.scrollTo({top:0,behavior:'smooth'}));
 </script>
+<!-- Lenis smooth scrolling (shared) -->
+<script src="../js/lenis.min.js"></script>
+<script src="../js/scroll-effects.js"></script>
+
 </body>
 </html>
