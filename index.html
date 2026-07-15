@@ -85,6 +85,11 @@
     html {
       scroll-behavior: smooth;
       background: var(--bg);
+      /* iOS Safari: block horizontal panning — body alone isn't enough */
+      overflow-x: hidden;
+      overflow-x: clip;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
     }
 
     body {
@@ -94,6 +99,7 @@
       font-size: 18px;
       line-height: 1.4;
       overflow-x: hidden;
+      overflow-x: clip;
       position: relative;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
