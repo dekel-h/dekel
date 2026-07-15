@@ -292,29 +292,79 @@
     }
 
     /* ============================================================
-       BACK-TO-TOP DOT (desktop only, sticks past the hero)
+       BACK-TO-TOP BUTTON (desktop only, sticks past the hero)
+       Rests as a 24px dot; morphs into a 48px chevron button once
+       the user starts scrolling, and back when they return to top.
     ============================================================ */
     .dot-rail {
       position: absolute;
       top: 800px;
       bottom: 0;
-      left: calc(50% + 594px);
-      width: 24px;
+      left: calc(50% + 582px);  /* centers on the card edge, 606px from middle */
+      width: 48px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       pointer-events: none;
       z-index: 2;
     }
 
     .back-dot {
       position: sticky;
-      top: 0;
-      display: block;
+      top: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       width: 24px;
       height: 24px;
-      border-radius: 99px;
+      border-radius: 118.8px;
       border: none;
       background: #fff;
       cursor: pointer;
       pointer-events: auto;
+      transition:
+        width  0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+        height 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+        transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .back-dot svg {
+      width: 28.8px;
+      height: 28.8px;
+      flex-shrink: 0;
+      opacity: 0;
+      transform: translateY(8px) scale(0.4);
+      transition:
+        opacity 0.2s ease,
+        transform 0.2s ease;
+    }
+
+    .back-dot.expanded {
+      width: 48px;
+      height: 48px;
+    }
+
+    .back-dot.expanded svg {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      transition:
+        opacity 0.35s ease 0.15s,
+        transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s;
+    }
+
+    .back-dot:hover {
+      transform: scale(1.12);
+    }
+
+    .back-dot:active {
+      transform: scale(0.95);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .back-dot,
+      .back-dot svg {
+        transition: none;
+      }
     }
 
     /* ============================================================
@@ -465,8 +515,23 @@
   </div>
 
   <div class="dot-rail">
-    <button class="back-dot" aria-label="Back to top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})"></button>
+    <button class="back-dot" aria-label="Back to top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+      <svg viewBox="0 0 29 29" fill="none" aria-hidden="true">
+        <path d="M8 17.5L14.4 11.1L20.8 17.5" stroke="#110f18" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
   </div>
+
+  <script>
+    (function () {
+      var dot = document.querySelector('.back-dot');
+      var onScroll = function () {
+        dot.classList.toggle('expanded', window.scrollY > 100);
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+    })();
+  </script>
 
 </body>
 </html>
