@@ -14,9 +14,10 @@
 
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var DPR = Math.min(window.devicePixelRatio || 1, 2);
-  /* Match the original renderer: the shader canvas is DPR-scaled so
-     the noise grain stays crisp on retina screens. */
-  var SHADER_DPR = DPR;
+  /* The shader is soft gradients + grain — rendering it at 1x and
+     letting the browser upscale is visually identical but cuts the
+     per-frame fragment work up to 4x on retina/mobile screens. */
+  var SHADER_DPR = 1;
 
   /* ==========================================================
      ColorBends — props from the React Bits homepage hero demo
@@ -30,7 +31,6 @@
     bandWidth: 1.0,
     iterations: 1,
     intensity: 1.3,
-    fadeTop: 0.75,
     transparent: true,
     autoRotate: 0,
     scale: 1,
@@ -71,7 +71,6 @@
     'uniform int uIterations;',
     'uniform float uIntensity;',
     'uniform float uBandWidth;',
-    'uniform float uFadeTop;',
     'varying vec2 vUv;',
     '',
     'void main() {',
@@ -140,12 +139,6 @@
     '',
     '  col *= uIntensity;',
     '',
-    '  if (uFadeTop > 0.0001) {',
-    '    float fade = 1.0 - smoothstep(1.0 - uFadeTop, 1.0, vUv.y);',
-    '    col *= fade;',
-    '    a *= fade;',
-    '  }',
-    '',
     '  if (uNoise > 0.0001) {',
     '    float n = fract(sin(dot(gl_FragCoord.xy + vec2(uTime), vec2(12.9898, 78.233))) * 43758.5453123);',
     '    col += (n - 0.5) * uNoise;',
@@ -213,7 +206,7 @@
     var U = {};
     ['uCanvas', 'uTime', 'uSpeed', 'uRot', 'uColorCount', 'uColors', 'uTransparent',
      'uScale', 'uFrequency', 'uWarpStrength', 'uPointer', 'uMouseInfluence',
-     'uParallax', 'uNoise', 'uIterations', 'uIntensity', 'uBandWidth', 'uFadeTop'
+     'uParallax', 'uNoise', 'uIterations', 'uIntensity', 'uBandWidth'
     ].forEach(function (name) { U[name] = gl.getUniformLocation(prog, name); });
 
     var colorData = new Float32Array(MAX_COLORS * 3);
@@ -237,7 +230,6 @@
     gl.uniform1i(U.uIterations, CB.iterations);
     gl.uniform1f(U.uIntensity, CB.intensity);
     gl.uniform1f(U.uBandWidth, CB.bandWidth);
-    gl.uniform1f(U.uFadeTop, CB.fadeTop);
 
     gl.clearColor(0, 0, 0, 0);
 
