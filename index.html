@@ -96,7 +96,7 @@
       background: var(--bg);
       color: var(--text);
       font-family: var(--font-body);
-      font-size: 18px;
+      font-size: 1.125rem;  /* 18px */
       line-height: 1.4;
       overflow-x: hidden;
       overflow-x: clip;
@@ -166,8 +166,8 @@
     .hero h1 {
       font-family: var(--font-heading);
       font-weight: 800;
-      font-size: 72px;
-      letter-spacing: -4.32px;
+      font-size: 4.5rem;        /* 72px */
+      letter-spacing: -0.06em;  /* -4.32px at 72px, scales with size */
       line-height: normal;
     }
 
@@ -184,7 +184,7 @@
     .contact-links {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 0.8em;  /* tracks the text size across breakpoints */
       line-height: 1.4;
     }
 
@@ -239,7 +239,7 @@
     }
 
     .company h2 {
-      font-size: 18px;
+      font-size: 1em;  /* same as body text */
       font-weight: 700;
       line-height: 1.4;
     }
@@ -257,7 +257,7 @@
     }
 
     .case-link span {
-      font-size: 24px;
+      font-size: 1.5rem;  /* 24px */
       line-height: 1.4;
       text-decoration: underline;
       text-underline-position: from-font;
@@ -441,6 +441,10 @@
        MOBILE
     ============================================================ */
     @media (max-width: 700px) {
+      body {
+        font-size: 1rem;  /* 16px */
+      }
+
       .page {
         padding: 0 24px 96px;
       }
@@ -448,11 +452,16 @@
       .hero {
         min-height: 0;
         justify-content: flex-start;
-        padding: 40px 16px 80px;
+        padding: 5rem 1rem;  /* 80px 16px */
       }
 
       .hero h1 {
+        font-size: 3rem;  /* 48px */
         line-height: 1.1;
+      }
+
+      .case-link span {
+        font-size: 1.125rem;  /* 18px */
       }
 
       .work {
