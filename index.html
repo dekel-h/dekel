@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- ── Primary SEO ─────────────────────────────────────────── -->
-  <!-- TODO: replace every https://dekelhillel.com with your real domain -->
   <title>Dekel Hillel</title>
   <meta name="description" content="A Senior Product Designer focused on architecting complex B2B infrastructure from the ground up. An expert at translating high-scale data platforms into intuitive tools, with proven experience leading design at Ownera, Placer.ai, and SimilarWeb.">
   <meta name="author" content="Dekel Hillel">
@@ -32,7 +31,7 @@
   <meta name="twitter:image:alt"   content="Dekel Hillel, Senior Product Designer">
 
   <!-- ── Theme color (mobile browser chrome) ─────────────────── -->
-  <meta name="theme-color" content="#000000">
+  <meta name="theme-color" content="#110f18">
 
   <!-- ── Favicon ─────────────────────────────────────────────── -->
   <link rel="icon"             type="image/svg+xml"  href="favicon.svg">
@@ -59,11 +58,12 @@
   <!-- ── Google Fonts - async (non-render-blocking) ──────────── -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Manrope:wght@800&family=DM+Sans:opsz,wght@9..40,400;9..40,700&display=swap">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@800&family=DM+Sans:opsz,wght@9..40,400;9..40,700&display=swap" media="print" onload="this.media='all'">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Manrope:wght@800&family=Google+Sans+Flex:wght@400;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@800&family=Google+Sans+Flex:wght@400;700&display=swap" media="print" onload="this.media='all'">
   <noscript>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@800&family=DM+Sans:opsz,wght@9..40,400;9..40,700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@800&family=Google+Sans+Flex:wght@400;700&display=swap">
   </noscript>
+
   <style>
     *, *::before, *::after {
       box-sizing: border-box;
@@ -72,21 +72,27 @@
     }
 
     :root {
-      --secondary: #767676; /* was #5f5c62 - lightened to pass WCAG 4.5:1 on black */
-      --text: #fff;            /* primary text color token */
+      --bg: #110f18;            /* page background */
+      --card: #18141f;          /* work card background */
+      --card-border: #292330;   /* work card border */
+      --text: #ffffff;          /* primary text */
+      --secondary: #5f5c62;     /* dates */
+      --muted: #c6c6c6;         /* "Notable projects:" label */
       --font-heading: 'Manrope', sans-serif;
-      --font-body: 'DM Sans', sans-serif;
-      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+      --font-body: 'Google Sans Flex', 'DM Sans', sans-serif;
     }
 
     html {
       scroll-behavior: smooth;
-      background: #1D1D1F;
+      background: var(--bg);
     }
 
     body {
-      background: #1D1D1F;
-      overflow-y: auto;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 18px;
+      line-height: 1.4;
       overflow-x: hidden;
       position: relative;
       -webkit-font-smoothing: antialiased;
@@ -94,781 +100,381 @@
     }
 
     /* ============================================================
-       BACKGROUND GRADIENT GLOW
-       Aurora at the top of the page that fades into black.
+       HERO BACKGROUND
+       Placeholder image — swap images/bg.png for the exported
+       Figma "dot-field" asset when ready.
     ============================================================ */
-    .bg-glow {
+    .dot-field {
       position: absolute;
       top: 0;
       left: 0;
-      right: 0;
-      height: 820px;
-      z-index: 0;
+      width: 100%;
+      aspect-ratio: 1440 / 810;
+      min-height: 480px;
+      overflow: hidden;
       pointer-events: none;
-      background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTMxNyIgaGVpZ2h0PSI3OTUiIHZpZXdCb3g9IjAgMCAxMzE3IDc5NSIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXAwXzUyNV80MTApIj4KPGcgZmlsdGVyPSJ1cmwoI2ZpbHRlcjBfZl81MjVfNDEwKSI+CjxlbGxpcHNlIGN4PSIyOTkuMTYiIGN5PSItMTMwLjUyMiIgcng9IjgyOS45NjgiIHJ5PSI4NDAuMjAxIiB0cmFuc2Zvcm09InJvdGF0ZSgtMC41OTE2MjIgMjk5LjE2IC0xMzAuNTIyKSIgZmlsbD0idXJsKCNwYWludDBfbGluZWFyXzUyNV80MTApIi8+CjwvZz4KPGcgZmlsdGVyPSJ1cmwoI2ZpbHRlcjFfZl81MjVfNDEwKSI+CjxlbGxpcHNlIGN4PSI3ODUuOTQ1IiBjeT0iLTY1OS4zNDMiIHJ4PSI3ODUuOTQ1IiByeT0iNzcwLjU2NyIgZmlsbD0iIzAwQzhGRiIvPgo8L2c+CjxnIGZpbHRlcj0idXJsKCNmaWx0ZXIyX2ZfNTI1XzQxMCkiPgo8ZWxsaXBzZSBjeD0iNDQzLjQyNCIgY3k9Ii0xNTEuMjQ5IiByeD0iNDUxLjQyOCIgcnk9IjQ1Ni42OTUiIGZpbGw9IiM5MTM3RkYiLz4KPC9nPgo8ZyBmaWx0ZXI9InVybCgjZmlsdGVyM19mXzUyNV80MTApIj4KPGVsbGlwc2UgY3g9Ii0yMC4wMTIiIGN5PSItMjE5LjkyMSIgcng9IjQzNC4xNTUiIHJ5PSI0MzkuNDIxIiBmaWxsPSIjMDAzNjZBIi8+CjwvZz4KPGcgZmlsdGVyPSJ1cmwoI2ZpbHRlcjRfZl81MjVfNDEwKSI+CjxwYXRoIGQ9Ik0tMzE1LjEzOSA3NTYuMzM0QzU2LjYyNDYgOTA0LjUzIDYwNS40MTYgNzU2LjMzNCA4ODkuNDYxIDIzNC43MDdDNDc2LjA3NSA3MDcuMzcxIDE0Ljg2MzQgNjc3LjgyNiAtMzE1LjEzOSA2MDYuMDQ3TC0zMTUuMTM5IDc1Ni4zMzRaIiBmaWxsPSJ1cmwoI3BhaW50MV9saW5lYXJfNTI1XzQxMCkiIGZpbGwtb3BhY2l0eT0iMC42Ii8+CjwvZz4KPGcgZmlsdGVyPSJ1cmwoI2ZpbHRlcjVfZl81MjVfNDEwKSI+CjxwYXRoIGQ9Ik0xMTY0LjI4IC02NjAuNDk5QzExNzEuODEgLTM0MS4xODQgOTQ4Ljc1NiA3OS4xMTM2IDU0OS4zODIgMjM0LjczMkM5NDcuNzkzIC0zMS42MTg0IDEwMzYuOTIgLTQwNi4yODcgMTA2OC4zOCAtNjgxLjQxNUwxMTY0LjI4IC02NjAuNDk5WiIgZmlsbD0idXJsKCNwYWludDJfbGluZWFyXzUyNV80MTApIiBmaWxsLW9wYWNpdHk9IjAuNSIvPgo8L2c+CjxnIGZpbHRlcj0idXJsKCNmaWx0ZXI2X2ZfNTI1XzQxMCkiPgo8cGF0aCBkPSJNLTUyOS42NzYgNjI5LjQ5MkMtMTQyLjA2MiA3MjkuMTIzIDE5MC44NTMgNDkxLjAzMSA1MDUuMTQ2IDIzNC42NjdDMTA4LjQ4OCA0ODEuOTczIC0yMDYuMzU1IDYwOS42MSAtNTQyLjgxMyA1ODAuNDU0TC01MjkuNjc2IDYyOS40OTJaIiBmaWxsPSJ1cmwoI3BhaW50M19saW5lYXJfNTI1XzQxMCkiLz4KPC9nPgo8L2c+CjxkZWZzPgo8ZmlsdGVyIGlkPSJmaWx0ZXIwX2ZfNTI1XzQxMCIgeD0iLTk1Mi4xMTUiIHk9Ii0xMzkyLjAzIiB3aWR0aD0iMjUwMi41NSIgaGVpZ2h0PSIyNTIzLjAxIiBmaWx0ZXJVbml0cz0idXNlclNwYWNlT25Vc2UiIGNvbG9yLWludGVycG9sYXRpb24tZmlsdGVycz0ic1JHQiI+CjxmZUZsb29kIGZsb29kLW9wYWNpdHk9IjAiIHJlc3VsdD0iQmFja2dyb3VuZEltYWdlRml4Ii8+CjxmZUJsZW5kIG1vZGU9Im5vcm1hbCIgaW49IlNvdXJjZUdyYXBoaWMiIGluMj0iQmFja2dyb3VuZEltYWdlRml4IiByZXN1bHQ9InNoYXBlIi8+CjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjIxMC42NTMiIHJlc3VsdD0iZWZmZWN0MV9mb3JlZ3JvdW5kQmx1cl81MjVfNDEwIi8+CjwvZmlsdGVyPgo8ZmlsdGVyIGlkPSJmaWx0ZXIxX2ZfNTI1XzQxMCIgeD0iLTQyMS4zMDUiIHk9Ii0xODUxLjIxIiB3aWR0aD0iMjQxNC41IiBoZWlnaHQ9IjIzODMuNzQiIGZpbHRlclVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgY29sb3ItaW50ZXJwb2xhdGlvbi1maWx0ZXJzPSJzUkdCIj4KPGZlRmxvb2QgZmxvb2Qtb3BhY2l0eT0iMCIgcmVzdWx0PSJCYWNrZ3JvdW5kSW1hZ2VGaXgiLz4KPGZlQmxlbmQgbW9kZT0ibm9ybWFsIiBpbj0iU291cmNlR3JhcGhpYyIgaW4yPSJCYWNrZ3JvdW5kSW1hZ2VGaXgiIHJlc3VsdD0ic2hhcGUiLz4KPGZlR2F1c3NpYW5CbHVyIHN0ZERldmlhdGlvbj0iMjEwLjY1MyIgcmVzdWx0PSJlZmZlY3QxX2ZvcmVncm91bmRCbHVyXzUyNV80MTAiLz4KPC9maWx0ZXI+CjxmaWx0ZXIgaWQ9ImZpbHRlcjJfZl81MjVfNDEwIiB4PSItNDI5LjMxIiB5PSItMTAyOS4yNSIgd2lkdGg9IjE3NDUuNDciIGhlaWdodD0iMTc1NiIgZmlsdGVyVW5pdHM9InVzZXJTcGFjZU9uVXNlIiBjb2xvci1pbnRlcnBvbGF0aW9uLWZpbHRlcnM9InNSR0IiPgo8ZmVGbG9vZCBmbG9vZC1vcGFjaXR5PSIwIiByZXN1bHQ9IkJhY2tncm91bmRJbWFnZUZpeCIvPgo8ZmVCbGVuZCBtb2RlPSJub3JtYWwiIGluPSJTb3VyY2VHcmFwaGljIiBpbjI9IkJhY2tncm91bmRJbWFnZUZpeCIgcmVzdWx0PSJzaGFwZSIvPgo8ZmVHYXVzc2lhbkJsdXIgc3RkRGV2aWF0aW9uPSIyMTAuNjUzIiByZXN1bHQ9ImVmZmVjdDFfZm9yZWdyb3VuZEJsdXJfNTI1XzQxMCIvPgo8L2ZpbHRlcj4KPGZpbHRlciBpZD0iZmlsdGVyM19mXzUyNV80MTAiIHg9Ii04NzUuNDcyIiB5PSItMTA4MC42NSIgd2lkdGg9IjE3MTAuOTIiIGhlaWdodD0iMTcyMS40NSIgZmlsdGVyVW5pdHM9InVzZXJTcGFjZU9uVXNlIiBjb2xvci1pbnRlcnBvbGF0aW9uLWZpbHRlcnM9InNSR0IiPgo8ZmVGbG9vZCBmbG9vZC1vcGFjaXR5PSIwIiByZXN1bHQ9IkJhY2tncm91bmRJbWFnZUZpeCIvPgo8ZmVCbGVuZCBtb2RlPSJub3JtYWwiIGluPSJTb3VyY2VHcmFwaGljIiBpbjI9IkJhY2tncm91bmRJbWFnZUZpeCIgcmVzdWx0PSJzaGFwZSIvPgo8ZmVHYXVzc2lhbkJsdXIgc3RkRGV2aWF0aW9uPSIyMTAuNjUzIiByZXN1bHQ9ImVmZmVjdDFfZm9yZWdyb3VuZEJsdXJfNTI1XzQxMCIvPgo8L2ZpbHRlcj4KPGZpbHRlciBpZD0iZmlsdGVyNF9mXzUyNV80MTAiIHg9Ii00NDEuNTMxIiB5PSIxMDguMzE1IiB3aWR0aD0iMTQ1Ny4zOCIgaGVpZ2h0PSI4MjguODM1IiBmaWx0ZXJVbml0cz0idXNlclNwYWNlT25Vc2UiIGNvbG9yLWludGVycG9sYXRpb24tZmlsdGVycz0ic1JHQiI+CjxmZUZsb29kIGZsb29kLW9wYWNpdHk9IjAiIHJlc3VsdD0iQmFja2dyb3VuZEltYWdlRml4Ii8+CjxmZUJsZW5kIG1vZGU9Im5vcm1hbCIgaW49IlNvdXJjZUdyYXBoaWMiIGluMj0iQmFja2dyb3VuZEltYWdlRml4IiByZXN1bHQ9InNoYXBlIi8+CjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjYzLjE5NTgiIHJlc3VsdD0iZWZmZWN0MV9mb3JlZ3JvdW5kQmx1cl81MjVfNDEwIi8+CjwvZmlsdGVyPgo8ZmlsdGVyIGlkPSJmaWx0ZXI1X2ZfNTI1XzQxMCIgeD0iNDIyLjk5IiB5PSItODA3LjgwNiIgd2lkdGg9Ijg2Ny44NjciIGhlaWdodD0iMTE2OC45MyIgZmlsdGVyVW5pdHM9InVzZXJTcGFjZU9uVXNlIiBjb2xvci1pbnRlcnBvbGF0aW9uLWZpbHRlcnM9InNSR0IiPgo8ZmVGbG9vZCBmbG9vZC1vcGFjaXR5PSIwIiByZXN1bHQ9IkJhY2tncm91bmRJbWFnZUZpeCIvPgo8ZmVCbGVuZCBtb2RlPSJub3JtYWwiIGluPSJTb3VyY2VHcmFwaGljIiBpbjI9IkJhY2tncm91bmRJbWFnZUZpeCIgcmVzdWx0PSJzaGFwZSIvPgo8ZmVHYXVzc2lhbkJsdXIgc3RkRGV2aWF0aW9uPSI2My4xOTU4IiByZXN1bHQ9ImVmZmVjdDFfZm9yZWdyb3VuZEJsdXJfNTI1XzQxMCIvPgo8L2ZpbHRlcj4KPGZpbHRlciBpZD0iZmlsdGVyNl9mXzUyNV80MTAiIHg9Ii02OTAuMjY5IiB5PSI4Ny4yMTAyIiB3aWR0aD0iMTM0Mi44NyIgaGVpZ2h0PSI3MTIuOTMzIiBmaWx0ZXJVbml0cz0idXNlclNwYWNlT25Vc2UiIGNvbG9yLWludGVycG9sYXRpb24tZmlsdGVycz0ic1JHQiI+CjxmZUZsb29kIGZsb29kLW9wYWNpdHk9IjAiIHJlc3VsdD0iQmFja2dyb3VuZEltYWdlRml4Ii8+CjxmZUJsZW5kIG1vZGU9Im5vcm1hbCIgaW49IlNvdXJjZUdyYXBoaWMiIGluMj0iQmFja2dyb3VuZEltYWdlRml4IiByZXN1bHQ9InNoYXBlIi8+CjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjczLjcyODQiIHJlc3VsdD0iZWZmZWN0MV9mb3JlZ3JvdW5kQmx1cl81MjVfNDEwIi8+CjwvZmlsdGVyPgo8bGluZWFyR3JhZGllbnQgaWQ9InBhaW50MF9saW5lYXJfNTI1XzQxMCIgeDE9IjgxLjgyNDMiIHkxPSIzMDMuNzA0IiB4Mj0iMjk5LjE2IiB5Mj0iNzA5LjY3OSIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgo8c3RvcC8+CjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzA5MjU0MCIvPgo8L2xpbmVhckdyYWRpZW50Pgo8bGluZWFyR3JhZGllbnQgaWQ9InBhaW50MV9saW5lYXJfNTI1XzQxMCIgeDE9IjI4OS44NTgiIHkxPSI2MjguMzc3IiB4Mj0iLTMzNi42MjMiIHkyPSI4ODcuMjY5IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wLz4KPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLW9wYWNpdHk9IjAiLz4KPC9saW5lYXJHcmFkaWVudD4KPGxpbmVhckdyYWRpZW50IGlkPSJwYWludDJfbGluZWFyXzUyNV80MTAiIHgxPSI5NDAuOTgxIiB5MT0iLTE5Mi4yMjciIHgyPSIxMzA2LjgyIiB5Mj0iLTYxMi41NzUiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KPHN0b3AvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3Atb3BhY2l0eT0iMCIvPgo8L2xpbmVhckdyYWRpZW50Pgo8bGluZWFyR3JhZGllbnQgaWQ9InBhaW50M19saW5lYXJfNTI1XzQxMCIgeDE9IjU0LjA5MjgiIHkxPSI0MjUuNTA5IiB4Mj0iLTUzNC4zMDUiIHkyPSI3NjIuMDk2IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wLz4KPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLW9wYWNpdHk9IjAiLz4KPC9saW5lYXJHcmFkaWVudD4KPGNsaXBQYXRoIGlkPSJjbGlwMF81MjVfNDEwIj4KPHJlY3Qgd2lkdGg9IjEzMTciIGhlaWdodD0iNzk0LjE2IiBmaWxsPSJ3aGl0ZSIvPgo8L2NsaXBQYXRoPgo8L2RlZnM+Cjwvc3ZnPgo=');
-      background-size: cover;
-      background-position: top center;
-      background-repeat: no-repeat;
-      -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 78%, transparent 100%);
-              mask-image: linear-gradient(to bottom, #000 0%, #000 78%, transparent 100%);
+      z-index: 0;
+      -webkit-mask-image: linear-gradient(to bottom, #000 72%, transparent 100%);
+              mask-image: linear-gradient(to bottom, #000 72%, transparent 100%);
     }
 
-    /* ============================================================
-       KEYFRAMES
-    ============================================================ */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(22px); }
-      to   { opacity: 1; transform: translateY(0); }
+    .dot-field img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to   { opacity: 1; }
-    }
-
-    /* ============================================================
-       DESKTOP LAYOUT
-       Body scrolls - menu is position:sticky, content flows freely.
-       Scrolling works from anywhere on the canvas.
-    ============================================================ */
-    .layout {
-      display: flex;
-      align-items: flex-start; /* required for sticky child */
-      min-height: 100vh;
+    .page {
       position: relative;
       z-index: 1;
-    }
-
-    /* Left - content (grows with page) */
-    .main {
-      order: 1;
-      background: transparent;
-      position: relative;
-      flex: 0 0 1080px;
-      padding: 40px;
       display: flex;
       flex-direction: column;
-      gap: 24px;
-    }
-
-    /* Right - sticky sidebar */
-    .menu {
-      order: 2;
-      background: transparent;
-      flex: 1;
-      min-width: 160px;
-      height: 100vh;
-      padding: 40px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      overflow: hidden;
-      position: sticky;
-      top: 0;
-      animation: fadeIn 0.7s ease 0.25s both;
-    }
-
-    /* ============================================================
-       NAV LINKS
-    ============================================================ */
-    .menu-link {
-      font-family: var(--font-body);
-      font-size: 18px;
-      color:var(--text);
-      text-decoration: none;
-      line-height: 1.4;
-      text-align: right;
-      white-space: nowrap;
-      display: block;
-      transition: opacity 0.25s ease;
-    }
-
-    a.menu-link:hover { opacity: 0.45; }
-
-    .blog-row {
-      display: flex;
       align-items: center;
-      justify-content: flex-end;
-      gap: 16px;
+      padding: 0 40px 136px;
     }
 
-    .coming-soon {
-      border: 1px solid rgba(255,255,255,0.35);
-      border-radius: 8px;
-      padding: 8px 12px;
-      font-family: var(--font-body);
-      font-size: 12px;
-      color: rgba(255,255,255,0.35);
-      line-height: 1.4;
-      white-space: nowrap;
+    a {
+      color: inherit;
     }
-
-    .blog-label {
-      font-family: var(--font-body);
-      font-size: 18px;
-      color: rgba(255,255,255,0.35);
-      line-height: 1.4;
-      text-align: right;
-      white-space: nowrap;
-      cursor: default;
-    }
-
-    .menu-spacer { height: 24px; flex-shrink: 0; }
 
     /* ============================================================
-       HERO - animates in on load
+       HERO
     ============================================================ */
-    .heading {
+    .hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 40px;
+      min-height: 800px;
+      padding: 80px 0;
+      width: 100%;
+    }
+
+    .hero > * {
+      width: 760px;
+      max-width: 100%;
+    }
+
+    .hero h1 {
       font-family: var(--font-heading);
       font-weight: 800;
       font-size: 72px;
-      color:var(--text);
       letter-spacing: -4.32px;
       line-height: normal;
-      flex-shrink: 0;
-      animation: fadeUp 1s var(--ease) both;
     }
 
-    .bio {
-      font-family: var(--font-body);
-      font-size: 18px;
-      color:var(--text);
+    .hero .intro {
       line-height: 1.6;
-      flex-shrink: 0;
-      animation: fadeUp 1s var(--ease) 0.14s both;
+      letter-spacing: 0.16px;
+      overflow-wrap: break-word;
     }
 
-    .bio p + p { margin-top: 1.6em; }
-
-    .bio a,
-    .work-text a {
-      color:var(--text);
+    .hero .intro b {
       font-weight: 700;
-      text-decoration: underline;
-      text-decoration-skip-ink: none;
-      transition: opacity 0.2s ease;
     }
 
-    .bio a:hover,
-    .work-text a:hover { opacity: 0.55; }
-
-    /* ============================================================
-       SCROLL REVEAL
-    ============================================================ */
-    .reveal {
-      opacity: 0;
-      transform: translateY(22px);
-      transition:
-        opacity   0.75s var(--ease),
-        transform 0.75s var(--ease);
-    }
-
-    .reveal.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* Natural stagger within each work entry */
-    .work-text.reveal                   { transition-delay: 0.07s; }
-    .img-wrap.reveal                    { transition-delay: 0.14s; }
-    .img-wrap.reveal + .img-wrap.reveal { transition-delay: 0.22s; }
-    .case-img-link.reveal               { transition-delay: 0.22s; }
-
-    /* ============================================================
-       CLICKABLE CASE-STUDY IMAGE
-       Only the Transaction Log image links out - signals affordance
-       with lift, deeper shadow, zoom and a CTA overlay.
-    ============================================================ */
-    .case-img-link {
-      display: block;
-      position: relative;
-      cursor: pointer;
-      outline: none;
-      text-decoration: none;
-      transition:
-        transform 0.45s var(--ease),
-        box-shadow 0.45s var(--ease);
-      will-change: transform;
-    }
-    .case-img-link .img-wrap {
-      transition: box-shadow 0.45s var(--ease);
-    }
-    .case-img-link .img-wrap img {
-      transition:
-        transform 0.6s var(--ease),
-        opacity 0.65s ease;
-    }
-    .case-overlay {
-      position: absolute;
-      inset: 0;
+    .contact-links {
       display: flex;
-      align-items: flex-end;
-      justify-content: flex-start;
-      padding: 20px;
-      background: linear-gradient(
-        to top,
-        rgba(0,0,0,0.55) 0%,
-        rgba(0,0,0,0.12) 35%,
-        rgba(0,0,0,0) 60%
-      );
-      opacity: 0;
-      transition: opacity 0.4s var(--ease);
-      pointer-events: none;
-      z-index: 3;
-    }
-    .case-cta {
-      display: inline-flex;
       align-items: center;
-      gap: 8px;
-      background: #fff;
-      color: #000;
-      font-family: var(--font-body);
-      font-size: 14px;
-      font-weight: 700;
-      padding: 10px 16px;
-      border-radius: 100px;
-      transform: translateY(8px);
-      transition: transform 0.4s var(--ease);
-      box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+      gap: 14px;
+      line-height: 1.4;
     }
-    .case-cta svg {
-      width: 15px; height: 15px;
-      stroke: #000; fill: none;
-      stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round;
-      transition: transform 0.4s var(--ease);
-    }
-    /* Persistent badge so the image reads as a clickable case study at a glance
-       (also works on touch, where there is no hover) */
-    .case-badge {
-      position: absolute;
-      top: 16px; left: 16px;
-      z-index: 4;
-      display: inline-flex;
-      align-items: center;
-      padding: 8px 13px;
-      border-radius: 100px;
-      background: rgba(29, 29, 31, 0.55);
-      -webkit-backdrop-filter: blur(10px) saturate(140%);
-              backdrop-filter: blur(10px) saturate(140%);
-      border: 1px solid rgba(255, 255, 255, 0.22);
+
+    .contact-links a {
       color: var(--text);
-      font-family: var(--font-body);
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 0.01em;
-      line-height: 1;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-      pointer-events: none;
-      transition: background 0.3s ease;
-    }
-    .case-img-link:hover .case-badge,
-    .case-img-link:focus-visible .case-badge {
-      background: rgba(29, 29, 31, 0.72);
-    }
-    .case-img-link:hover,
-    .case-img-link:focus-visible {
-      transform: translateY(-4px);
-    }
-    .case-img-link:hover .img-wrap,
-    .case-img-link:focus-visible .img-wrap {
-      box-shadow: 0 18px 50px rgba(0,0,0,0.6);
-    }
-    .case-img-link:hover .img-wrap img,
-    .case-img-link:focus-visible .img-wrap img {
-      transform: scale(1.03);
-    }
-    .case-img-link:hover .case-overlay,
-    .case-img-link:focus-visible .case-overlay {
-      opacity: 1;
-    }
-    .case-img-link:hover .case-cta,
-    .case-img-link:focus-visible .case-cta {
-      transform: translateY(0);
-    }
-    .case-img-link:hover .case-cta svg {
-      transform: translateX(3px);
-    }
-    .case-img-link:active {
-      transform: translateY(-1px) scale(0.992);
-      transition-duration: 0.12s;
-    }
-    .case-img-link:active .img-wrap {
-      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-    }
-    .case-img-link:focus-visible {
-      outline: 2px solid #fff;
-      outline-offset: 4px;
+      text-decoration: underline;
+      text-underline-position: from-font;
     }
 
     /* ============================================================
-       CONTENT ELEMENTS
+       WORK CARD
     ============================================================ */
-    .spacer { height: 24px; flex-shrink: 0; }
-
-    #work { scroll-margin-top: 40px; }
-
-    /* Each work entry is a flex column matching the parent gap rhythm */
-    .work-entry {
+    .work {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 60px;
+      width: 1237px;
+      max-width: 100%;
+      padding: 80px 56px 56px;
       display: flex;
       flex-direction: column;
+      align-items: center;
       gap: 24px;
+    }
+
+    .work > * {
+      width: 100%;
+      max-width: 1045px;
+    }
+
+    .work-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .work-header svg {
+      width: 24px;
+      height: 24px;
       flex-shrink: 0;
     }
 
-    .date-label {
-      font-family: var(--font-body);
+    .company {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .company h2 {
       font-size: 18px;
-      font-weight: 400; /* reset h2 bold default */
+      font-weight: 700;
+      line-height: 1.4;
+    }
+
+    .company .dates {
       color: var(--secondary);
-      line-height: 1.4;
-      flex-shrink: 0;
     }
 
-    .work-text {
-      font-family: var(--font-body);
-      font-size: 18px;
-      color:var(--text);
-      line-height: 1.4;
-      flex-shrink: 0;
-    }
-
-    /* ============================================================
-       IMAGES - shimmer skeleton + fade-in on load
-    ============================================================ */
-    @keyframes shimmer {
-      0%   { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
-    }
-
-    .img-wrap {
-      position: relative;
-      width: 100%;
-      flex-shrink: 0;
-      overflow: hidden;
-      background: #0d0d0d;
-    }
-
-    /* Shimmer overlay - visible while image is loading */
-    .img-wrap::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(
-        90deg,
-        transparent   0%,
-        #1c1c1c      40%,
-        transparent 100%
-      );
-      background-size: 200% 100%;
-      animation: shimmer 1.6s ease-in-out infinite;
-      z-index: 1;
-      transition: opacity 0.5s ease;
-    }
-
-    /* Once loaded - shimmer fades out */
-    .img-wrap.img-loaded::before {
-      opacity: 0;
-      animation-play-state: paused;
-    }
-
-    /* Reserve space before load - prevents layout shift */
-    .img-wrap.ratio-3x2 { aspect-ratio: 3 / 2; }
-    .img-wrap.ratio-3x1 { aspect-ratio: 3 / 1; }
-
-    .img-wrap img {
-      position: relative;
-      z-index: 2;
-      width: 100%;
-      height: 100%;
-      display: block;
-      object-fit: cover;
-      opacity: 0;
-      transform: scale(1.018);
-      transition:
-        opacity   0.65s ease,
-        transform 0.75s var(--ease);
-      will-change: opacity, transform;
-    }
-
-    .img-wrap img.loaded {
-      opacity: 1;
-      transform: scale(1);
-    }
-
-    /* ============================================================
-       SCROLL-TO-TOP BUTTON
-    ============================================================ */
-    .back-to-top {
-      position: fixed;
-      bottom: 40px;
-      right: 40px;
-      width: 44px;
-      height: 44px;
-      background: #fff;
-      color: #000;
-      border: none;
-      border-radius: 50%;
-      cursor: pointer;
+    .case-link {
       display: flex;
       align-items: center;
-      justify-content: center;
-      z-index: 200;
-      opacity: 0;
-      transform: translateY(12px);
-      transition: opacity 0.35s ease, transform 0.35s var(--ease);
+      gap: 8px;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .case-link span {
+      font-size: 24px;
+      line-height: 1.4;
+      text-decoration: underline;
+      text-underline-position: from-font;
+      overflow-wrap: break-word;
+    }
+
+    .case-link svg {
+      width: 32px;
+      height: 32px;
+      flex-shrink: 0;
+    }
+
+    .shot {
+      display: block;
+      aspect-ratio: 1920 / 1280;
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .shot img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .note {
+      overflow-wrap: break-word;
+    }
+
+    .notable .label {
+      color: var(--muted);
+    }
+
+    .notable a {
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .space {
+      height: 24px;
+      flex-shrink: 0;
+    }
+
+    /* ============================================================
+       BACK-TO-TOP DOT (desktop only, sticks past the hero)
+    ============================================================ */
+    .dot-rail {
+      position: absolute;
+      top: 800px;
+      bottom: 0;
+      left: calc(50% + 594px);
+      width: 24px;
       pointer-events: none;
+      z-index: 2;
     }
 
-    .back-to-top svg {
-      width: 18px;
-      height: 18px;
-      stroke: #000;
-      fill: none;
-      stroke-width: 2;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-
-    .back-to-top:hover {
-      background: #e0e0e0;
-    }
-
-    .back-to-top.visible {
-      opacity: 1;
-      transform: translateY(0);
+    .back-dot {
+      position: sticky;
+      top: 0;
+      display: block;
+      width: 24px;
+      height: 24px;
+      border-radius: 99px;
+      border: none;
+      background: #fff;
+      cursor: pointer;
       pointer-events: auto;
     }
 
     /* ============================================================
-       SKIP LINK
+       TABLET  (below the 1237px card + 40px gutters)
     ============================================================ */
-    .skip-link {
-      position: fixed;
-      top: -100%;
-      left: 16px;
-      z-index: 999;
-      background: #fff;
-      color: #000;
-      font-family: var(--font-body);
-      font-size: 16px;
-      font-weight: 700;
-      padding: 12px 20px;
-      border-radius: 4px;
-      text-decoration: none;
-      transition: top 0.15s ease;
-    }
-
-    .skip-link:focus {
-      top: 16px;
-    }
-
-    /* ============================================================
-       FOCUS VISIBLE - keyboard navigation indicator
-    ============================================================ */
-    :focus-visible {
-      outline: 2px solid #fff;
-      outline-offset: 4px;
-      border-radius: 2px;
-    }
-
-    /* Softer focus on dark interactive elements */
-    .back-to-top:focus-visible {
-      outline: 2px solid #fff;
-      outline-offset: 3px;
-    }
-
-    /* ============================================================
-       TOUCH TARGETS - minimum 44×44px on mobile
-    ============================================================ */
-    @media (max-width: 1316px) {
-      a.menu-link, .blog-label {
-        min-height: 44px;
-        display: flex;
-        align-items: center;
+    @media (max-width: 1319px) {
+      .hero {
+        padding: 80px 0;
       }
-    }
 
-    /* ============================================================
-       BOTTOM NAV - mobile only
-    ============================================================ */
-    .bottom-nav { display: none; }
-
-    /* ============================================================
-       TABLET ≤ 1316px
-    ============================================================ */
-    @media (max-width: 1316px) {
-      .layout { flex-direction: column; min-height: 100vh; }
-
-      .main {
-        order: 2;
-        flex: none;
+      .hero > * {
         width: 100%;
-        padding: 40px 24px;
-        animation: fadeUp 0.9s var(--ease) 0.1s both;
       }
 
-      .heading, .bio { animation: none; opacity: 1; transform: none; }
-
-      .menu {
-        order: 1;
-        background: transparent;
-        flex: none;
+      .work {
         width: 100%;
-        height: auto;
-        padding: 16px 24px;
-        flex-direction: row;
-        align-items: center;
-        gap: 16px;
-        top: 0;
-        z-index: 100;
-        animation: fadeIn 0.5s ease both;
-        transition: background 0.25s ease, backdrop-filter 0.25s ease, box-shadow 0.25s ease;
+        padding: 56px;
       }
 
-      /* After scrolling a little, fade in a frosted-glass top bar:
-         60% black tint + backdrop blur so content blurs through it,
-         with a faint hairline edge. Keeps the nav readable on scroll. */
-      .menu.scrolled {
-        background: rgba(29, 29, 31, 0.6);
-        -webkit-backdrop-filter: blur(14px) saturate(140%);
-                backdrop-filter: blur(14px) saturate(140%);
-        box-shadow: 0 1px 0 rgba(255, 255, 255, 0.07);
+      .dot-rail {
+        display: none;
       }
-
-      .menu-link  { text-align: left; width: auto; }
-      .blog-label { text-align: left; }
-      .blog-row   { justify-content: flex-start; }
-      .menu-spacer { height: auto; flex: 1; min-width: 0; }
-
-      .back-to-top { bottom: 24px; right: 24px; }
     }
 
     /* ============================================================
-       MOBILE ≤ 799px
+       MOBILE
     ============================================================ */
-    @media (max-width: 799px) {
-      .bg-glow { height: 540px; }
-
-      /* Heading stays at full size and wraps to two lines (matches design) */
-      .heading { font-size: 72px; letter-spacing: -4.32px; line-height: 1.02; }
-
-      /* Hide Email / LinkedIn from the top sticky nav.
-         Must use a.menu-link.menu-contact to beat the
-         a.menu-link { display:flex } touch-target rule above. */
-      a.menu-link.menu-contact { display: none; }
-
-      /* Bottom footer - non-sticky, flows at end of page */
-      .bottom-nav {
-        order: 3;
-        display: flex;
-        align-items: center;
-        gap: 16px;
-        background: #1D1D1F;
-        width: 100%;
-        padding: 16px 40px 40px;
+    @media (max-width: 700px) {
+      .page {
+        padding: 0 24px 96px;
       }
 
-      .bottom-nav .menu-link { text-align: left; width: auto; white-space: nowrap; }
-      .bottom-nav-spacer { flex: 1; }
-
-      .back-to-top { bottom: 80px; right: 20px; }
-    }
-
-    /* ============================================================
-       REDUCED MOTION
-    ============================================================ */
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation-duration:  0.01ms !important;
-        animation-delay:     0.01ms !important;
-        transition-duration: 0.01ms !important;
-        transition-delay:    0.01ms !important;
+      .hero {
+        min-height: 904px;
+        padding: 80px 16px;
       }
-      .reveal       { opacity: 1; transform: none; }
-      .img-wrap img { opacity: 1; transform: none; }
+
+      .hero h1 {
+        line-height: 1.1;
+      }
+
+      .work {
+        border-radius: 28px;
+        padding: 24px;
+      }
+
+      .case-link span {
+        flex: 1 0 0;
+        min-width: 1px;
+      }
     }
   </style>
 </head>
 <body>
-  <!-- Skip link for keyboard users -->
-  <a href="#main-content" class="skip-link">Skip to main content</a>
 
-  <!-- Background gradient glow -->
-  <div class="bg-glow" aria-hidden="true"></div>
+  <div class="dot-field" aria-hidden="true">
+    <img src="images/bg.png" alt="">
+  </div>
 
-  <div class="layout">
+  <div class="page">
 
-    <!-- NAV -->
-    <nav class="menu" aria-label="Main navigation">
-      <a href="#" class="menu-link" id="nav-work">Work</a>
-      <div class="blog-row">
-        <span class="coming-soon">Coming Soon</span>
-        <span class="blog-label" role="link" aria-disabled="true">Blog</span>
+    <!-- ── Hero ──────────────────────────────────────────────── -->
+    <header class="hero">
+      <h1>Dekel Hillel</h1>
+      <p class="intro">
+        I'm a product designer who builds the foundations for complex products,<br>
+        most recently leading design at <b>Ownera</b>. <br>
+        Before that, high-scale work at <b>SimilarWeb</b> and <b>Placer.ai</b>.<br>
+        <br>
+        I love taking things from 0 to 1, sweating the details,<br>
+        and helping teams be more ambitious and have fun doing it. <br>
+        <br>
+        I've also taught a UX/UI course at <b>Bezalel Academy of Arts and Design</b>.
+      </p>
+      <p class="contact-links">
+        <a href="mailto:h.dekel@gmail.com">Email</a>
+        <span aria-hidden="true">•</span>
+        <a href="https://www.linkedin.com/in/dekelhillel/" target="_blank" rel="noopener">LinkedIn</a>
+        <span aria-hidden="true">•</span>
+        <a href="cv.pdf" target="_blank" rel="noopener">CV</a>
+      </p>
+    </header>
+
+    <!-- ── Work ──────────────────────────────────────────────── -->
+    <main class="work">
+      <div class="work-header">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M3 6.5C3 5.67157 3.67157 5 4.5 5H9.08579C9.48361 5 9.86514 5.15804 10.1464 5.43934L11.5607 6.85355C11.6544 6.94732 11.7816 7 11.9142 7H19.5C20.3284 7 21 7.67157 21 8.5V17.5C21 18.3284 20.3284 19 19.5 19H4.5C3.67157 19 3 18.3284 3 17.5V6.5Z" stroke="white" stroke-width="1.5"/>
+        </svg>
+        <p>Work</p>
       </div>
-      <div class="menu-spacer"></div>
-      <a href="mailto:h.dekel@gmail.com" class="menu-link menu-contact">Email</a>
-      <a href="https://www.linkedin.com/in/dekelhillel/" class="menu-link menu-contact" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-    </nav>
 
-    <!-- MAIN -->
-    <main class="main" id="main-content">
+      <section class="company">
+        <h2>Ownera</h2>
+        <p class="dates">2023 → 2026</p>
+        <p>Ownera is Fintech infrastructure for trading tokenized assets between financial institutions, backed by J.P. Morgan.</p>
+      </section>
 
-      <h1 class="heading">Dekel Hillel</h1>
+      <a class="case-link" href="transaction-log/">
+        <span>From JSON Dump to Transaction Lifecycle</span>
+        <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <path d="M9.5 22.5L22.5 9.5M22.5 9.5H11.5M22.5 9.5V20.5" stroke="white" stroke-width="2"/>
+        </svg>
+      </a>
 
-      <div class="bio">
-        <p>
-          I'm a senior product designer who builds the foundations for complex products, most recently leading design at <a href="https://www.ownera.io/" target="_blank" rel="noopener noreferrer">Ownera</a>. Before that, high-scale work at <a href="https://www.similarweb.com/" target="_blank" rel="noopener noreferrer">SimilarWeb</a> and <a href="https://www.placer.ai/" target="_blank" rel="noopener noreferrer">Placer.ai</a>. I love taking things from 0 to 1, sweating the details, and helping teams be more ambitious and have fun doing it. I've also taught UX/UI at <a href="https://www.bezalel.ac.il/" target="_blank" rel="noopener noreferrer">Bezalel Academy of Arts and Design</a>.
-        </p>
+      <a class="shot" href="transaction-log/">
+        <img src="images/004-Ownera-admin.png" alt="Ownera admin platform — transaction log detail with lifecycle flow and instruction approvals" loading="lazy">
+      </a>
+
+      <a class="case-link" href="ownera-investor/">
+        <span>Designing for Investors Who Expect More</span>
+        <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <path d="M9.5 22.5L22.5 9.5M22.5 9.5H11.5M22.5 9.5V20.5" stroke="white" stroke-width="2"/>
+        </svg>
+      </a>
+
+      <a class="shot" href="ownera-investor/">
+        <img src="images/003-Ownera-client.png" alt="Ownera investor platform — portfolio view with asset table and investment panel" loading="lazy">
+      </a>
+
+      <p class="note">Beyond the two case studies: 40+ shipped features across the Admin and Investor platforms, on a design system I built from scratch.</p>
+
+      <div class="space" aria-hidden="true"></div>
+
+      <section class="company">
+        <h2>Placer.ai</h2>
+        <p class="dates">2021 → 2022</p>
+        <p>Placer.ai is a location intelligence unicorn: foot-traffic analytics for retail, real estate, and finance.</p>
+      </section>
+
+      <div class="shot">
+        <img src="images/002-Placer.png" alt="Placer.ai Lite platform — Costco Wholesale overview with visit trend chart" loading="lazy">
       </div>
 
-      <div class="spacer"></div>
+      <p class="notable"><span class="label">Notable projects: </span><a href="placer-lite/">Lite Platform</a> • Design System &amp; React Transformation • Marketplace • Embedded Widgets</p>
 
-      <!-- 2025 · Ownera -->
-      <article class="work-entry">
-        <h2 class="date-label reveal" id="work"><time datetime="2025">2025</time></h2>
-        <p class="work-text reveal">
-          <a href="https://www.ownera.io/" target="_blank" rel="noopener noreferrer">Ownera</a> - Building core financial infrastructures and transforming intricate fintech logic into scalable B2B platforms.
-        </p>
-        <a href="ownera-investor/" class="case-img-link reveal" aria-label="Read the Investor Experience case study">
-          <div class="img-wrap ratio-3x2">
-            <img src="images/003-Ownera-client.png" alt="Ownera financial platform dashboard showing portfolio and analytics overview, open the full case study" loading="eager" fetchpriority="high" decoding="async">
-          </div>
-          <span class="case-badge" aria-hidden="true">Case Study</span>
-          <span class="case-overlay" aria-hidden="true">
-            <span class="case-cta">View case study
-              <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-            </span>
-          </span>
-        </a>
-        <a href="transaction-log/" class="case-img-link reveal" aria-label="Read the Transaction Log case study">
-          <div class="img-wrap ratio-3x2">
-            <img src="images/004-Ownera-admin.png" alt="Ownera Transaction Log redesign, open the full case study" loading="lazy" decoding="async">
-          </div>
-          <span class="case-badge" aria-hidden="true">Case Study</span>
-          <span class="case-overlay" aria-hidden="true">
-            <span class="case-cta">View case study
-              <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-            </span>
-          </span>
-        </a>
-      </article>
+      <div class="space" aria-hidden="true"></div>
 
-      <div class="spacer"></div>
+      <section class="company">
+        <h2>SimilarWeb</h2>
+        <p class="dates">2018 → 2020</p>
+        <p>SimilarWeb is a digital intelligence platform that helps businesses understand market trends and competitive landscapes.</p>
+      </section>
 
-      <!-- September 2023 · ISQY Podcast -->
-      <article class="work-entry">
-        <h2 class="date-label reveal"><time datetime="2023-09">September 2023</time></h2>
-        <p class="work-text reveal">
-          <a href="https://open.spotify.com/episode/00BSuetHxR68FwrXLLnW0h?si=7a5p56dTTg2jiF8HdeMUOQ" target="_blank" rel="noopener noreferrer">ISQY Podcast</a> - Joined as a guest to discuss breaking into product design, the power of mentorship, and why emerging designers must dare to connect with industry veterans.
-        </p>
-        <div class="img-wrap ratio-3x1 reveal">
-          <img src="images/000-Podcast.png" alt="ISQY Podcast episode artwork featuring Dekel Hillel as guest speaker" loading="lazy" decoding="async">
-        </div>
-      </article>
+      <div class="shot">
+        <img src="images/001-SimilarWeb.png" alt="SimilarWeb browser extension redesign — traffic insights for amazon.com and cnn.com" loading="lazy">
+      </div>
 
-      <div class="spacer"></div>
+      <div class="shot">
+        <img src="images/002-SimilarWeb.png" alt="SimilarWeb onboarding — creating a competitive arena" loading="lazy">
+      </div>
 
-      <!-- 2021 · Placer -->
-      <article class="work-entry">
-        <h2 class="date-label reveal"><time datetime="2021">2021</time></h2>
-        <p class="work-text reveal">
-          <a href="https://www.placer.ai/" target="_blank" rel="noopener noreferrer">Placer.ai</a> - Architecting the "Lite" product from scratch, distilling a massive data platform into a simple experience for new users.
-        </p>
-        <a href="placer-lite/" class="case-img-link reveal" aria-label="Read the Placer.ai free product case study">
-          <div class="img-wrap ratio-3x2">
-            <img src="images/002-Placer.png" alt="Placer.ai Lite product interface showing location analytics simplified for new users, open the full case study" loading="lazy" decoding="async">
-          </div>
-          <span class="case-badge" aria-hidden="true">Case Study</span>
-          <span class="case-overlay" aria-hidden="true">
-            <span class="case-cta">View case study
-              <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-            </span>
-          </span>
-        </a>
-      </article>
-
-      <div class="spacer"></div>
-
-      <!-- 2019 · SimilarWeb -->
-      <article class="work-entry">
-        <h2 class="date-label reveal"><time datetime="2019">2019</time></h2>
-        <p class="work-text reveal">
-          <a href="https://www.similarweb.com/" target="_blank" rel="noopener noreferrer">SimilarWeb</a> - Crafting data-heavy interfaces and intuitive user experiences for a high-scale market intelligence platform.
-        </p>
-        <div class="img-wrap ratio-3x2 reveal">
-          <img src="images/002-SimilarWeb.png" alt="SimilarWeb Arena onboarding screen for creating a competitive set of websites" loading="lazy" decoding="async">
-        </div>
-        <div class="img-wrap ratio-3x2 reveal">
-          <img src="images/001-SimilarWeb.png" alt="SimilarWeb market intelligence platform showing data-heavy dashboard interface" loading="lazy" decoding="async">
-        </div>
-      </article>
-
+      <p class="notable"><span class="label">Notable projects: </span>SimilarWeb Extension Redesign • Registration Funnel &amp; Onboarding • Cross-Platform B2C Products</p>
     </main>
-
-    <!-- BOTTOM NAV - mobile only -->
-    <nav class="bottom-nav" aria-label="Contact">
-      <a href="mailto:h.dekel@gmail.com" class="menu-link">Email</a>
-      <a href="https://www.linkedin.com/in/dekelhillel/" class="menu-link" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-      <div class="bottom-nav-spacer"></div>
-    </nav>
 
   </div>
 
-  <!-- SCROLL-TO-TOP BUTTON -->
-  <button class="back-to-top" id="backToTop" aria-label="Back to top">
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <polyline points="18 15 12 9 6 15"></polyline>
-    </svg>
-  </button>
-
-  <script>
-    /* ── Work nav link → smooth scroll to top ───────────────────── */
-    document.getElementById('nav-work').addEventListener('click', e => {
-      e.preventDefault();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-
-    /* ── Scroll reveal (IntersectionObserver) ───────────────────── */
-    const revealObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          revealObserver.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.08, rootMargin: '0px 0px -32px 0px' });
-
-    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
-
-    /* ── Images: shimmer dismiss + fade-in on load ──────────────── */
-    document.querySelectorAll('.img-wrap img').forEach(img => {
-      const markLoaded = () => {
-        img.classList.add('loaded');
-        img.closest('.img-wrap').classList.add('img-loaded');
-      };
-      /* Already cached by browser - fire immediately */
-      if (img.complete && img.naturalWidth > 0) {
-        markLoaded();
-      } else {
-        img.addEventListener('load',  markLoaded);
-        img.addEventListener('error', markLoaded); /* show on broken img too */
-      }
-    });
-
-    /* ── Scroll-to-top button + top-bar scrim ────────────────────── */
-    const btn = document.getElementById('backToTop');
-    const menuBar = document.querySelector('.menu');
-
-    window.addEventListener('scroll', () => {
-      btn.classList.toggle('visible', window.scrollY > 320);
-      menuBar.classList.toggle('scrolled', window.scrollY > 20);
-    }, { passive: true });
-
-    btn.addEventListener('click', () => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-
-  </script>
+  <div class="dot-rail">
+    <button class="back-dot" aria-label="Back to top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})"></button>
+  </div>
 
 </body>
 </html>
