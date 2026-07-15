@@ -802,7 +802,10 @@
           reveal();
         } else {
           img.addEventListener('load', reveal);
-          /* keep the skeleton if an image is missing */
+          /* hide the tile entirely while its export is missing */
+          img.addEventListener('error', function () {
+            img.closest('.shot').style.display = 'none';
+          });
         }
       });
     })();
