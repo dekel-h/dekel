@@ -297,21 +297,19 @@
        the user starts scrolling, and back when they return to top.
     ============================================================ */
     .dot-rail {
-      position: absolute;
-      top: 800px;
-      bottom: 0;
-      left: calc(50% + 582px);  /* centers on the card edge, 606px from middle */
+      position: fixed;
+      right: 40px;
+      bottom: 40px;
       width: 48px;
+      height: 48px;
       display: flex;
-      flex-direction: column;
       align-items: center;
+      justify-content: center;
       pointer-events: none;
       z-index: 2;
     }
 
     .back-dot {
-      position: sticky;
-      top: 24px;
       display: flex;
       align-items: center;
       justify-content: center;
