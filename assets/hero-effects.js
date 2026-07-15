@@ -24,7 +24,7 @@
     speed: 0.2,
     frequency: 1.0,
     noise: 0.15,
-    bandWidth: 0.14,
+    bandWidth: 1.0,
     iterations: 1,
     intensity: 1.3,
     transparent: true,
