@@ -85,6 +85,11 @@
     html {
       scroll-behavior: smooth;
       background: var(--bg);
+      /* iOS Safari: block horizontal panning — body alone isn't enough */
+      overflow-x: hidden;
+      overflow-x: clip;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
     }
 
     body {
@@ -94,6 +99,7 @@
       font-size: 18px;
       line-height: 1.4;
       overflow-x: hidden;
+      overflow-x: clip;
       position: relative;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
@@ -186,6 +192,11 @@
       color: var(--text);
       text-decoration: underline;
       text-underline-position: from-font;
+      transition: text-decoration-color 0.2s ease;
+    }
+
+    .contact-links a:hover {
+      text-decoration-color: #FF0000;
     }
 
     /* ============================================================
@@ -251,6 +262,11 @@
       text-decoration: underline;
       text-underline-position: from-font;
       overflow-wrap: break-word;
+      transition: text-decoration-color 0.2s ease;
+    }
+
+    .case-link:hover span {
+      text-decoration-color: #FF0000;
     }
 
     .case-link svg {
@@ -264,6 +280,18 @@
       aspect-ratio: 1920 / 1280;
       border-radius: 16px;
       overflow: hidden;
+      position: relative;
+      background: #211c2a;  /* skeleton base while the image loads */
+    }
+
+    .shot::before {
+      /* skeleton shimmer sweep */
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(100deg, transparent 35%, rgba(255, 255, 255, 0.07) 50%, transparent 65%);
+      transform: translateX(-100%);
+      animation: shimmer 1.4s ease-in-out infinite;
     }
 
     .shot img {
@@ -271,6 +299,25 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
+      position: relative;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    .shot.loaded {
+      background: none;
+    }
+
+    .shot.loaded::before {
+      content: none;
+    }
+
+    .shot.loaded img {
+      opacity: 1;
+    }
+
+    @keyframes shimmer {
+      100% { transform: translateX(100%); }
     }
 
     .note {
@@ -297,11 +344,17 @@
        the user starts scrolling, and back when they return to top.
     ============================================================ */
     .dot-rail {
+      /* per-breakpoint tuning happens through these variables */
+      --fab-edge: 40px;   /* offset from the viewport corner */
+      --fab-size: 48px;   /* expanded button size */
+      --fab-dot:  24px;   /* resting dot size */
+      --fab-icon: 28.8px; /* chevron size */
+
       position: fixed;
-      right: 40px;
-      bottom: 40px;
-      width: 48px;
-      height: 48px;
+      right: calc(var(--fab-edge) + env(safe-area-inset-right, 0px));
+      bottom: calc(var(--fab-edge) + env(safe-area-inset-bottom, 0px));
+      width: var(--fab-size);
+      height: var(--fab-size);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -313,8 +366,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 24px;
-      height: 24px;
+      width: var(--fab-dot);
+      height: var(--fab-dot);
       border-radius: 118.8px;
       border: none;
       background: #fff;
@@ -327,8 +380,8 @@
     }
 
     .back-dot svg {
-      width: 28.8px;
-      height: 28.8px;
+      width: var(--fab-icon);
+      height: var(--fab-icon);
       flex-shrink: 0;
       opacity: 0;
       transform: translateY(8px) scale(0.4);
@@ -338,8 +391,8 @@
     }
 
     .back-dot.expanded {
-      width: 48px;
-      height: 48px;
+      width: var(--fab-size);
+      height: var(--fab-size);
     }
 
     .back-dot.expanded svg {
@@ -360,8 +413,13 @@
 
     @media (prefers-reduced-motion: reduce) {
       .back-dot,
-      .back-dot svg {
+      .back-dot svg,
+      .shot img {
         transition: none;
+      }
+
+      .shot::before {
+        animation: none;
       }
     }
 
@@ -375,7 +433,7 @@
       }
 
       .dot-rail {
-        display: none;
+        --fab-edge: 24px;
       }
     }
 
@@ -388,8 +446,9 @@
       }
 
       .hero {
-        min-height: 904px;
-        padding: 80px 16px;
+        min-height: 0;
+        justify-content: flex-start;
+        padding: 40px 16px 80px;
       }
 
       .hero h1 {
@@ -404,6 +463,13 @@
       .case-link span {
         flex: 1 0 0;
         min-width: 1px;
+      }
+
+      .dot-rail {
+        --fab-edge: 24px;
+        --fab-size: 40px;
+        --fab-dot:  20px;
+        --fab-icon: 24px;
       }
     }
   </style>
@@ -528,6 +594,18 @@
       };
       window.addEventListener('scroll', onScroll, { passive: true });
       onScroll();
+
+      // Reveal images once loaded; the .shot wrapper shows a
+      // shimmering skeleton until then.
+      document.querySelectorAll('.shot img').forEach(function (img) {
+        var reveal = function () { img.closest('.shot').classList.add('loaded'); };
+        if (img.complete && img.naturalWidth > 0) {
+          reveal();
+        } else {
+          img.addEventListener('load', reveal);
+          img.addEventListener('error', reveal);
+        }
+      });
     })();
   </script>
 
