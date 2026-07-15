@@ -110,13 +110,6 @@
       -moz-osx-font-smoothing: grayscale;
     }
 
-    /* Body copy: single step up at Tailwind's `sm` breakpoint (640px) */
-    @media (min-width: 640px) {
-      body {
-        font-size: 20px;
-      }
-    }
-
     /* ============================================================
        HERO BACKGROUND
        Placeholder image — swap images/bg.png for the exported
@@ -212,13 +205,9 @@
     .hero h1 {
       font-family: var(--font-heading);
       font-weight: 800;
-      /* Fluid type: 5rem at ~320px viewport → 16rem at ~1920px,
-         interpolating linearly in between. clamp() pins both ends
-         so it never under/overshoots. */
-      font-size: clamp(5rem, 2.8rem + 11vw, 16rem);
-      letter-spacing: -0.06em;
-      line-height: 1.05;
-      max-width: none;  /* let the display type break out of the 760px column */
+      font-size: 72px;
+      letter-spacing: -4.32px;
+      line-height: normal;
     }
 
     .hero .intro {
@@ -289,11 +278,9 @@
     }
 
     .company h2 {
-      /* Fluid type: 2.5rem at ~320px viewport → 4.5rem at ~1440px */
-      font-size: clamp(2.5rem, 1.93rem + 2.86vw, 4.5rem);
+      font-size: 18px;
       font-weight: 700;
-      letter-spacing: -0.02em;
-      line-height: 1.1;
+      line-height: 1.4;
     }
 
     .company .dates {
