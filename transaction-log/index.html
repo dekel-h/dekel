@@ -1,1103 +1,790 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Transaction Log, Dekel Hillel</title>
-<meta name="description" content="From JSON Dump to Transaction Lifecycle. Giving operations teams a way to diagnose failures themselves, instead of escalating raw JSON to engineering.">
-<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@800&family=DM+Sans:opsz,wght@9..40,400;9..40,700&display=swap">
-<style>
-  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  :root{
-    --secondary:#767676;            /* lightened grey from the live site */
-    --text:#fff;                    /* primary text color token */
-    --font-heading:'Manrope', sans-serif;
-    --font-body:'DM Sans', sans-serif;
-    --ease:cubic-bezier(0.16, 1, 0.3, 1);
-    --hairline:rgba(255,255,255,0.14);
-    --hairline-soft:rgba(255,255,255,0.08);
-    --panel:#0d0d0d;
-    --danger:#ff6b6b;
-    --ok:#5dd6a0;
-    --info:#7aa2ff;
-  }
+  <!-- ── Primary SEO ─────────────────────────────────────────── -->
+  <title>From JSON Dump to Transaction Lifecycle, Dekel Hillel</title>
+  <meta name="description" content="From JSON Dump to Transaction Lifecycle. Reframing Ownera's most-used admin screen from a raw JSON tree into a readable transaction lifecycle, so operations teams could diagnose failures without escalating.">
+  <meta name="author" content="Dekel Hillel">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://dekelhillel.com/transaction-log/">
 
-  html{ scroll-behavior:smooth; background:#1D1D1F; }
-  /* Lenis drives scrolling when active; native smooth scroll must be off */
-  .lenis.lenis-smooth{ scroll-behavior:auto !important; }
-  body{ background:#1D1D1F; overflow-y:auto; overflow-x:hidden; position:relative; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+  <!-- ── Open Graph ──────────────────────────────────────────── -->
+  <meta property="og:type"        content="article">
+  <meta property="og:url"         content="https://dekelhillel.com/transaction-log/">
+  <meta property="og:site_name"   content="Dekel Hillel">
+  <meta property="og:title"       content="From JSON Dump to Transaction Lifecycle">
+  <meta property="og:description" content="Reframing Ownera's most-used admin screen from a raw JSON tree into a readable transaction lifecycle.">
+  <meta property="og:image"       content="https://dekelhillel.com/og-image.png">
 
-  /* Background gradient glow: aurora at the top, fades to black */
-  .bg-glow{
-    position:absolute; top:0; left:0; right:0; height:820px; z-index:0; pointer-events:none;
-    background-image:url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTMxNyIgaGVpZ2h0PSI3OTUiIHZpZXdCb3g9IjAgMCAxMzE3IDc5NSIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXAwXzUyNV80MTApIj4KPGcgZmlsdGVyPSJ1cmwoI2ZpbHRlcjBfZl81MjVfNDEwKSI+CjxlbGxpcHNlIGN4PSIyOTkuMTYiIGN5PSItMTMwLjUyMiIgcng9IjgyOS45NjgiIHJ5PSI4NDAuMjAxIiB0cmFuc2Zvcm09InJvdGF0ZSgtMC41OTE2MjIgMjk5LjE2IC0xMzAuNTIyKSIgZmlsbD0idXJsKCNwYWludDBfbGluZWFyXzUyNV80MTApIi8+CjwvZz4KPGcgZmlsdGVyPSJ1cmwoI2ZpbHRlcjFfZl81MjVfNDEwKSI+CjxlbGxpcHNlIGN4PSI3ODUuOTQ1IiBjeT0iLTY1OS4zNDMiIHJ4PSI3ODUuOTQ1IiByeT0iNzcwLjU2NyIgZmlsbD0iIzAwQzhGRiIvPgo8L2c+CjxnIGZpbHRlcj0idXJsKCNmaWx0ZXIyX2ZfNTI1XzQxMCkiPgo8ZWxsaXBzZSBjeD0iNDQzLjQyNCIgY3k9Ii0xNTEuMjQ5IiByeD0iNDUxLjQyOCIgcnk9IjQ1Ni42OTUiIGZpbGw9IiM5MTM3RkYiLz4KPC9nPgo8ZyBmaWx0ZXI9InVybCgjZmlsdGVyM19mXzUyNV80MTApIj4KPGVsbGlwc2UgY3g9Ii0yMC4wMTIiIGN5PSItMjE5LjkyMSIgcng9IjQzNC4xNTUiIHJ5PSI0MzkuNDIxIiBmaWxsPSIjMDAzNjZBIi8+CjwvZz4KPGcgZmlsdGVyPSJ1cmwoI2ZpbHRlcjRfZl81MjVfNDEwKSI+CjxwYXRoIGQ9Ik0tMzE1LjEzOSA3NTYuMzM0QzU2LjYyNDYgOTA0LjUzIDYwNS40MTYgNzU2LjMzNCA4ODkuNDYxIDIzNC43MDdDNDc2LjA3NSA3MDcuMzcxIDE0Ljg2MzQgNjc3LjgyNiAtMzE1LjEzOSA2MDYuMDQ3TC0zMTUuMTM5IDc1Ni4zMzRaIiBmaWxsPSJ1cmwoI3BhaW50MV9saW5lYXJfNTI1XzQxMCkiIGZpbGwtb3BhY2l0eT0iMC42Ii8+CjwvZz4KPGcgZmlsdGVyPSJ1cmwoI2ZpbHRlcjVfZl81MjVfNDEwKSI+CjxwYXRoIGQ9Ik0xMTY0LjI4IC02NjAuNDk5QzExNzEuODEgLTM0MS4xODQgOTQ4Ljc1NiA3OS4xMTM2IDU0OS4zODIgMjM0LjczMkM5NDcuNzkzIC0zMS42MTg0IDEwMzYuOTIgLTQwNi4yODcgMTA2OC4zOCAtNjgxLjQxNUwxMTY0LjI4IC02NjAuNDk5WiIgZmlsbD0idXJsKCNwYWludDJfbGluZWFyXzUyNV80MTApIiBmaWxsLW9wYWNpdHk9IjAuNSIvPgo8L2c+CjxnIGZpbHRlcj0idXJsKCNmaWx0ZXI2X2ZfNTI1XzQxMCkiPgo8cGF0aCBkPSJNLTUyOS42NzYgNjI5LjQ5MkMtMTQyLjA2MiA3MjkuMTIzIDE5MC44NTMgNDkxLjAzMSA1MDUuMTQ2IDIzNC42NjdDMTA4LjQ4OCA0ODEuOTczIC0yMDYuMzU1IDYwOS42MSAtNTQyLjgxMyA1ODAuNDU0TC01MjkuNjc2IDYyOS40OTJaIiBmaWxsPSJ1cmwoI3BhaW50M19saW5lYXJfNTI1XzQxMCkiLz4KPC9nPgo8L2c+CjxkZWZzPgo8ZmlsdGVyIGlkPSJmaWx0ZXIwX2ZfNTI1XzQxMCIgeD0iLTk1Mi4xMTUiIHk9Ii0xMzkyLjAzIiB3aWR0aD0iMjUwMi41NSIgaGVpZ2h0PSIyNTIzLjAxIiBmaWx0ZXJVbml0cz0idXNlclNwYWNlT25Vc2UiIGNvbG9yLWludGVycG9sYXRpb24tZmlsdGVycz0ic1JHQiI+CjxmZUZsb29kIGZsb29kLW9wYWNpdHk9IjAiIHJlc3VsdD0iQmFja2dyb3VuZEltYWdlRml4Ii8+CjxmZUJsZW5kIG1vZGU9Im5vcm1hbCIgaW49IlNvdXJjZUdyYXBoaWMiIGluMj0iQmFja2dyb3VuZEltYWdlRml4IiByZXN1bHQ9InNoYXBlIi8+CjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjIxMC42NTMiIHJlc3VsdD0iZWZmZWN0MV9mb3JlZ3JvdW5kQmx1cl81MjVfNDEwIi8+CjwvZmlsdGVyPgo8ZmlsdGVyIGlkPSJmaWx0ZXIxX2ZfNTI1XzQxMCIgeD0iLTQyMS4zMDUiIHk9Ii0xODUxLjIxIiB3aWR0aD0iMjQxNC41IiBoZWlnaHQ9IjIzODMuNzQiIGZpbHRlclVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgY29sb3ItaW50ZXJwb2xhdGlvbi1maWx0ZXJzPSJzUkdCIj4KPGZlRmxvb2QgZmxvb2Qtb3BhY2l0eT0iMCIgcmVzdWx0PSJCYWNrZ3JvdW5kSW1hZ2VGaXgiLz4KPGZlQmxlbmQgbW9kZT0ibm9ybWFsIiBpbj0iU291cmNlR3JhcGhpYyIgaW4yPSJCYWNrZ3JvdW5kSW1hZ2VGaXgiIHJlc3VsdD0ic2hhcGUiLz4KPGZlR2F1c3NpYW5CbHVyIHN0ZERldmlhdGlvbj0iMjEwLjY1MyIgcmVzdWx0PSJlZmZlY3QxX2ZvcmVncm91bmRCbHVyXzUyNV80MTAiLz4KPC9maWx0ZXI+CjxmaWx0ZXIgaWQ9ImZpbHRlcjJfZl81MjVfNDEwIiB4PSItNDI5LjMxIiB5PSItMTAyOS4yNSIgd2lkdGg9IjE3NDUuNDciIGhlaWdodD0iMTc1NiIgZmlsdGVyVW5pdHM9InVzZXJTcGFjZU9uVXNlIiBjb2xvci1pbnRlcnBvbGF0aW9uLWZpbHRlcnM9InNSR0IiPgo8ZmVGbG9vZCBmbG9vZC1vcGFjaXR5PSIwIiByZXN1bHQ9IkJhY2tncm91bmRJbWFnZUZpeCIvPgo8ZmVCbGVuZCBtb2RlPSJub3JtYWwiIGluPSJTb3VyY2VHcmFwaGljIiBpbjI9IkJhY2tncm91bmRJbWFnZUZpeCIgcmVzdWx0PSJzaGFwZSIvPgo8ZmVHYXVzc2lhbkJsdXIgc3RkRGV2aWF0aW9uPSIyMTAuNjUzIiByZXN1bHQ9ImVmZmVjdDFfZm9yZWdyb3VuZEJsdXJfNTI1XzQxMCIvPgo8L2ZpbHRlcj4KPGZpbHRlciBpZD0iZmlsdGVyM19mXzUyNV80MTAiIHg9Ii04NzUuNDcyIiB5PSItMTA4MC42NSIgd2lkdGg9IjE3MTAuOTIiIGhlaWdodD0iMTcyMS40NSIgZmlsdGVyVW5pdHM9InVzZXJTcGFjZU9uVXNlIiBjb2xvci1pbnRlcnBvbGF0aW9uLWZpbHRlcnM9InNSR0IiPgo8ZmVGbG9vZCBmbG9vZC1vcGFjaXR5PSIwIiByZXN1bHQ9IkJhY2tncm91bmRJbWFnZUZpeCIvPgo8ZmVCbGVuZCBtb2RlPSJub3JtYWwiIGluPSJTb3VyY2VHcmFwaGljIiBpbjI9IkJhY2tncm91bmRJbWFnZUZpeCIgcmVzdWx0PSJzaGFwZSIvPgo8ZmVHYXVzc2lhbkJsdXIgc3RkRGV2aWF0aW9uPSIyMTAuNjUzIiByZXN1bHQ9ImVmZmVjdDFfZm9yZWdyb3VuZEJsdXJfNTI1XzQxMCIvPgo8L2ZpbHRlcj4KPGZpbHRlciBpZD0iZmlsdGVyNF9mXzUyNV80MTAiIHg9Ii00NDEuNTMxIiB5PSIxMDguMzE1IiB3aWR0aD0iMTQ1Ny4zOCIgaGVpZ2h0PSI4MjguODM1IiBmaWx0ZXJVbml0cz0idXNlclNwYWNlT25Vc2UiIGNvbG9yLWludGVycG9sYXRpb24tZmlsdGVycz0ic1JHQiI+CjxmZUZsb29kIGZsb29kLW9wYWNpdHk9IjAiIHJlc3VsdD0iQmFja2dyb3VuZEltYWdlRml4Ii8+CjxmZUJsZW5kIG1vZGU9Im5vcm1hbCIgaW49IlNvdXJjZUdyYXBoaWMiIGluMj0iQmFja2dyb3VuZEltYWdlRml4IiByZXN1bHQ9InNoYXBlIi8+CjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjYzLjE5NTgiIHJlc3VsdD0iZWZmZWN0MV9mb3JlZ3JvdW5kQmx1cl81MjVfNDEwIi8+CjwvZmlsdGVyPgo8ZmlsdGVyIGlkPSJmaWx0ZXI1X2ZfNTI1XzQxMCIgeD0iNDIyLjk5IiB5PSItODA3LjgwNiIgd2lkdGg9Ijg2Ny44NjciIGhlaWdodD0iMTE2OC45MyIgZmlsdGVyVW5pdHM9InVzZXJTcGFjZU9uVXNlIiBjb2xvci1pbnRlcnBvbGF0aW9uLWZpbHRlcnM9InNSR0IiPgo8ZmVGbG9vZCBmbG9vZC1vcGFjaXR5PSIwIiByZXN1bHQ9IkJhY2tncm91bmRJbWFnZUZpeCIvPgo8ZmVCbGVuZCBtb2RlPSJub3JtYWwiIGluPSJTb3VyY2VHcmFwaGljIiBpbjI9IkJhY2tncm91bmRJbWFnZUZpeCIgcmVzdWx0PSJzaGFwZSIvPgo8ZmVHYXVzc2lhbkJsdXIgc3RkRGV2aWF0aW9uPSI2My4xOTU4IiByZXN1bHQ9ImVmZmVjdDFfZm9yZWdyb3VuZEJsdXJfNTI1XzQxMCIvPgo8L2ZpbHRlcj4KPGZpbHRlciBpZD0iZmlsdGVyNl9mXzUyNV80MTAiIHg9Ii02OTAuMjY5IiB5PSI4Ny4yMTAyIiB3aWR0aD0iMTM0Mi44NyIgaGVpZ2h0PSI3MTIuOTMzIiBmaWx0ZXJVbml0cz0idXNlclNwYWNlT25Vc2UiIGNvbG9yLWludGVycG9sYXRpb24tZmlsdGVycz0ic1JHQiI+CjxmZUZsb29kIGZsb29kLW9wYWNpdHk9IjAiIHJlc3VsdD0iQmFja2dyb3VuZEltYWdlRml4Ii8+CjxmZUJsZW5kIG1vZGU9Im5vcm1hbCIgaW49IlNvdXJjZUdyYXBoaWMiIGluMj0iQmFja2dyb3VuZEltYWdlRml4IiByZXN1bHQ9InNoYXBlIi8+CjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjczLjcyODQiIHJlc3VsdD0iZWZmZWN0MV9mb3JlZ3JvdW5kQmx1cl81MjVfNDEwIi8+CjwvZmlsdGVyPgo8bGluZWFyR3JhZGllbnQgaWQ9InBhaW50MF9saW5lYXJfNTI1XzQxMCIgeDE9IjgxLjgyNDMiIHkxPSIzMDMuNzA0IiB4Mj0iMjk5LjE2IiB5Mj0iNzA5LjY3OSIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgo8c3RvcC8+CjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzA5MjU0MCIvPgo8L2xpbmVhckdyYWRpZW50Pgo8bGluZWFyR3JhZGllbnQgaWQ9InBhaW50MV9saW5lYXJfNTI1XzQxMCIgeDE9IjI4OS44NTgiIHkxPSI2MjguMzc3IiB4Mj0iLTMzNi42MjMiIHkyPSI4ODcuMjY5IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wLz4KPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLW9wYWNpdHk9IjAiLz4KPC9saW5lYXJHcmFkaWVudD4KPGxpbmVhckdyYWRpZW50IGlkPSJwYWludDJfbGluZWFyXzUyNV80MTAiIHgxPSI5NDAuOTgxIiB5MT0iLTE5Mi4yMjciIHgyPSIxMzA2LjgyIiB5Mj0iLTYxMi41NzUiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KPHN0b3AvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3Atb3BhY2l0eT0iMCIvPgo8L2xpbmVhckdyYWRpZW50Pgo8bGluZWFyR3JhZGllbnQgaWQ9InBhaW50M19saW5lYXJfNTI1XzQxMCIgeDE9IjU0LjA5MjgiIHkxPSI0MjUuNTA5IiB4Mj0iLTUzNC4zMDUiIHkyPSI3NjIuMDk2IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wLz4KPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLW9wYWNpdHk9IjAiLz4KPC9saW5lYXJHcmFkaWVudD4KPGNsaXBQYXRoIGlkPSJjbGlwMF81MjVfNDEwIj4KPHJlY3Qgd2lkdGg9IjEzMTciIGhlaWdodD0iNzk0LjE2IiBmaWxsPSJ3aGl0ZSIvPgo8L2NsaXBQYXRoPgo8L2RlZnM+Cjwvc3ZnPgo=');
-    background-size:cover; background-position:top center; background-repeat:no-repeat;
-    -webkit-mask-image:linear-gradient(to bottom, #000 0%, #000 78%, transparent 100%);
-            mask-image:linear-gradient(to bottom, #000 0%, #000 78%, transparent 100%);
-  }
-  @media (max-width:799px){ .bg-glow{ height:540px; } }
-  ::selection{ background:#fff; color:#000; }
+  <!-- ── Theme color ─────────────────────────────────────────── -->
+  <meta name="theme-color" content="#18141f">
 
-  /* ---------- keyframes ---------- */
-  @keyframes fadeUp { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
-  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
-  @keyframes shimmer{ 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+  <!-- ── Favicon ─────────────────────────────────────────────── -->
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
 
-  /* ---------- layout: top header (non-sticky) + content below ---------- */
-  .layout{ display:flex; flex-direction:column; min-height:100vh; align-items:center; position:relative; z-index:1; }
-  /* Top header - horizontal, flows with the page (NOT sticky) */
-  .menu{
-    width:100%; max-width:1160px; background:transparent;
-    padding:28px 40px;
-    display:flex; flex-direction:row; align-items:center; gap:24px;
-    animation:fadeIn .7s ease .1s both;
-  }
-  .main{
-    width:100%; max-width:1160px; background:transparent; position:relative;
-    padding:12px 40px 40px;
-    display:flex; flex-direction:column; gap:24px;
-  }
+  <!-- ── Google Fonts - async (non-render-blocking) ──────────── -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'">
+  <noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500;600;700&display=swap">
+  </noscript>
 
-  /* ---------- nav links (header row) ---------- */
-  .menu-link{
-    font-family:var(--font-body); font-size:18px; color:var(--text);
-    text-decoration:none; line-height:1.4;
-    white-space:nowrap; display:inline-block; transition:opacity .25s ease;
-  }
-  a.menu-link:hover{ opacity:.45; }
-  .menu-back{ color:var(--secondary); transition:color .25s ease, opacity .25s ease; }
-  .menu-back .back-arrow{ display:inline-block; transition:transform .25s var(--ease); }
-  a.menu-back:hover{ opacity:1; color:var(--text); }
-  a.menu-back:hover .back-arrow{ transform:translateX(-4px); }
-  .menu-spacer{ flex:1; }
-  .menu-meta{
-    font-family:var(--font-body); font-size:13px; color:var(--secondary);
-    line-height:1.5; white-space:nowrap; text-align:right;
-  }
-  .menu-meta b{ color:var(--text); font-weight:700; }
+  <!-- Marks JS availability before first paint, so the reveal-on-scroll
+       hidden state only ever applies when the script can undo it -->
+  <script>document.documentElement.classList.add('js');</script>
 
-  /* ---------- hero ---------- */
-  .tags{ display:flex; flex-wrap:wrap; gap:8px; animation:fadeUp 1s var(--ease) both; }
-  .tag{
-    font-family:var(--font-body); font-size:12px; font-weight:700;
-    letter-spacing:.04em; color:var(--text);
-    background:rgba(255,255,255,0.04);
-    border:1px solid var(--hairline); border-radius:100px; padding:6px 14px;
-  }
-  .heading{
-    font-family:var(--font-heading); font-weight:800; font-size:64px;
-    color:var(--text); letter-spacing:-3.4px; line-height:1.02; flex-shrink:0;
-    animation:fadeUp 1s var(--ease) .06s both; max-width:none;
-  }
-  .subhead{
-    font-family:var(--font-body); font-size:20px; color:var(--text); line-height:1.55;
-    flex-shrink:0; max-width:none; animation:fadeUp 1s var(--ease) .14s both;
-  }
-  .subhead .dim{ color:var(--secondary); }
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-  /* ---------- generic text ---------- */
-  .lede{ font-family:var(--font-body); font-size:20px; color:var(--text); line-height:1.55; max-width:none; flex-shrink:0; }
-  .body-text{ font-family:var(--font-body); font-size:18px; color:var(--text); line-height:1.6; max-width:none; flex-shrink:0; }
-  .body-text.muted{ color:var(--secondary); }
-  .body-text + .body-text{ margin-top:-8px; }
-  .body-text a, .lede a{ color:var(--text); font-weight:700; text-decoration:underline; text-decoration-skip-ink:none; transition:opacity .2s ease; }
-  .body-text a:hover{ opacity:.55; }
-  em{ font-style:italic; color:var(--text); }
+    :root {
+      --bg: #18141f;            /* page background (the home card color) */
+      --panel: #171420;         /* stat / TL;DR panel background */
+      --border: #292330;        /* panels, dividers */
+      --text: #ffffff;          /* primary text */
+      --secondary: #5f5c62;     /* decision numbers */
+      --muted: #c6c6c6;         /* labels, breadcrumb */
+      --font-body: 'Google Sans Flex', 'DM Sans', sans-serif;
+    }
 
-  /* ---------- section heading ---------- */
-  .sec-head{
-    font-family:var(--font-heading); font-weight:800; font-size:34px;
-    color:var(--text); letter-spacing:-1.4px; line-height:1.1; flex-shrink:0; max-width:none;
-  }
-  .date-label{ /* reused as section marker, matches site's date rhythm */
-    font-family:var(--font-body); font-size:18px; font-weight:400;
-    color:var(--secondary); line-height:1.4; flex-shrink:0;
-  }
+    html {
+      /* Native fallback when Lenis isn't running */
+      scroll-behavior: smooth;
+      background: var(--bg);
+      overflow-x: hidden;
+      overflow-x: clip;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
 
-  /* ---------- spacers ---------- */
-  .spacer{ height:24px; flex-shrink:0; }
-  .spacer-lg{ height:56px; flex-shrink:0; }
-  .rule{ height:1px; background:var(--hairline-soft); flex-shrink:0; margin:8px 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 1.125rem;  /* 18px */
+      line-height: 1.4;
+      overflow-x: hidden;
+      overflow-x: clip;
+      position: relative;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
 
-  /* ---------- work-entry rhythm ---------- */
-  .entry{ display:flex; flex-direction:column; gap:24px; flex-shrink:0; }
+    a {
+      color: inherit;
+    }
 
-  /* ---------- images (shimmer + fade, from site) ---------- */
-  .img-wrap{ position:relative; width:100%; flex-shrink:0; overflow:hidden; background:var(--panel); }
-  .img-wrap::before{
-    content:''; position:absolute; inset:0;
-    background:linear-gradient(90deg, transparent 0%, #1c1c1c 40%, transparent 100%);
-    background-size:200% 100%; animation:shimmer 1.6s ease-in-out infinite; z-index:1;
-    transition:opacity .5s ease;
-  }
-  .img-wrap.img-loaded::before{ opacity:0; animation-play-state:paused; }
-  .img-wrap.ratio-3x2{ aspect-ratio:3/2; }
-  .img-wrap img{
-    position:relative; z-index:2; width:100%; height:100%; display:block; object-fit:cover;
-    opacity:0; transform:scale(1.018);
-    transition:opacity .65s ease, transform .75s var(--ease); will-change:opacity, transform;
-  }
-  .img-wrap img.loaded{ opacity:1; transform:scale(1); }
-  /* desaturated "before" state */
-  .img-wrap.before-state img{ filter:grayscale(1) brightness(.85); }
-  .caption{
-    font-family:var(--font-body); font-size:15px; color:var(--secondary);
-    line-height:1.55; max-width:none; flex-shrink:0;
-  }
-  .caption b{ color:var(--text); font-weight:700; }
+    .lenis.lenis-smooth {
+      scroll-behavior: auto !important;
+    }
 
-  /* ---------- TL;DR triple ---------- */
-  .tldr{ display:grid; grid-template-columns:repeat(3,1fr); gap:0; border-top:1px solid var(--hairline); border-bottom:1px solid var(--hairline); }
-  .tldr-cell{ padding:30px 28px 30px 0; }
-  .tldr-cell + .tldr-cell{ padding-left:30px; border-left:1px solid var(--hairline-soft); }
-  .tldr-cell .k{ font-family:var(--font-body); font-size:13px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--secondary); display:block; margin-bottom:12px; }
-  .tldr-cell p{ font-family:var(--font-body); font-size:16px; color:var(--text); line-height:1.55; }
+    /* ============================================================
+       REVEAL ON SCROLL (same behavior as the homepage)
+    ============================================================ */
+    .js [data-reveal] {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
 
-  /* ---------- meta block ---------- */
-  .meta{ display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--hairline-soft); border:1px solid var(--hairline-soft); border-radius:14px; overflow:hidden; }
-  .meta-cell{ background:#1D1D1F; padding:24px 26px; }
-  .meta-cell .k{ font-family:var(--font-body); font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--secondary); display:block; margin-bottom:10px; }
-  .meta-cell .v{ font-family:var(--font-body); font-size:15px; color:var(--text); line-height:1.55; }
+    .js [data-reveal].is-revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
 
-  /* ---------- hook quote ---------- */
-  .hook{
-    font-family:var(--font-heading); font-weight:800; font-size:30px; line-height:1.32;
-    letter-spacing:-1px; color:var(--text); max-width:none; flex-shrink:0;
-  }
-  .hook .dim{ color:var(--secondary); }
+    @media (prefers-reduced-motion: reduce) {
+      .js [data-reveal] {
+        opacity: 1;
+        transform: none;
+        transition: none;
+      }
+    }
 
-  /* ---------- stakes ---------- */
-  .stakes{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
-  .stake{ border:1px solid var(--hairline-soft); border-radius:14px; padding:26px 24px; }
-  .stake.cost{ border-color:rgba(255,107,107,0.35); background:rgba(255,107,107,0.06); }
-  .stake .k{ font-family:var(--font-body); font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--secondary); display:block; margin-bottom:12px; }
-  .stake.cost .k{ color:var(--danger); }
-  .stake p{ font-family:var(--font-body); font-size:15.5px; color:var(--text); line-height:1.55; }
+    /* ============================================================
+       PAGE-TOP BACKGROUND — the homepage's layered effects
+       (ColorBends + DotField via ../assets/hero-effects.js),
+       shown at 80% opacity per the design.
+    ============================================================ */
+    .hero {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      aspect-ratio: 1440 / 810;
+      opacity: 0.8;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+    }
 
-  /* ---------- reframe ---------- */
-  .reframe{ display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--hairline); border-radius:14px; overflow:hidden; }
-  .rf-col{ padding:30px 30px; position:relative; }
-  .rf-col.assume{ background:var(--panel); }
-  .rf-col.insight{ background:#1D1D1F; border-left:1px solid var(--hairline); }
-  .rf-col .k{ font-family:var(--font-body); font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; margin-bottom:12px; display:block; }
-  .rf-col.assume .k{ color:var(--secondary); }
-  .rf-col.insight .k{ color:var(--text); }
-  .rf-col p{ font-family:var(--font-body); font-size:16px; line-height:1.55; }
-  .rf-col.assume p{ color:var(--secondary); }
-  .rf-col.insight p{ color:var(--text); }
-  .rf-arrow{ position:absolute; left:-15px; top:50%; transform:translateY(-50%); width:30px;height:30px;border-radius:50%;background:#1D1D1F;border:1px solid var(--hairline);display:flex;align-items:center;justify-content:center;color:var(--text);font-size:14px;z-index:3; }
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      -webkit-mask-image: linear-gradient(to bottom, #000 72%, transparent 100%);
+              mask-image: linear-gradient(to bottom, #000 72%, transparent 100%);
+    }
 
-  /* ---------- before/after ---------- */
-  .ba{ display:grid; grid-template-columns:1fr 1fr; gap:18px; align-items:start; }
-  .ba .lbl{ display:flex; align-items:center; gap:9px; margin-bottom:12px; font-family:var(--font-body); font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; }
-  .ba .lbl .dot{ width:7px;height:7px;border-radius:50%; }
-  .ba .before .lbl{ color:var(--secondary); } .ba .before .dot{ background:var(--secondary); }
-  .ba .after .lbl{ color:var(--text); } .ba .after .dot{ background:var(--danger); }
+    .hero-bends,
+    .hero-dots {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
 
-  /* ---------- interactive before/after slider ---------- */
-  .ba-slider{ position:relative; width:100%; flex-shrink:0; }
-  .ba-slider-labels{ display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
-  .ba-chip{ font-family:var(--font-body); font-size:13px; font-weight:700; padding:6px 13px; border-radius:8px; }
-  .ba-chip.before{ background:rgba(255,255,255,0.06); color:var(--secondary); border:1px solid var(--hairline); }
-  .ba-chip.after{ background:#fff; color:#000; }
-  .ba-stage{
-    position:relative; width:100%; overflow:hidden;
-    box-shadow:0 4px 16px rgba(0,0,0,0.4); user-select:none; cursor:ew-resize; touch-action:none;
-    background:var(--panel);
-  }
-  .ba-stage img{ width:100%; height:auto; display:block; pointer-events:none; }
-  .ba-after-layer img{ display:block; width:100%; height:auto; }
-  .ba-before-layer{
-    position:absolute; inset:0; overflow:hidden; background:#1D1D1F; pointer-events:none;
-    clip-path:inset(0 50% 0 0); will-change:clip-path;
-  }
-  .ba-before-layer img{ filter:grayscale(1) brightness(.85); }
-  .ba-handle{
-    position:absolute; top:0; bottom:0; width:2px; background:#fff;
-    transform:translateX(-50%); left:50%; will-change:left; box-shadow:0 0 12px rgba(0,0,0,.5);
-  }
-  .ba-knob{
-    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
-    width:44px; height:44px; background:#fff; border-radius:50%;
-    box-shadow:0 4px 16px rgba(0,0,0,0.45); display:flex; align-items:center; justify-content:center;
-    gap:3px; cursor:grab; transition:transform .15s var(--ease);
-  }
-  .ba-knob:active{ cursor:grabbing; transform:translate(-50%,-50%) scale(.95); }
-  .ba-stage:hover .ba-knob{ transform:translate(-50%,-50%) scale(1.08); }
-  .ba-knob svg{ width:14px; height:14px; stroke:#000; fill:none; stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
-  .ba-knob.wiggle{ animation:knobWiggle 2s ease-in-out 3s infinite; }
-  @keyframes knobWiggle{ 0%,100%{transform:translate(-50%,-50%) scale(1)} 20%,60%{transform:translate(-50%,-50%) scale(1.06)} }
-  .ba-hint{ margin-top:14px; text-align:center; }
-  .ba-hint span{
-    display:inline-flex; align-items:center; gap:8px; font-family:var(--font-body); font-size:13px; font-weight:700;
-    color:#000; background:#fff; padding:8px 16px; border-radius:100px;
-  }
-  .ba-hint svg{ width:15px; height:15px; stroke:#000; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+    .hero-bg.fx-ready .hero-bends,
+    .hero-bg.fx-ready .hero-dots {
+      opacity: 1;
+    }
 
-  /* ---------- worked example ---------- */
-  .worked{ background:var(--panel); border:1px solid var(--hairline-soft); border-radius:14px; padding:28px 30px; }
-  .worked .k{ font-family:var(--font-body); font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--secondary); display:block; margin-bottom:14px; }
-  .worked p{ font-family:var(--font-body); font-size:16px; color:var(--text); line-height:1.6; }
-  .worked p + p{ margin-top:14px; }
-  .mono{ font-family:'DM Sans',sans-serif; font-weight:700; letter-spacing:.02em; color:var(--text); }
-  .pill{ display:inline-block; font-family:var(--font-body); font-size:12px; font-weight:700; padding:2px 9px; border-radius:100px; }
-  .pill.rej{ background:rgba(255,107,107,0.16); color:var(--danger); }
-  .pill.app{ background:rgba(93,214,160,0.16); color:var(--ok); }
-  .pill.prog{ background:rgba(122,162,255,0.16); color:var(--info); }
+    .hero-bends canvas,
+    .hero-dots canvas,
+    .hero-dots svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
 
-  /* ---------- decision badge + trade-off ---------- */
-  .badge{ display:inline-block; font-family:var(--font-body); font-size:12px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--text); border:1px solid var(--hairline); border-radius:100px; padding:5px 13px; }
-  .tradeoff{ border-left:2px solid #fff; padding:4px 0 4px 22px; }
-  .tradeoff .k{ font-family:var(--font-heading); font-weight:800; font-size:15px; color:var(--text); display:block; margin-bottom:7px; letter-spacing:-.2px; }
-  .tradeoff p{ font-family:var(--font-body); font-size:16px; color:var(--text); line-height:1.6; margin:0; }
+    /* ============================================================
+       LAYOUT
+    ============================================================ */
+    .page {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 40px 136px;
+    }
 
-  /* ---------- rejected tag ---------- */
-  .rejtag{ display:inline-flex; align-items:center; gap:9px; font-family:var(--font-body); font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--danger); }
-  .rejtag .dot{ width:7px; height:7px; border-radius:50%; background:var(--danger); flex-shrink:0; box-shadow:0 0 0 3px rgba(255,107,107,0.18); }
+    .case {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 80px;
+      width: 1157px;
+      max-width: 100%;
+    }
 
-  /* ---------- gallery decision caption ---------- */
-  .cap-lead{ font-family:var(--font-heading); font-weight:800; font-size:15px; color:var(--text); display:block; margin-bottom:5px; letter-spacing:-.2px; }
+    .case-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 64px;
+      padding: 56px;
+      width: 100%;
+    }
 
-  /* ---------- reflection ---------- */
-  .reflect{ font-family:var(--font-body); font-size:20px; color:var(--text); line-height:1.6; max-width:none; flex-shrink:0; }
+    .case-inner > * {
+      width: 100%;
+      max-width: 1045px;
+    }
 
-  /* ---------- reveal ---------- */
-  .reveal{ opacity:0; transform:translateY(22px); transition:opacity .75s var(--ease), transform .75s var(--ease); }
-  .reveal.visible{ opacity:1; transform:translateY(0); }
-  .entry .reveal:nth-child(2){ transition-delay:.07s; }
-  .entry .reveal:nth-child(3){ transition-delay:.14s; }
+    /* ── Header ─────────────────────────────────────────────── */
+    .case-header {
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+      max-width: 100%;
+    }
 
-  /* ---------- back to top ---------- */
-  .back-to-top{ position:fixed; bottom:40px; right:40px; width:44px;height:44px; background:#fff;color:#000;border:none;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:200;opacity:0;transform:translateY(12px);transition:opacity .35s ease,transform .35s var(--ease);pointer-events:none; }
-  .back-to-top svg{ width:18px;height:18px;stroke:#000;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round; }
-  .back-to-top:hover{ background:#e0e0e0; }
-  .back-to-top.visible{ opacity:1;transform:translateY(0);pointer-events:auto; }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      align-self: flex-start;
+    }
 
-  /* ---------- skip link ---------- */
-  .skip-link{ position:fixed; top:-100%; left:16px; z-index:999; background:#fff;color:#000;font-family:var(--font-body);font-size:16px;font-weight:700;padding:12px 20px;border-radius:4px;text-decoration:none;transition:top .15s ease; }
-  .skip-link:focus{ top:16px; }
-  :focus-visible{ outline:2px solid #fff; outline-offset:4px; border-radius:2px; }
+    .back-link svg {
+      width: 24px;
+      height: 24px;
+      flex-shrink: 0;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
 
-  /* ---------- tablet ≤1316px ---------- */
-  @media (max-width:1316px){
-    .heading,.subhead,.tags{ animation:none; opacity:1; transform:none; }
-    .menu{ padding:20px 24px; gap:16px; }
-    .main{ padding:8px 24px 40px; }
-    .back-to-top{ bottom:24px; right:24px; }
-  }
+    .back-link:hover svg {
+      transform: translateX(-4px);
+    }
 
-  /* ---------- mobile ≤799px ---------- */
-  @media (max-width:799px){
-    .menu{ flex-wrap:wrap; gap:12px; padding:18px 20px; }
-    .menu-meta{ display:none; }
-    .heading{ font-size:42px; letter-spacing:-2px; }
-    .sec-head{ font-size:28px; letter-spacing:-1px; }
-    .subhead,.lede,.reflect{ font-size:18px; }
-    .tldr{ grid-template-columns:1fr; }
-    .tldr-cell{ padding:24px 0; }
-    .tldr-cell + .tldr-cell{ padding-left:0; border-left:none; border-top:1px solid var(--hairline-soft); }
-    .meta{ grid-template-columns:1fr; }
-    .reframe{ grid-template-columns:1fr; }
-    .rf-col.insight{ border-left:none; border-top:1px solid var(--hairline); }
-    .rf-arrow{ left:50%; top:-15px; transform:translateX(-50%) rotate(90deg); }
-    .ba{ grid-template-columns:1fr; gap:26px; }
-    .stakes{ grid-template-columns:1fr; }
-    .hook{ font-size:24px; }
-  }
+    .crumb-title {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
 
-</style>
-<style id="cms-style">
-  /* ============================================================
-     CONTENT MANAGER (owner-only; hidden from normal visitors)
-     Activate with #edit in the URL or Ctrl/Cmd + Shift + E
-     ============================================================ */
-  .cms-root{ display:none; }
-  body.cms-on .cms-root{ display:block; }
-  body.cms-on{ overflow-x:hidden; }
+    .crumb {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
 
-  /* page edit affordances (only while panel open) */
-  body.cms-on [data-edit]{
-    outline:1px dashed rgba(122,162,255,0.40); outline-offset:5px; border-radius:2px;
-    transition:outline-color .2s ease; scroll-margin-top:24px;
-  }
-  body.cms-on [data-edit]:hover{ outline-color:rgba(122,162,255,0.9); }
-  body.cms-on [data-edit]:focus{ outline:2px solid var(--info); outline-offset:5px; }
-  body.cms-on [data-edit].cms-active{ outline:2px solid var(--ok); outline-offset:5px; }
-  body.cms-on .img-wrap, body.cms-on .ba-stage{ cursor:pointer; }
-  body.cms-on .img-wrap{ outline:1px dashed rgba(122,162,255,0.40); outline-offset:5px; }
-  body.cms-on .img-wrap::after, body.cms-on .ba-stage::after{
-    content:'Click to replace'; position:absolute; inset:0; z-index:6;
-    display:flex; align-items:center; justify-content:center;
-    background:rgba(0,0,0,0.55); color:var(--text);
-    font-family:var(--font-body); font-size:14px; font-weight:700; letter-spacing:.02em;
-    opacity:0; transition:opacity .2s ease; pointer-events:none;
-  }
-  body.cms-on .img-wrap:hover::after, body.cms-on .ba-stage:hover::after{ opacity:1; }
-  body.cms-on .ba-knob{ display:none; }
-  .cms-flash{ animation:cmsFlash .7s ease; }
-  @keyframes cmsFlash{ 0%{ box-shadow:0 0 0 3px var(--ok); } 100%{ box-shadow:0 0 0 0 transparent; } }
+    .crumb svg {
+      width: 24px;
+      height: 24px;
+      flex-shrink: 0;
+    }
 
-  /* top status bar */
-  .cms-bar{
-    position:fixed; top:0; left:0; right:0; z-index:1200; height:52px;
-    display:flex; align-items:center; gap:14px; padding:0 18px;
-    background:#0b0b0b; border-bottom:1px solid var(--hairline); font-family:var(--font-body);
-  }
-  body.cms-on .layout{ margin-top:52px; }
-  .cms-dot{ width:8px; height:8px; border-radius:50%; background:var(--ok); box-shadow:0 0 0 3px rgba(93,214,160,0.2); flex-shrink:0; }
-  .cms-bar .ttl{ font-size:13px; font-weight:700; color:var(--text); letter-spacing:.02em; }
-  .cms-bar .status{ font-size:12px; color:var(--secondary); flex:1; }
-  .cms-bar .status b{ color:var(--ok); font-weight:700; }
-  .cms-bar .status .unsaved{ color:#ffcf6b; }
+    .crumb .muted {
+      color: var(--muted);
+    }
 
-  /* slide-in panel */
-  .cms-panel{
-    position:fixed; top:52px; right:0; bottom:0; width:400px; max-width:92vw; z-index:1150;
-    background:#0b0b0b; border-left:1px solid var(--hairline);
-    display:flex; flex-direction:column; font-family:var(--font-body);
-    transform:translateX(0); transition:transform .3s var(--ease);
-  }
-  body.cms-collapsed .cms-panel{ transform:translateX(100%); }
-  body.cms-collapsed .layout{ /* keep page where it is */ }
-  .cms-panel-head{ padding:16px 18px 12px; border-bottom:1px solid var(--hairline-soft); }
-  .cms-panel-head h2{ font-family:var(--font-heading); font-weight:800; font-size:18px; color:var(--text); letter-spacing:-.4px; }
-  .cms-panel-head p{ font-size:12px; color:var(--secondary); line-height:1.5; margin-top:5px; }
-  .cms-search{ margin:12px 18px 0; }
-  .cms-search input{
-    width:100%; font-family:var(--font-body); font-size:13px; color:var(--text);
-    background:#1D1D1F; border:1px solid var(--hairline); border-radius:9px; padding:9px 12px;
-  }
-  .cms-search input::placeholder{ color:var(--secondary); }
-  .cms-search input:focus{ outline:none; border-color:var(--info); }
+    h1 {
+      font-size: 2.5rem;  /* 40px */
+      font-weight: 600;
+      line-height: 1.4;
+    }
 
-  .cms-body{ flex:1; overflow-y:auto; padding:8px 18px 18px; }
-  .cms-sec{ margin-top:18px; }
-  .cms-sec > .cms-sec-h{
-    font-size:11px; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
-    color:var(--secondary); margin-bottom:10px; position:sticky; top:0; background:#0b0b0b; padding:6px 0; z-index:2;
-  }
-  .cms-card{ background:#1D1D1F; border:1px solid var(--hairline-soft); border-radius:11px; padding:12px; margin-bottom:10px; }
-  .cms-card.hidden{ display:none; }
-  .cms-card .lbl{ display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--secondary); margin-bottom:8px; }
-  .cms-card .lbl .kind{ color:var(--info); }
-  .cms-card .lbl .kind.img{ color:#c79bff; }
-  .cms-card textarea{
-    width:100%; min-height:62px; resize:vertical; font-family:var(--font-body);
-    font-size:13.5px; line-height:1.5; color:var(--text); background:#0d0d0d;
-    border:1px solid var(--hairline); border-radius:9px; padding:10px 11px;
-  }
-  .cms-card textarea:focus{ outline:none; border-color:var(--info); }
-  .cms-card .rich-note{ font-size:12px; color:var(--secondary); line-height:1.5; background:#0d0d0d; border:1px solid var(--hairline-soft); border-radius:9px; padding:10px 11px; }
-  .cms-card .rich-note .snip{ color:#cfcfcf; display:block; margin-top:6px; }
-  .cms-row{ display:flex; gap:8px; margin-top:9px; flex-wrap:wrap; }
-  .cms-mini{
-    font-family:var(--font-body); font-size:12px; font-weight:700; cursor:pointer;
-    padding:7px 11px; border-radius:8px; border:1px solid var(--hairline); background:#1D1D1F; color:var(--text);
-    transition:opacity .2s ease;
-  }
-  .cms-mini:hover{ opacity:.65; }
-  .cms-thumb{ width:100%; aspect-ratio:3/2; object-fit:cover; border-radius:8px; background:#111; display:block; border:1px solid var(--hairline-soft); }
+    /* ── Images (same skeleton loading state as the homepage) ── */
+    .shot {
+      display: block;
+      aspect-ratio: 3 / 2;
+      border-radius: 16px;
+      overflow: hidden;
+      position: relative;
+      background: #211c2a;
+    }
 
-  .cms-foot{ border-top:1px solid var(--hairline); padding:12px 18px; display:grid; grid-template-columns:1fr 1fr; gap:8px; background:#0b0b0b; }
-  .cms-btn{
-    font-family:var(--font-body); font-size:13px; font-weight:700; cursor:pointer;
-    padding:11px 12px; border-radius:9px; border:1px solid var(--hairline); background:#1D1D1F; color:var(--text);
-    transition:opacity .2s ease, background .2s ease; text-align:center;
-  }
-  .cms-btn:hover{ opacity:.7; }
-  .cms-btn.primary{ background:#fff; color:#000; border-color:var(--text); grid-column:1 / -1; }
-  .cms-btn.primary:hover{ opacity:1; background:#e0e0e0; }
-  .cms-btn.danger{ color:var(--danger); border-color:rgba(255,107,107,0.4); }
+    .shot::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(100deg, transparent 35%, rgba(255, 255, 255, 0.07) 50%, transparent 65%);
+      transform: translateX(-100%);
+      animation: shimmer 1.4s ease-in-out infinite;
+    }
 
-  .cms-fab{
-    position:fixed; bottom:24px; right:24px; z-index:1140; display:none;
-    font-family:var(--font-body); font-size:13px; font-weight:700; cursor:pointer;
-    padding:11px 16px; border-radius:100px; border:1px solid var(--hairline);
-    background:#fff; color:#000; box-shadow:0 6px 24px rgba(0,0,0,0.5);
-  }
-  body.cms-on.cms-collapsed .cms-fab{ display:inline-flex; align-items:center; gap:8px; }
+    .shot picture {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
 
-  @media (max-width:799px){
-    .cms-panel{ width:100%; max-width:100%; }
-    .cms-bar .status{ display:none; }
-  }
-</style>
+    .shot img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      position: relative;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    .shot.loaded { background: none; }
+    .shot.loaded::before { content: none; }
+    .shot.loaded img { opacity: 1; }
+
+    @keyframes shimmer {
+      100% { transform: translateX(100%); }
+    }
+
+    .shot--shadow {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    }
+
+    .shot--json  { aspect-ratio: 2876 / 1626; }
+    .shot--table { aspect-ratio: 1045 / 785; }
+    .shot--panel { aspect-ratio: 1046 / 730; border-radius: 24px; }
+
+    /* ── Labels ─────────────────────────────────────────────── */
+    .label {
+      font-size: 0.875rem;  /* 14px */
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    /* ── Stats row ──────────────────────────────────────────── */
+    .stats {
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 0 24px;
+    }
+
+    .stat {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 24px 32px 24px 0;
+      overflow-wrap: break-word;
+    }
+
+    .stat + .stat {
+      border-left: 1px solid var(--border);
+      padding-left: 32px;
+    }
+
+    .stat p {
+      letter-spacing: 0.01em;
+    }
+
+    /* ── TL;DR panel ────────────────────────────────────────── */
+    .tldr {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .tldr .label {
+      text-transform: none;  /* "TL;DR" as designed */
+    }
+
+    .tldr p {
+      line-height: 1.6;
+      letter-spacing: 0.01em;
+    }
+
+    .tldr p + p {
+      margin-top: 1.6em;
+    }
+
+    .tldr p .muted {
+      color: var(--muted);
+    }
+
+    /* ── Content sections ───────────────────────────────────── */
+    .divider {
+      border: 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .block {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .block > p,
+    .decision > p {
+      line-height: 1.6;
+      letter-spacing: 0.01em;
+      max-width: 1000px;
+      overflow-wrap: break-word;
+    }
+
+    .decisions {
+      gap: 56px;
+    }
+
+    .decision {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .decision h2 {
+      font-size: 1.5rem;  /* 24px */
+      font-weight: 400;
+      line-height: 1.4;
+    }
+
+    .decision h2 .num {
+      color: var(--secondary);
+      font-size: 0.75em;  /* 18px next to the 24px title */
+      margin-right: 8px;
+    }
+
+    /* ── Next project ───────────────────────────────────────── */
+    .next-project {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      text-align: center;
+    }
+
+    .next-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .next-link > span {
+      font-size: 1.5rem;
+      line-height: 1.4;
+      text-decoration: underline;
+      text-underline-position: from-font;
+      transition: text-decoration-color 0.2s ease;
+      overflow-wrap: break-word;
+    }
+
+    .next-project:hover .next-link > span {
+      text-decoration-color: #FF0000;
+    }
+
+    .next-link svg {
+      width: 32px;
+      height: 32px;
+      flex-shrink: 0;
+    }
+
+    /* ============================================================
+       BACK-TO-TOP BUTTON (same behavior as the homepage)
+    ============================================================ */
+    .dot-rail {
+      --fab-edge: 24px;
+      --fab-size: 48px;
+      --fab-dot:  24px;
+      --fab-icon: 28.8px;
+
+      position: fixed;
+      right: calc(var(--fab-edge) + env(safe-area-inset-right, 0px));
+      bottom: calc(var(--fab-edge) + env(safe-area-inset-bottom, 0px));
+      width: var(--fab-size);
+      height: var(--fab-size);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .back-dot {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: var(--fab-dot);
+      height: var(--fab-dot);
+      border-radius: 118.8px;
+      border: none;
+      background: #fff;
+      cursor: pointer;
+      pointer-events: auto;
+      transition:
+        width  0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+        height 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+        transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .back-dot svg {
+      width: var(--fab-icon);
+      height: var(--fab-icon);
+      flex-shrink: 0;
+      opacity: 0;
+      transform: translateY(8px) scale(0.4);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    .back-dot.expanded {
+      width: var(--fab-size);
+      height: var(--fab-size);
+    }
+
+    .back-dot.expanded svg {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      transition:
+        opacity 0.35s ease 0.15s,
+        transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s;
+    }
+
+    .back-dot:hover  { transform: scale(1.12); }
+    .back-dot:active { transform: scale(0.95); }
+
+    @media (prefers-reduced-motion: reduce) {
+      .back-dot,
+      .back-dot svg,
+      .shot img,
+      .back-link svg {
+        transition: none;
+      }
+
+      .shot::before {
+        animation: none;
+      }
+    }
+
+    /* ============================================================
+       TABLET
+    ============================================================ */
+    @media (max-width: 1319px) {
+      .case {
+        width: 100%;
+      }
+
+      .case-inner {
+        padding: 56px 0 0;
+      }
+    }
+
+    /* ============================================================
+       MOBILE
+    ============================================================ */
+    @media (max-width: 700px) {
+      body {
+        font-size: 1rem;  /* 16px */
+      }
+
+      .page {
+        padding: 0 40px 136px;
+      }
+
+      h1 {
+        font-size: 2rem;  /* 32px */
+      }
+
+      .stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .stat + .stat {
+        border-left: 0;
+        padding-left: 0;
+      }
+
+      .stat:nth-child(even) {
+        border-left: 1px solid var(--border);
+        padding-left: 32px;
+      }
+
+      .dot-rail {
+        --fab-size: 40px;
+        --fab-dot:  20px;
+        --fab-icon: 24px;
+      }
+    }
+  </style>
 </head>
 <body>
-<a href="#main-content" class="skip-link">Skip to main content</a>
 
-<div class="cms-root" id="cmsRoot" aria-hidden="true">
-  <div class="cms-bar">
-    <span class="cms-dot"></span>
-    <span class="ttl">Content Manager</span>
-    <span class="status" id="cmsStatus">All changes saved on this device</span>
-    <button class="cms-mini" id="cmsToggle" type="button">Hide panel</button>
-    <button class="cms-mini" id="cmsClose" type="button">Exit</button>
+  <div class="hero" aria-hidden="true">
+    <div class="hero-bg">
+      <div class="hero-bends"></div>
+      <div class="hero-dots"></div>
+    </div>
   </div>
-  <aside class="cms-panel" id="cmsPanel" aria-label="Content manager">
-    <div class="cms-panel-head">
-      <h2>Manage content</h2>
-      <p>Edit any field below, or click text and images directly on the page. Save keeps a draft on this device. Export writes a new index.html to publish.</p>
-    </div>
-    <div class="cms-search"><input type="text" id="cmsSearch" placeholder="Filter fields…" aria-label="Filter fields"></div>
-    <div class="cms-body" id="cmsBody"><!-- generated --></div>
-    <div class="cms-foot">
-      <button class="cms-btn primary" id="cmsExportHtml" type="button">Export updated HTML</button>
-      <button class="cms-btn" id="cmsSave" type="button">Save draft</button>
-      <button class="cms-btn" id="cmsExportJson" type="button">Export content (JSON)</button>
-      <button class="cms-btn" id="cmsImportJson" type="button">Import content (JSON)</button>
-      <button class="cms-btn danger" id="cmsRevert" type="button">Revert to saved</button>
-      <button class="cms-btn danger" id="cmsDiscard" type="button">Discard all</button>
-    </div>
-  </aside>
-  <button class="cms-fab" id="cmsFab" type="button">▤ Content</button>
-</div>
-<input type="file" id="cmsImgInput" accept="image/*" style="display:none" aria-hidden="true">
-<input type="file" id="cmsJsonInput" accept="application/json,.json" style="display:none" aria-hidden="true">
 
-<!-- Background gradient glow -->
-<div class="bg-glow" aria-hidden="true"></div>
+  <div class="page">
+    <main class="case">
+      <div class="case-inner">
 
-<div class="layout">
-
-  <!-- TOP HEADER (horizontal, non-sticky) -->
-  <nav class="menu" aria-label="Main navigation">
-    <a href="../" class="menu-link menu-back"><span class="back-arrow" aria-hidden="true">←</span> Back</a>
-  </nav>
-
-  <!-- MAIN -->
-  <main class="main" id="main-content">
-
-    <!-- 1. HERO -->
-    <div class="tags">
-      <span class="tag">FinTech</span>
-      <span class="tag">Information Architecture</span>
-      <span class="tag">Data Visualization</span>
-      <span class="tag">UX Research</span>
-    </div>
-    <h1 class="heading">From JSON Dump to Transaction Lifecycle</h1>
-    <p class="subhead">Giving operations teams a way to diagnose failures themselves, <span class="dim">instead of escalating raw JSON to engineering.</span></p>
-
-    <div class="spacer"></div>
-    <div class="img-wrap ratio-3x2 reveal">
-      <img src="assets/flow-rejected-hero.png" alt="The redesigned transaction view: a single transaction shown as a left-to-right flow with the failure marked at Hold." loading="eager" fetchpriority="high" decoding="async">
-    </div>
-    <p class="caption reveal">The screen the case is named after: a stalled transaction read as a lifecycle, with the failure surfaced at <b>Hold</b> and the next action one click away.</p>
-
-    <div class="spacer-lg"></div>
-
-    <!-- 2. TL;DR -->
-    <div class="tldr reveal">
-      <div class="tldr-cell">
-        <span class="k">The problem</span>
-        <p>Operations users like bankers couldn't interpret the raw transaction log on their own, so they escalated to internal teams just to understand what had happened.</p>
-      </div>
-      <div class="tldr-cell">
-        <span class="k">What I did</span>
-        <p>I restructured the raw JSON view into a flow-based diagnostic tool, so the transaction lifecycle that was already in the data became readable at a glance, instead of decoded by hand.</p>
-      </div>
-      <div class="tldr-cell">
-        <span class="k">The result</span>
-        <p>By the end, the people who lived in the log, the clients' operations users and the Customer Success team alike, could read a stalled transaction at a glance and diagnose it without escalating.</p>
-      </div>
-    </div>
-
-    <div class="spacer-lg"></div>
-
-    <!-- 3. ROLE & CONTEXT -->
-    <article class="entry">
-      <h2 class="date-label reveal">Role &amp; Context</h2>
-      <div class="meta reveal">
-        <div class="meta-cell">
-          <span class="k">Product</span>
-          <span class="v">Ownera, a platform connecting banks and financial institutions to trade tokenized digital assets. I worked on the Admin Platform, where finance teams manage every transaction in the system; the Transaction Log was its most-used screen.</span>
-        </div>
-        <div class="meta-cell">
-          <span class="k">Role</span>
-          <span class="v">Sole product designer, working directly with the Director of Product and presenting iterations to the CTO, the GM (a co-founder), and the CEO for feedback.</span>
-        </div>
-        <div class="meta-cell">
-          <span class="k">Discovery</span>
-          <span class="v">I ran the research myself, sitting with the operations and Customer Success teams who used the log daily, mapping where they lost time, which statuses sent them back to ask someone else, and what they actually needed to see in order to act. I also scanned comparable tools in the market.</span>
-        </div>
-        <div class="meta-cell">
-          <span class="k">Timeline &amp; Constraints</span>
-          <span class="v">A multi-week effort, from discovery to delivery. A small front-end team, so I worked within the existing React component library rather than building custom, and a raw data structure I couldn't change server-side.</span>
-        </div>
-      </div>
-    </article>
-
-    <div class="spacer-lg"></div>
-    <div class="rule"></div>
-    <div class="spacer"></div>
-
-    <!-- 4. HOOK -->
-    <article class="entry">
-      <h2 class="date-label reveal">The moment</h2>
-      <p class="hook reveal">A banker gets a call: a client's expected transfer never arrived. They open the Transaction Log to find out why and hit a wall of raw JSON. <span class="dim">They can't see where it stopped or who's holding it, so they do what everyone does with this screen: send it to Customer Success to decode.</span></p>
-      <div class="img-wrap ratio-3x2 before-state reveal">
-        <img src="assets/before-json-tree.png" alt="The old transaction log: an expandable row revealing a raw JSON tree with plan id, timestamp, status, and collapsed nodes." loading="lazy" decoding="async">
-      </div>
-      <p class="caption reveal">The wall they hit: a transaction expanded into a raw JSON tree. Every field is here, including why it stalled. None of it reads as a process.</p>
-    </article>
-
-    <div class="spacer-lg"></div>
-
-    <!-- 5. STAKES -->
-    <article class="entry">
-      <h2 class="date-label reveal">Stakes</h2>
-      <h3 class="sec-head reveal">Why a single screen mattered</h3>
-      <p class="lede reveal">This wasn't a peripheral screen. It was a core screen, used every day by the clients' operations teams and by Customer Success.</p>
-      <div class="stakes reveal">
-        <div class="stake cost">
-          <span class="k">The repeating cost</span>
-          <p>Every time a transfer stalled and someone couldn't say why, the cost repeated: another escalation to Customer Success just to decode what the screen was already showing.</p>
-        </div>
-        <div class="stake">
-          <span class="k">The deeper, strategic cost</span>
-          <p>For a platform sold to banks, a core screen that read like a developer's console wasn't a UX problem. It was a sales risk in every demo, and the kind of core-screen friction that erodes trust the moment clients rely on it.</p>
-        </div>
-      </div>
-    </article>
-
-    <div class="spacer-lg"></div>
-    <div class="rule"></div>
-    <div class="spacer"></div>
-
-    <!-- 6. REFRAME -->
-    <article class="entry">
-      <h2 class="date-label reveal">The reframe</h2>
-      <h3 class="sec-head reveal">They didn't want more data</h3>
-      <div class="reframe reveal">
-        <div class="rf-col assume">
-          <span class="k">Initial assumption</span>
-          <p>"Users need more data and better filters to find what went wrong."</p>
-        </div>
-        <div class="rf-col insight">
-          <span class="rf-arrow">→</span>
-          <span class="k">The actual insight</span>
-          <p>They arrived already knowing which transaction they needed, by its ID, not hunting for it. They didn't want more data. They wanted that one transaction's context: what happened, where it stalled, and what to do next.</p>
-        </div>
-      </div>
-      <p class="body-text muted reveal">A scan of comparable tools (Tokeny, Chainlink, Digital Asset) showed the same failure everywhere: plenty of data, no story. That confirmed the fix was not more filters, but a representation that made the process legible.</p>
-    </article>
-
-    <div class="spacer-lg"></div>
-
-    <!-- 7. CORE PROBLEM -->
-    <article class="entry">
-      <h2 class="date-label reveal">The core problem</h2>
-      <h3 class="sec-head reveal">The structure was already in the data</h3>
-      <p class="lede reveal">Every transaction's JSON held the full process: the stages, the organizations involved, and each one's role and status. Nothing was missing. The old screen simply exposed the data structure directly, as a JSON tree, and a data structure is not a process. You could read every field and still not see where it had stalled.</p>
-      <p class="body-text reveal">So I did not define a new model. I gave the existing one a representation that fit. Each transaction became a flow: stages left to right, Plan Approval, Hold, Transfer, Release, Completed, with Roll back as the exception, and participants attached to the stage they gate, each with its role and status. The whole process, and every actor in it, became visible at a glance, including the exact point where it stopped. The shift was representational, not informational: same data, shown as the process it always was.</p>
-
-      <div class="ba-slider reveal" id="baSlider">
-        <div class="ba-slider-labels">
-          <span class="ba-chip before">Before · data structure</span>
-          <span class="ba-chip after">After · the process</span>
-        </div>
-        <div class="ba-stage" id="baStage">
-          <div class="ba-after-layer">
-            <img src="assets/flow-rejected-hero.png" alt="After: the same transaction shown as a flow, with the stall marked at Hold." draggable="false">
-          </div>
-          <div class="ba-before-layer" id="baBefore">
-            <img src="assets/before-json-tree.png" alt="Before: the same transaction as a raw JSON tree." draggable="false">
-          </div>
-          <div class="ba-handle" id="baHandle">
-            <div class="ba-knob wiggle" id="baKnob">
-              <svg viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7"/></svg>
-              <svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
-            </div>
+        <div class="case-header">
+          <a class="back-link" href="../">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>Back</span>
+          </a>
+          <div class="crumb-title">
+            <p class="crumb">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M3 6.5C3 5.67157 3.67157 5 4.5 5H9.08579C9.48361 5 9.86514 5.15804 10.1464 5.43934L11.5607 6.85355C11.6544 6.94732 11.7816 7 11.9142 7H19.5C20.3284 7 21 7.67157 21 8.5V17.5C21 18.3284 20.3284 19 19.5 19H4.5C3.67157 19 3 18.3284 3 17.5V6.5Z" stroke="#c6c6c6" stroke-width="1.5"/>
+              </svg>
+              <span class="muted">Work</span>
+              <span>/</span>
+              <span>Ownera (fintech, backed by J.P. Morgan) · 2023 → 2026</span>
+            </p>
+            <h1>From JSON Dump to Transaction Lifecycle</h1>
           </div>
         </div>
-        <div class="ba-hint">
-          <span><svg viewBox="0 0 24 24"><path d="M8 7L3 12m0 0l5 5m-5-5h18M16 17l5-5m0 0l-5-5"/></svg>Drag to compare</span>
+
+        <div class="shot" data-reveal>
+          <picture>
+            <source type="image/webp" srcset="../images/004-Ownera-admin-960.webp 960w, ../images/004-Ownera-admin.webp 1920w" sizes="(max-width: 1319px) calc(100vw - 80px), 1045px">
+            <img src="../images/004-Ownera-admin.png" alt="The redesigned Transaction Log — a rejected transaction shown as a lifecycle flow with instruction approvals" loading="eager" decoding="async" width="1920" height="1280">
+          </picture>
         </div>
+
+        <ul class="stats" data-reveal>
+          <li class="stat">
+            <p class="label">Ownership</p>
+            <p>Sole designer</p>
+          </li>
+          <li class="stat">
+            <p class="label">Scope</p>
+            <p>The platform's most-used screen</p>
+          </li>
+          <li class="stat">
+            <p class="label">Sector</p>
+            <p>Fintech · Institutional</p>
+          </li>
+          <li class="stat">
+            <p class="label">Shift</p>
+            <p>CS escalations → self-serve diagnosis</p>
+          </li>
+        </ul>
+
+        <div class="tldr" data-reveal>
+          <p class="label">TL;DR</p>
+          <div>
+            <p><span class="muted">Problem</span> → The admin's most-used screen showed transactions as raw JSON trees. Every stuck transfer became a Customer Success escalation.</p>
+            <p><span class="muted">What I did</span> → Reframed the log from a data dump into a transaction lifecycle: a flow view for diagnosing one transaction, connected to a table view for monitoring many.</p>
+            <p><span class="muted">Result</span> → The users closest to the pain, operations and CS, could read a stuck transaction at a glance instead of escalating it.</p>
+          </div>
+        </div>
+
+        <hr class="divider">
+
+        <section class="block" data-reveal>
+          <p class="label">Context</p>
+          <p>Ownera is a fintech platform connecting banks and financial institutions to trade tokenized digital assets, backed by J.P. Morgan. I worked on its Admin Platform, where finance teams manage every transaction in the system; the Transaction Log was its most-used screen, lived in daily by the clients' operations teams and by Customer Success. I was the sole product designer, working directly with the Director of Product.</p>
+        </section>
+
+        <hr class="divider">
+
+        <section class="block" data-reveal>
+          <p class="label">The Moment</p>
+          <p>A banker gets a call: a client's expected transfer never arrived. They open the transaction log to check, and hit a wall of raw JSON. The information is all there, including why it's stuck, but nothing is readable. So they do what everyone did: forward it to Customer Success to decode. Every incident became an escalation, and in a platform sold to financial institutions, a core screen that looks like a developer console is a risk in every demo.</p>
+        </section>
+
+        <div class="shot shot--json shot--shadow" data-reveal>
+          <picture>
+            <source type="image/webp" srcset="assets/before-json-tree-960.webp 960w, assets/before-json-tree.webp 1920w" sizes="(max-width: 1319px) calc(100vw - 80px), 1045px">
+            <img src="assets/before-json-tree.png" alt="The old Transaction Log — every transaction expanded into a raw JSON tree" loading="lazy" decoding="async" width="2876" height="1626">
+          </picture>
+        </div>
+
+        <hr class="divider">
+
+        <section class="block decisions">
+          <p class="label" data-reveal>The Decisions</p>
+
+          <div class="decision" data-reveal>
+            <h2><span class="num">01</span>A lifecycle, not a tree</h2>
+            <p>The assumption was that users needed more data and more filters. Watching operations people work showed the opposite: they arrive already knowing which transaction they need, search by ID, and want context, what happened, where it stopped, what to do next. The JSON already contained a full process: stages, organizations, statuses. So I didn't invent a new model, I gave the existing one the representation it deserved: each transaction as a left-to-right flow, with the failure marked at the exact stage it occurred. Same data, shown as the process it always was.</p>
+          </div>
+
+          <div class="decision" data-reveal>
+            <h2><span class="num">02</span>Two views, not one</h2>
+            <p>Diagnosing one transaction and monitoring hundreds are different jobs. I split the screen into a full-screen flow for depth and a table for scale, and accepted the context switch on purpose: one view doing both jobs does neither well.</p>
+          </div>
+
+          <div class="shot shot--table shot--shadow" data-reveal>
+            <picture>
+              <source type="image/webp" srcset="assets/table-new-960.webp 960w, assets/table-new.webp 1920w" sizes="(max-width: 1319px) calc(100vw - 80px), 1045px">
+              <img src="assets/table-new.png" alt="The table view — monitoring many transactions with filters, types, and statuses" loading="lazy" decoding="async" width="2880" height="2164">
+            </picture>
+          </div>
+
+          <div class="shot shot--panel" data-reveal>
+            <picture>
+              <source type="image/webp" srcset="assets/flow-rejected-hero-960.webp 960w, assets/flow-rejected-hero.webp 1920w" sizes="(max-width: 1319px) calc(100vw - 80px), 1045px">
+              <img src="assets/flow-rejected-hero.png" alt="The flow view — a rejected transaction diagnosed stage by stage with the instruction approval panel open" loading="lazy" decoding="async" width="2880" height="2154">
+            </picture>
+          </div>
+
+          <div class="decision" data-reveal>
+            <h2><span class="num">03</span>What I rejected: inline expansion</h2>
+            <p>Inline expand/collapse inside the table, essentially what the old screen did, was the safe choice. But real usage showed no scenario where users compare several transactions side by side; they focus on one. So each transaction got a screen of its own.</p>
+          </div>
+        </section>
+
+        <hr class="divider">
+
+        <section class="block" data-reveal>
+          <p class="label">What Changed</p>
+          <p>Operations teams and CS read failed transactions without escalating. We didn't set up formal measurement; my instrument was CS themselves, when they stopped needing to decode, it worked. Next time, I'd define one lightweight signal upfront: how long it takes to explain a failed transaction, before and after. The work was presented and approved up to the CTO, GM, and CEO.</p>
+        </section>
+
       </div>
-      <p class="caption reveal">Same transaction, two representations. The tree lists fields; the flow shows the lifecycle, and marks the exact stage where it stopped. This is where the case earns its title.</p>
 
-      <div class="worked reveal">
-        <span class="k">Worked example · a real transaction</span>
-        <p><span class="mono">A403AFD…3441X</span>, a Loan Intent between JPMorgan Chase, Bank of America, and DTCC, stalled at Hold. The old tree showed only that the plan had failed. The flow shows <em>why</em>: inside Hold, Bank of America as Issuer is <span class="pill rej">Rejected</span> while JPMorgan Chase as Custodian is <span class="pill app">Approved</span>, and the rest sit <span class="pill prog">In Progress</span>, waiting on a stage that will never clear.</p>
-        <p>All of it was in the JSON the whole time. The flow made it visible, and put the next action right where the failure is.</p>
-      </div>
-    </article>
+      <a class="next-project" href="../ownera-investor/" data-reveal>
+        <p class="label">Next Project</p>
+        <span class="next-link">
+          <span>Designing for Investors Who Expect More</span>
+          <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
+            <path d="M9.5 22.5L22.5 9.5M22.5 9.5H11.5M22.5 9.5V20.5" stroke="white" stroke-width="2"/>
+          </svg>
+        </span>
+      </a>
+    </main>
+  </div>
 
-    <div class="spacer-lg"></div>
-    <div class="rule"></div>
-    <div class="spacer"></div>
+  <div class="dot-rail">
+    <button class="back-dot" aria-label="Back to top">
+      <svg viewBox="0 0 29 29" fill="none" aria-hidden="true">
+        <path d="M8 17.5L14.4 11.1L20.8 17.5" stroke="#110f18" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  </div>
 
-    <!-- 8. KEY DECISION -->
-    <article class="entry">
-      <h2 class="date-label reveal">Key decision</h2>
-      <h3 class="sec-head reveal">Two connected views <span class="badge" style="vertical-align:middle;margin-left:8px;font-size:11px">one flow · one table</span></h3>
-      <p class="lede reveal">Diagnosis and monitoring are different jobs, so I gave each its own view: a dedicated full screen where a single transaction's whole flow and every participant is legible, and a filterable table for scanning and monitoring many at a glance.</p>
-      <div class="img-wrap ratio-3x2 reveal"><img src="assets/table-new.png" alt="The monitoring table: many transactions with creation date, ID, type, initiated by, and color-coded status." loading="lazy" decoding="async"></div>
-      <p class="caption reveal"><b>The monitoring view.</b> A dense, filterable table for scanning hundreds of transactions, status color-coded so problem rows surface without reading. Selecting one leads into its full-screen flow.</p>
-      <div class="tradeoff reveal">
-        <span class="k">The trade-off I accepted on purpose</span>
-        <p>The user leaves the table, and the list, to study one transaction, then comes back. You cannot watch hundreds and read one deeply on the same surface. I accepted that context switch on purpose, because the list adds nothing during focused diagnosis, and one view doing both jobs would do neither well.</p>
-      </div>
-    </article>
+  <!-- Lenis smooth scrolling + shared reveal-on-scroll logic -->
+  <script src="../js/lenis.min.js"></script>
+  <script src="../js/scroll-effects.js"></script>
 
-    <div class="spacer-lg"></div>
-
-    <!-- 9. WHAT DIDN'T WORK -->
-    <article class="entry">
-      <h2 class="date-label reveal">What didn't work</h2>
-      <span class="rejtag reveal"><span class="dot"></span>Early exploration, rejected</span>
-      <h3 class="sec-head reveal">Inline expansion, the safe choice</h3>
-      <p class="lede reveal">My first direction kept the pattern the old screen already used: expand a transaction in place, inside the table. On paper it was the safe choice, the detail opens right where you are.</p>
-      <p class="body-text reveal">It broke the moment I watched real usage. Operations users never open several transactions in parallel; they work one at a time, on the one they came for. Inline expansion is built for comparing many open rows, a need these users don't have, while cramping the single transaction they actually want to understand. So I dropped it and gave one transaction its own full screen.</p>
-      <div class="img-wrap ratio-3x2 before-state reveal"><img src="assets/before-json-tree.png" alt="The rejected inline-expansion pattern: a transaction expanded in place inside the table." loading="lazy" decoding="async"></div>
-      <p class="caption reveal">The rejected pattern in its original form: detail expands in-place under the row, the same inline behaviour the old screen used.</p>
-    </article>
-
-    <div class="spacer-lg"></div>
-    <div class="rule"></div>
-    <div class="spacer"></div>
-
-    <!-- 10. SOLUTION & IMPACT -->
-    <article class="entry">
-      <h2 class="date-label reveal">Solution &amp; impact</h2>
-      <h3 class="sec-head reveal">The redesign, end to end</h3>
-      <p class="lede reveal">The redesign split the Transaction Log into two connected views: a full-screen flow for diagnosing one transaction, and a table for monitoring many. The table handled the usual high-volume needs, filtering, density, responsiveness, without making any of that the story.</p>
-
-      <div class="img-wrap ratio-3x2 reveal"><img src="assets/flow-rejected-hero.png" alt="Single-transaction flow with the failure at Hold and an instruction-level rejection panel." loading="lazy" decoding="async"></div>
-      <p class="caption reveal"><span class="cap-lead">Read the failure, don't decode it.</span> The flow surfaces the stall at Hold and pairs it with the instruction-level reason, Bank of America rejected as Issuer, plus a direct "Contact Issuer" action.</p>
-
-      <div class="img-wrap ratio-3x2 reveal"><img src="assets/table-filters.png" alt="Monitoring table flow detail with the participant approval panel open." loading="lazy" decoding="async"></div>
-      <p class="caption reveal"><span class="cap-lead">Every participant, legible at once.</span> The approval panel lays out each organization's role and status, so the one rejection holding up eight in-progress actors is obvious.</p>
-
-      <div class="img-wrap ratio-3x2 reveal"><img src="assets/detail-panel.png" alt="Detailed event panel showing settlement message steps and raw on-chain data." loading="lazy" decoding="async"></div>
-      <p class="caption reveal"><span class="cap-lead">Depth on demand, not by default.</span> The underlying message trail and raw on-chain payload stay one click away for the rare case that needs them, kept out of the default read so the flow stays legible.</p>
-
-      <div class="img-wrap ratio-3x2 reveal"><img src="assets/empty-state.png" alt="Empty state of the transaction log with a clear illustration and explanatory copy." loading="lazy" decoding="async"></div>
-      <p class="caption reveal"><span class="cap-lead">The screen explains itself when there's nothing to show.</span> A considered empty state, part of treating the most-used screen as a product surface, not a data dump.</p>
-
-      <p class="body-text reveal" style="margin-top:8px">I validated it with the Customer Success team, who both used the log daily and absorbed its cost, bringing them pain-point research and testing each direction against the real cases they handled. The outcome held for everyone who used the screen, the clients' operations users and CS alike: a transaction you used to decode, you could now simply read. The work was reviewed and endorsed up to the CTO, the GM, and the CEO.</p>
-    </article>
-
-    <div class="spacer-lg"></div>
-    <div class="rule"></div>
-    <div class="spacer"></div>
-
-    <!-- 11. REFLECTION -->
-    <article class="entry">
-      <h2 class="date-label reveal">Reflection</h2>
-      <p class="reflect reveal">With no analytics, the people closest to the pain were my instrument: if Customer Success could read a transaction without help, the design was working. If I did it again I would still start there, but I would also set one lightweight signal early, a simple before-and-after on how long it took to explain a failed transaction, so the improvement I could see in the room would be legible to those who weren't.</p>
-    </article>
-
-    <div class="spacer-lg"></div>
-
-  </main>
-</div>
-
-<!-- back to top -->
-<button class="back-to-top" id="toTop" aria-label="Back to top">
-  <svg viewBox="0 0 24 24"><polyline points="6 14 12 8 18 14"></polyline></svg>
-</button>
-
-<script>
-  // scroll reveal
-  const io = new IntersectionObserver((entries)=>{
-    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); } });
-  }, { threshold:.12, rootMargin:'0px 0px -40px 0px' });
-  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
-
-  // image load -> fade in + stop shimmer
-  document.querySelectorAll('.img-wrap img').forEach(img=>{
-    const done=()=>{ img.classList.add('loaded'); img.closest('.img-wrap').classList.add('img-loaded'); };
-    if(img.complete && img.naturalWidth) done();
-    else { img.addEventListener('load',done); img.addEventListener('error',done); }
-  });
-
-  // back to top
-  const toTop=document.getElementById('toTop');
-  window.addEventListener('scroll',()=>{ toTop.classList.toggle('visible', window.scrollY>600); });
-  toTop.addEventListener('click',()=>window.__lenis ? window.__lenis.scrollTo(0) : window.scrollTo({top:0,behavior:'smooth'}));
-
-  // before/after slider - drag to compare
-  (function(){
-    const stage=document.getElementById('baStage');
-    const before=document.getElementById('baBefore');
-    const handle=document.getElementById('baHandle');
-    const knob=document.getElementById('baKnob');
-    if(!stage) return;
-    let dragging=false, interacted=false;
-
-    function setPct(pct){
-      pct=Math.max(0,Math.min(100,pct));
-      before.style.clipPath='inset(0 '+(100-pct)+'% 0 0)';
-      handle.style.left=pct+'%';
-    }
-    function moveFromX(clientX){
-      const r=stage.getBoundingClientRect();
-      setPct(((clientX-r.left)/r.width)*100);
-    }
-    function start(){ if(document.body.classList.contains('cms-on')) return; dragging=true; if(!interacted){ interacted=true; knob.classList.remove('wiggle'); } }
-    function end(){ dragging=false; }
-
-    stage.addEventListener('mousedown',e=>{ start(); moveFromX(e.clientX); });
-    stage.addEventListener('touchstart',e=>{ start(); if(e.touches[0]) moveFromX(e.touches[0].clientX); },{passive:true});
-    window.addEventListener('mousemove',e=>{ if(dragging){ e.preventDefault(); moveFromX(e.clientX); } },{passive:false});
-    window.addEventListener('touchmove',e=>{ if(dragging&&e.touches[0]){ e.preventDefault(); moveFromX(e.touches[0].clientX); } },{passive:false});
-    window.addEventListener('mouseup',end);
-    window.addEventListener('touchend',end);
-    setPct(50);
-  })();
-
-</script>
-
-<script id="cms-script">
-  /* ============================================================
-     CONTENT MANAGER (owner-only)
-     - Enter via #edit in the URL, or Ctrl/Cmd + Shift + E
-     - Edit fields in the side panel, or click text/images on the page
-     - Save draft (this browser) -> Export updated HTML to publish
-     - Export / Import a content JSON file as a portable backlog
-     ============================================================ */
-  (function(){
-    var EDITABLE = [
-      '.heading','.subhead','.tag','.caption','.cap-lead',
-      '.tldr-cell .k','.tldr-cell p',
-      '.date-label','.sec-head',
-      '.meta-cell .k','.meta-cell .v',
-      '.hook','.lede','.body-text',
-      '.stake .k','.stake p',
-      '.rf-col .k','.rf-col p',
-      '.worked .k','.worked p',
-      '.badge','.tradeoff .k','.tradeoff p',
-      '.rejtag','.ba-chip','.ba-hint span',
-      '.reflect'
-    ].join(',');
-    var IMGS = '.img-wrap img, .ba-stage img';
-    var STORE_KEY = 'tlog_cms_draft_v1';
-
-    // ---------- access gate ----------
-    // Require a passphrase before the editor opens. Set to '' (empty) for no passphrase.
-    // This lives ONLY in your private source file; the published file ships with no editor at all.
-    var EDIT_PASSPHRASE = 'finetuning';   // <-- change this to your own secret
-    var SESSION_OK = 'tlog_cms_ok';
-    function gateOpen(){
-      if(!EDIT_PASSPHRASE) return true;
-      try{ if(sessionStorage.getItem(SESSION_OK)==='1') return true; }catch(e){}
-      for(var tries=0; tries<3; tries++){
-        var v=prompt('Enter the edit passphrase:');
-        if(v===null) return false;                 // cancelled
-        if(v===EDIT_PASSPHRASE){ try{ sessionStorage.setItem(SESSION_OK,'1'); }catch(e){} return true; }
-      }
-      alert('Incorrect passphrase.');
-      return false;
-    }
-
-    var body      = document.body;
-    var root      = document.getElementById('cmsRoot');
-    var panelBody = document.getElementById('cmsBody');
-    var statusEl  = document.getElementById('cmsStatus');
-    var searchEl  = document.getElementById('cmsSearch');
-    var imgInput  = document.getElementById('cmsImgInput');
-    var jsonInput = document.getElementById('cmsJsonInput');
-
-    var targetImg = null;
-    var dirty = false;
-    var built = false;
-    var original = new Map();   // element/img -> original innerHTML / src
-    var cardFor  = new Map();   // id -> { card, ta?, note?, thumb? }
-
-    // ---------- safe localStorage ----------
-    function lsGet(){ try{ return JSON.parse(localStorage.getItem(STORE_KEY) || 'null'); }catch(e){ return null; } }
-    function lsSet(o){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(o)); return true; }catch(e){ return false; } }
-    function lsDel(){ try{ localStorage.removeItem(STORE_KEY); }catch(e){} }
-
-    // ---------- helpers ----------
-    function escapeHtml(s){ return (s||'').replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
-    function snippet(s, n){ s=(s||'').replace(/\s+/g,' ').trim(); return s.length>n ? s.slice(0,n)+'…' : s; }
-
-    function sectionTitle(el){
-      var art = el.closest('article.entry');
-      if(art){ var h=art.querySelector('.date-label'); if(h) return h.textContent.trim(); }
-      if(el.closest('.tldr')) return 'TL;DR';
-      return 'Hero';
-    }
-    function fieldLabel(el){
-      var map=[['heading','Title'],['subhead','Subtitle'],['hook','Opening line'],['sec-head','Section heading'],
-        ['lede','Lead paragraph'],['body-text','Paragraph'],['cap-lead','Caption lead'],['caption','Image caption'],
-        ['reflect','Reflection'],['date-label','Section label'],['tag','Tag'],['badge','Badge'],['rejtag','Status tag'],['ba-chip','Slider label']];
-      for(var i=0;i<map.length;i++){ if(el.classList.contains(map[i][0])) return map[i][1]; }
-      if(el.matches('.tldr-cell .k')) return 'Column title';
-      if(el.matches('.tldr-cell p')) return 'Column text';
-      if(el.matches('.meta-cell .k')) return 'Field label';
-      if(el.matches('.meta-cell .v')) return 'Field value';
-      if(el.matches('.stake .k')) return 'Card title';
-      if(el.matches('.stake p')) return 'Card text';
-      if(el.matches('.rf-col .k')) return 'Column title';
-      if(el.matches('.rf-col p')) return 'Column text';
-      if(el.matches('.worked .k')) return 'Label';
-      if(el.matches('.worked p')) return 'Paragraph';
-      if(el.matches('.tradeoff .k')) return 'Label';
-      if(el.matches('.tradeoff p')) return 'Paragraph';
-      if(el.matches('.ba-hint span')) return 'Hint';
-      return 'Text';
-    }
-
-    function assignIds(){
-      var i=0;
-      document.querySelectorAll(EDITABLE).forEach(function(el){ if(!el.dataset.cmsId) el.dataset.cmsId='f'+i; i++; });
-      var j=0;
-      document.querySelectorAll(IMGS).forEach(function(img){ if(!img.dataset.cmsImg) img.dataset.cmsImg='img'+j; j++; });
-    }
-
-    // ---------- status ----------
-    function markDirty(){ dirty=true; statusEl.innerHTML='<span class="unsaved">Unsaved changes</span>'; }
-    function markMsg(m, saved){ dirty = saved ? false : dirty; statusEl.innerHTML = saved ? '<b>'+escapeHtml(m)+'</b>' : escapeHtml(m); }
-
-    // ---------- panel build ----------
-    function textCard(el){
-      var card=document.createElement('div'); card.className='cms-card';
-      var lbl=document.createElement('div'); lbl.className='lbl';
-      lbl.innerHTML='<span class="kind">Text</span><span>'+escapeHtml(fieldLabel(el))+'</span>';
-      card.appendChild(lbl);
-      var ref={card:card};
-      if(el.children.length===0){
-        var ta=document.createElement('textarea');
-        ta.value=el.textContent;
-        ta.addEventListener('input', function(){ el.textContent=ta.value; markDirty(); });
-        card.appendChild(ta); ref.ta=ta;
-      } else {
-        var note=document.createElement('div'); note.className='rich-note';
-        note.innerHTML='Has formatting (links / highlights). Click “Edit on page”.<span class="snip">'+escapeHtml(snippet(el.textContent,90))+'</span>';
-        card.appendChild(note); ref.note=note;
-      }
-      var row=document.createElement('div'); row.className='cms-row';
-      var go=document.createElement('button'); go.className='cms-mini'; go.type='button'; go.textContent='Edit on page';
-      go.addEventListener('click', function(){ focusOnPage(el); });
-      row.appendChild(go); card.appendChild(row);
-      cardFor.set(el.dataset.cmsId, ref);
-      return card;
-    }
-    function imgCard(img){
-      var card=document.createElement('div'); card.className='cms-card';
-      var lbl=document.createElement('div'); lbl.className='lbl';
-      lbl.innerHTML='<span class="kind img">Image</span><span>'+escapeHtml(snippet(img.getAttribute('alt')||'Image',42))+'</span>';
-      card.appendChild(lbl);
-      var thumb=document.createElement('img'); thumb.className='cms-thumb'; thumb.src=img.getAttribute('src'); thumb.alt='';
-      card.appendChild(thumb);
-      var row=document.createElement('div'); row.className='cms-row';
-      var rep=document.createElement('button'); rep.className='cms-mini'; rep.type='button'; rep.textContent='Replace';
-      rep.addEventListener('click', function(){ pickImage(img); });
-      var rst=document.createElement('button'); rst.className='cms-mini'; rst.type='button'; rst.textContent='Reset';
-      rst.addEventListener('click', function(){ resetImage(img); });
-      row.appendChild(rep); row.appendChild(rst); card.appendChild(row);
-      cardFor.set(img.dataset.cmsImg, {card:card, thumb:thumb});
-      return card;
-    }
-    function buildPanel(){
-      panelBody.innerHTML='';
-      cardFor=new Map();
-      var order=[], groups={};
-      function push(sec, node){ if(!groups[sec]){ groups[sec]=[]; order.push(sec); } groups[sec].push(node); }
-      document.querySelectorAll(EDITABLE).forEach(function(el){ push(sectionTitle(el), textCard(el)); });
-      document.querySelectorAll(IMGS).forEach(function(img){ push(sectionTitle(img), imgCard(img)); });
-      order.forEach(function(sec){
-        var s=document.createElement('div'); s.className='cms-sec';
-        var h=document.createElement('div'); h.className='cms-sec-h'; h.textContent=sec; s.appendChild(h);
-        groups[sec].forEach(function(n){ s.appendChild(n); });
-        panelBody.appendChild(s);
-      });
-    }
-
-    function focusOnPage(el){
-      el.scrollIntoView({behavior:'smooth', block:'center'});
-      document.querySelectorAll('.cms-active').forEach(function(x){ x.classList.remove('cms-active'); });
-      el.classList.add('cms-active');
-      setTimeout(function(){ el.focus(); }, 200);
-    }
-
-    // ---------- images ----------
-    function pickImage(img){ targetImg=img; if(!original.has(img)) original.set(img, img.getAttribute('src')); imgInput.value=''; imgInput.click(); }
-    function setImg(img, src){
-      img.setAttribute('src', src); img.classList.add('loaded');
-      var w=img.closest('.img-wrap'); if(w){ w.classList.add('img-loaded','cms-flash'); setTimeout(function(){ w.classList.remove('cms-flash'); },700); }
-      var ref=cardFor.get(img.dataset.cmsImg); if(ref && ref.thumb) ref.thumb.src=src;
-    }
-    function resetImage(img){ if(original.has(img)){ setImg(img, original.get(img)); markDirty(); } }
-    imgInput.addEventListener('change', function(){
-      var file=imgInput.files && imgInput.files[0]; if(!file || !targetImg) return;
-      var r=new FileReader();
-      r.onload=function(ev){ setImg(targetImg, ev.target.result); targetImg=null; markDirty(); };
-      r.readAsDataURL(file);
-    });
-
-    // click images on the page to replace
-    document.addEventListener('click', function(e){
-      if(!body.classList.contains('cms-on')) return;
-      if(e.target.closest('.cms-root') || e.target.closest('[data-edit]')) return;
-      var wrap=e.target.closest('.img-wrap, .ba-stage'); if(!wrap) return;
-      var im=wrap.querySelector('img'); if(im) pickImage(im);
-    });
-
-    // sync inline edits back to panel cards
-    function wireInline(){
-      document.querySelectorAll(EDITABLE).forEach(function(el){
-        el.addEventListener('input', function(){
-          markDirty();
-          var ref=cardFor.get(el.dataset.cmsId); if(!ref) return;
-          if(ref.ta && ref.ta.value!==el.textContent) ref.ta.value=el.textContent;
-          if(ref.note){ var s=ref.note.querySelector('.snip'); if(s) s.textContent=snippet(el.textContent,90); }
-        });
-        el.addEventListener('blur', function(){ el.classList.remove('cms-active'); });
-      });
-    }
-
-    // ---------- draft ----------
-    function applyDraft(d){
-      if(!d) return false;
-      if(d.text){ Object.keys(d.text).forEach(function(id){ var el=document.querySelector('[data-cms-id="'+id+'"]'); if(el) el.innerHTML=d.text[id]; }); }
-      if(d.img){ Object.keys(d.img).forEach(function(id){ var im=document.querySelector('[data-cms-img="'+id+'"]'); if(im) setImg(im, d.img[id]); }); }
-      return true;
-    }
-    function collectDraft(){
-      var text={}, img={};
-      document.querySelectorAll('[data-cms-id]').forEach(function(el){ text[el.dataset.cmsId]=el.innerHTML; });
-      document.querySelectorAll('[data-cms-img]').forEach(function(im){ var s=im.getAttribute('src'); if(s && s.indexOf('data:')===0) img[im.dataset.cmsImg]=s; });
-      return { v:1, savedAt:new Date().toISOString(), text:text, img:img };
-    }
-    function resetAllToOriginal(){
-      original.forEach(function(val, el){ if(el.tagName==='IMG') setImg(el, val); else el.innerHTML=val; });
-    }
-
-    function save(){
-      if(lsSet(collectDraft())) markMsg('Draft saved on this device', true);
-      else alert('Could not save to this browser (private mode or storage disabled). Use “Export updated HTML” to keep your changes.');
-    }
-    function revert(){
-      resetAllToOriginal();
-      var d=lsGet();
-      if(d){ applyDraft(d); markMsg('Reverted to last saved draft', true); }
-      else markMsg('No saved draft. Reset to original.', true);
-      buildPanel();
-    }
-    function discard(){
-      if(!confirm('Discard all changes and saved draft on this device? This cannot be undone.')) return;
-      lsDel(); resetAllToOriginal(); buildPanel(); markMsg('All changes discarded', true);
-    }
-
-    // ---------- export / import ----------
-    function download(content, name, type){
-      var blob=new Blob([content], {type:type}), url=URL.createObjectURL(blob);
-      var a=document.createElement('a'); a.href=url; a.download=name; document.body.appendChild(a); a.click(); a.remove();
-      URL.revokeObjectURL(url);
-    }
-    function exportHtml(){
-      var was=body.classList.contains('cms-on');
-      exit(); // clear editing state on the live DOM
-      // Clone the page and remove every trace of the editor for the PUBLISHED file:
-      var clone=document.documentElement.cloneNode(true);
-      ['cmsRoot','cmsImgInput','cmsJsonInput','cms-script','cms-style'].forEach(function(id){
-        var n=clone.querySelector('#'+id); if(n && n.parentNode) n.parentNode.removeChild(n);
-      });
-      clone.querySelectorAll('[data-cms-id]').forEach(function(n){ n.removeAttribute('data-cms-id'); });
-      clone.querySelectorAll('[data-cms-img]').forEach(function(n){ n.removeAttribute('data-cms-img'); });
-      clone.querySelectorAll('[contenteditable]').forEach(function(n){ n.removeAttribute('contenteditable'); });
-      clone.querySelectorAll('[data-edit]').forEach(function(n){ n.removeAttribute('data-edit'); });
-      clone.querySelectorAll('[spellcheck]').forEach(function(n){ n.removeAttribute('spellcheck'); });
-      clone.querySelectorAll('.cms-active,.cms-flash').forEach(function(n){ n.classList.remove('cms-active','cms-flash'); });
-      var cb=clone.querySelector('body'); if(cb){ cb.className=cb.className.replace(/\bcms-[\w-]+\b/g,'').replace(/\s+/g,' ').trim(); }
-      var html='<!DOCTYPE html>\n'+clone.outerHTML;
-      download(html, 'index.html', 'text/html');
-      if(was) enter();
-      markMsg('Exported a clean index.html (no editor inside) — re-upload it to publish', true);
-    }
-    function exportJson(){
-      var out={ generatedAt:new Date().toISOString(), fields:[], images:[] };
-      document.querySelectorAll('[data-cms-id]').forEach(function(el){
-        out.fields.push({ id:el.dataset.cmsId, section:sectionTitle(el), label:fieldLabel(el), text:el.textContent.replace(/\s+/g,' ').trim(), html:el.innerHTML });
-      });
-      document.querySelectorAll('[data-cms-img]').forEach(function(im){
-        out.images.push({ id:im.dataset.cmsImg, alt:im.getAttribute('alt')||'', src:im.getAttribute('src') });
-      });
-      download(JSON.stringify(out, null, 2), 'transaction-log-content.json', 'application/json');
-    }
-    function importJson(){ jsonInput.value=''; jsonInput.click(); }
-    jsonInput.addEventListener('change', function(){
-      var file=jsonInput.files && jsonInput.files[0]; if(!file) return;
-      var r=new FileReader();
-      r.onload=function(ev){
-        try{
-          var data=JSON.parse(ev.target.result);
-          (data.fields||[]).forEach(function(f){ var el=document.querySelector('[data-cms-id="'+f.id+'"]'); if(el && typeof f.html==='string') el.innerHTML=f.html; });
-          (data.images||[]).forEach(function(im){ var el=document.querySelector('[data-cms-img="'+im.id+'"]'); if(el && im.src) setImg(el, im.src); });
-          buildPanel(); markDirty(); markMsg('Imported content from file', false);
-        }catch(err){ alert('That file is not valid content JSON.'); }
+  <script>
+    (function () {
+      var dot = document.querySelector('.back-dot');
+      var onScroll = function () {
+        dot.classList.toggle('expanded', window.scrollY > 100);
       };
-      r.readAsText(file);
-    });
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
 
-    // ---------- enter / exit ----------
-    function enter(){
-      body.classList.add('cms-on'); body.classList.remove('cms-collapsed');
-      root.setAttribute('aria-hidden','false');
-      document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('visible'); });
-      assignIds();
-      document.querySelectorAll(EDITABLE).forEach(function(el){
-        el.setAttribute('data-edit',''); el.setAttribute('contenteditable','true'); el.spellcheck=false;
-        if(!original.has(el)) original.set(el, el.innerHTML);
+      // Eased scroll-to-top: duration scales with distance, expo-out
+      // landing; routed through Lenis when it's running.
+      var easeOutQuart = function (t) { return 1 - Math.pow(1 - t, 4); };
+      var scrollAnim = null;
+      dot.addEventListener('click', function () {
+        if (scrollAnim) cancelAnimationFrame(scrollAnim);
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          if (window.__lenis) window.__lenis.scrollTo(0, { immediate: true });
+          else window.scrollTo(0, 0);
+          return;
+        }
+        var startY = window.scrollY;
+        var duration = Math.max(500, Math.min(1300, 400 + startY * 0.12));
+
+        if (window.__lenis) {
+          window.__lenis.scrollTo(0, { duration: duration / 1000, easing: easeOutQuart });
+          return;
+        }
+
+        var t0 = performance.now();
+        var root = document.documentElement;
+        var prevBehavior = root.style.scrollBehavior;
+        root.style.scrollBehavior = 'auto';
+
+        var step = function (now) {
+          var p = Math.min(1, (now - t0) / duration);
+          window.scrollTo(0, Math.round(startY * (1 - easeOutQuart(p))));
+          if (p < 1) {
+            scrollAnim = requestAnimationFrame(step);
+          } else {
+            scrollAnim = null;
+            root.style.scrollBehavior = prevBehavior;
+          }
+        };
+        scrollAnim = requestAnimationFrame(step);
       });
-      document.querySelectorAll(IMGS).forEach(function(img){ if(!original.has(img)) original.set(img, img.getAttribute('src')); });
-      var d=lsGet();
-      if(d) applyDraft(d);
-      buildPanel();
-      if(!built){ wireInline(); built=true; }
-      syncToggle();
-      markMsg(d ? 'Draft restored from this device' : 'All changes saved on this device', true);
-    }
-    function exit(){
-      body.classList.remove('cms-on','cms-collapsed');
-      root.setAttribute('aria-hidden','true');
-      document.querySelectorAll('[data-edit]').forEach(function(el){ el.removeAttribute('data-edit'); el.removeAttribute('contenteditable'); el.classList.remove('cms-active'); });
-      if(location.hash==='#edit'){ history.replaceState(null,'', location.pathname + location.search); }
-    }
 
-    // ---------- panel chrome ----------
-    var toggleBtn=document.getElementById('cmsToggle');
-    var closeBtn =document.getElementById('cmsClose');
-    var fab      =document.getElementById('cmsFab');
-    function syncToggle(){ if(toggleBtn) toggleBtn.textContent = body.classList.contains('cms-collapsed') ? 'Show panel' : 'Hide panel'; }
-    if(toggleBtn) toggleBtn.addEventListener('click', function(){ body.classList.toggle('cms-collapsed'); syncToggle(); });
-    if(fab)       fab.addEventListener('click', function(){ body.classList.remove('cms-collapsed'); syncToggle(); });
-    if(closeBtn)  closeBtn.addEventListener('click', exit);
-
-    document.getElementById('cmsSave').addEventListener('click', save);
-    document.getElementById('cmsRevert').addEventListener('click', revert);
-    document.getElementById('cmsDiscard').addEventListener('click', discard);
-    document.getElementById('cmsExportHtml').addEventListener('click', exportHtml);
-    document.getElementById('cmsExportJson').addEventListener('click', exportJson);
-    document.getElementById('cmsImportJson').addEventListener('click', importJson);
-    searchEl.addEventListener('input', function(){
-      var q=searchEl.value.toLowerCase().trim();
-      document.querySelectorAll('.cms-card').forEach(function(c){ c.classList.toggle('hidden', !!q && c.textContent.toLowerCase().indexOf(q)===-1); });
-    });
-
-    // ---------- entry points ----------
-    if(location.hash==='#edit'){ if(gateOpen()) enter(); }
-    window.addEventListener('keydown', function(e){
-      if((e.metaKey||e.ctrlKey) && e.shiftKey && (e.key==='E'||e.key==='e')){
-        e.preventDefault();
-        if(body.classList.contains('cms-on')) exit();
-        else if(gateOpen()) enter();
-      }
-    });
-    window.addEventListener('beforeunload', function(e){ if(dirty){ e.preventDefault(); e.returnValue=''; } });
-  })();
-</script>
-<!-- Lenis smooth scrolling (shared) -->
-<script src="../js/lenis.min.js"></script>
-<script src="../js/scroll-effects.js"></script>
+      // Reveal images once loaded; the .shot wrapper shows a
+      // shimmering skeleton until then.
+      document.querySelectorAll('.shot img').forEach(function (img) {
+        var reveal = function () { img.closest('.shot').classList.add('loaded'); };
+        if (img.complete && img.naturalWidth > 0) {
+          reveal();
+        } else {
+          img.addEventListener('load', reveal);
+          img.addEventListener('error', reveal);
+        }
+      });
+    })();
+  </script>
+  <script src="../assets/hero-effects.js" defer></script>
 
 </body>
 </html>
