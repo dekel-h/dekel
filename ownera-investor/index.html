@@ -910,6 +910,8 @@
       lightbox.setAttribute('role', 'dialog');
       lightbox.setAttribute('aria-modal', 'true');
       lightbox.setAttribute('aria-label', 'Image preview');
+      lightbox.setAttribute('tabindex', '-1');
+      lightbox.style.outline = 'none';
       var lightboxImg = document.createElement('img');
       lightboxImg.alt = '';
       var lightboxClose = document.createElement('button');
@@ -936,7 +938,7 @@
         lightbox.classList.add('open');
         if (window.__lenis) window.__lenis.stop();
         document.addEventListener('keydown', onLightboxKey);
-        lightboxClose.focus({ preventScroll: true });
+        lightbox.focus({ preventScroll: true });
       };
 
       lightbox.addEventListener('click', closeLightbox);
