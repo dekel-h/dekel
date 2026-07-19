@@ -444,6 +444,81 @@
       flex-shrink: 0;
     }
 
+
+    /* ============================================================
+       LIGHTBOX — click a screenshot to view it full size
+    ============================================================ */
+    .shot { cursor: zoom-in; }
+
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(17, 15, 24, 0.94);
+      -webkit-backdrop-filter: blur(8px);
+              backdrop-filter: blur(8px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      cursor: zoom-out;
+    }
+
+    .lightbox.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .lightbox img {
+      max-width: min(1800px, 100%);
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      border-radius: 12px;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
+      transform: scale(0.96);
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .lightbox.open img {
+      transform: scale(1);
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: calc(24px + env(safe-area-inset-top, 0px));
+      right: calc(24px + env(safe-area-inset-right, 0px));
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      border-radius: 99px;
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      font-size: 20px;
+      line-height: 1;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .lightbox-close:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: scale(1.08);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .lightbox,
+      .lightbox img,
+      .lightbox-close {
+        transition: none;
+      }
+    }
+
     /* ============================================================
        BACK-TO-TOP BUTTON (same behavior as the homepage)
     ============================================================ */
@@ -792,6 +867,52 @@
           }
         };
         scrollAnim = requestAnimationFrame(step);
+      });
+
+
+      // Lightbox: click a screenshot to view the full-resolution
+      // original (the PNG source, not the downscaled WebP).
+      var lightbox = document.createElement('div');
+      lightbox.className = 'lightbox';
+      lightbox.setAttribute('role', 'dialog');
+      lightbox.setAttribute('aria-modal', 'true');
+      lightbox.setAttribute('aria-label', 'Image preview');
+      var lightboxImg = document.createElement('img');
+      lightboxImg.alt = '';
+      var lightboxClose = document.createElement('button');
+      lightboxClose.className = 'lightbox-close';
+      lightboxClose.setAttribute('aria-label', 'Close image preview');
+      lightboxClose.innerHTML = '&#10005;';
+      lightbox.appendChild(lightboxImg);
+      lightbox.appendChild(lightboxClose);
+      document.body.appendChild(lightbox);
+
+      var closeLightbox = function () {
+        lightbox.classList.remove('open');
+        if (window.__lenis) window.__lenis.start();
+        document.removeEventListener('keydown', onLightboxKey);
+      };
+
+      var onLightboxKey = function (e) {
+        if (e.key === 'Escape') closeLightbox();
+      };
+
+      var openLightbox = function (img) {
+        lightboxImg.src = img.getAttribute('src');  /* full-res PNG */
+        lightboxImg.alt = img.alt || '';
+        lightbox.classList.add('open');
+        if (window.__lenis) window.__lenis.stop();
+        document.addEventListener('keydown', onLightboxKey);
+        lightboxClose.focus();
+      };
+
+      lightbox.addEventListener('click', closeLightbox);
+
+      document.querySelectorAll('.shot').forEach(function (shot) {
+        shot.addEventListener('click', function () {
+          var img = shot.querySelector('img');
+          if (img && img.naturalWidth > 0) openLightbox(img);
+        });
       });
 
       // Reveal images once loaded; the .shot wrapper shows a
