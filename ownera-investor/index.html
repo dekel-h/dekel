@@ -511,6 +511,15 @@
       transform: scale(1.08);
     }
 
+    .lightbox-close:focus {
+      outline: none;  /* no ring on mouse/touch focus */
+    }
+
+    .lightbox-close:focus-visible {
+      outline: 2px solid rgba(255, 255, 255, 0.7);  /* keyboard only */
+      outline-offset: 2px;
+    }
+
     @media (prefers-reduced-motion: reduce) {
       .lightbox,
       .lightbox img,
@@ -903,7 +912,7 @@
         lightbox.classList.add('open');
         if (window.__lenis) window.__lenis.stop();
         document.addEventListener('keydown', onLightboxKey);
-        lightboxClose.focus();
+        lightboxClose.focus({ preventScroll: true });
       };
 
       lightbox.addEventListener('click', closeLightbox);
