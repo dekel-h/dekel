@@ -57,6 +57,9 @@ def main():
     # Keep the intro's sentence flow: paragraph breaks become one line each.
     intro_lines = [collapse(l) for l in strip_tags(intro_html).split("\n")]
     bio = " ".join(l for l in intro_lines if l)
+    # When the meta description just mirrors the intro, one copy is enough.
+    if collapse(summary) == bio:
+        bio = ""
 
     # Case studies: title from each page's <h1>, blurb from its meta description.
     cases = []
@@ -99,12 +102,11 @@ def main():
     )
     experience_lines = "\n".join(experience)
 
+    bio_block = f"\n{bio}\n" if bio else ""
     out = f"""# Dekel Hillel
 
 > {summary} Portfolio: {BASE_URL}
-
-{bio}
-
+{bio_block}
 ## Case Studies
 
 {case_lines}

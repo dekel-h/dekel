@@ -1,13 +1,11 @@
 # Dekel Hillel
 
-> A Senior Product Designer focused on architecting complex B2B infrastructure from the ground up. An expert at translating high-scale data platforms into intuitive tools, with proven experience leading design at Ownera, Placer.ai, and SimilarWeb. Portfolio: https://dekelhillel.com
-
-I'm a product designer who builds the foundations for complex products, most recently leading design at Ownera. Before that, high-scale work at SimilarWeb and Placer.ai. I love taking things from 0 to 1, sweating the details, and helping teams be more ambitious and have fun doing it. I've also taught a UX/UI course at Bezalel Academy of Arts and Design.
+> I'm a product designer who builds the foundations for complex products, most recently leading design at Ownera. Before that, high-scale work at SimilarWeb and Placer.ai. I love taking things from 0 to 1, sweating the details, and helping teams be more ambitious and have fun doing it. I've also taught a UX/UI course at Bezalel Academy of Arts and Design. Portfolio: https://dekelhillel.com
 
 ## Case Studies
 
-- [From JSON Dump to Transaction Lifecycle](https://dekelhillel.com/transaction-log/): Giving operations teams a way to diagnose failures themselves, instead of escalating raw JSON to engineering.
-- [Designing for Investors Who Expect More](https://dekelhillel.com/ownera-investor/): The full investor experience on an institutional digital-asset platform: portfolio, invest flow, trading, and account management.
+- [From JSON Dump to Transaction Lifecycle](https://dekelhillel.com/transaction-log/): Reframing Ownera's most-used admin screen from a raw JSON tree into a readable transaction lifecycle, so operations teams could diagnose failures without escalating.
+- [Designing for Investors Who Expect More](https://dekelhillel.com/ownera-investor/): Restructuring Ownera's investor app end-to-end: portfolio IA, focused asset views, transparent invest flow, and components that scale across data and bank brands.
 - [Free Access to a Paid Data Platform, Without Giving the Platform Away](https://dekelhillel.com/placer-lite/): A free, public product that converts unfamiliar visitors into paying users.
 
 ## Experience
