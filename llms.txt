@@ -1,20 +1,20 @@
 # Dekel Hillel
 
-> Senior Product Designer focused on architecting complex B2B infrastructure from the ground up. Expert at translating high-scale data platforms into intuitive tools, with experience leading design at Ownera, Placer.ai, and SimilarWeb. Based portfolio: https://dekelhillel.com
+> A Senior Product Designer focused on architecting complex B2B infrastructure from the ground up. An expert at translating high-scale data platforms into intuitive tools, with proven experience leading design at Ownera, Placer.ai, and SimilarWeb. Portfolio: https://dekelhillel.com
 
-Dekel builds the foundations for complex products — taking things from 0 to 1, designing systems, and helping teams ship ambitious work. Most recently led design at Ownera (fintech infrastructure for trading tokenized assets between financial institutions, backed by J.P. Morgan). Previously did high-scale work at SimilarWeb and Placer.ai, and taught a UX/UI course at Bezalel Academy of Arts and Design.
+I'm a product designer who builds the foundations for complex products, most recently leading design at Ownera. Before that, high-scale work at SimilarWeb and Placer.ai. I love taking things from 0 to 1, sweating the details, and helping teams be more ambitious and have fun doing it. I've also taught a UX/UI course at Bezalel Academy of Arts and Design.
 
 ## Case Studies
 
-- [From JSON Dump to Transaction Lifecycle](https://dekelhillel.com/transaction-log/): Ownera admin platform — giving operations teams a way to diagnose transaction failures themselves, instead of escalating raw JSON to engineering.
-- [Designing for Investors Who Expect More](https://dekelhillel.com/ownera-investor/): The full investor experience on an institutional digital-asset platform — portfolio, invest flow, trading, and account management.
-- [Placer.ai Lite Platform](https://dekelhillel.com/placer-lite/): Free access to a paid location-intelligence platform, without giving the platform away — a public product that converts unfamiliar visitors into paying users.
+- [From JSON Dump to Transaction Lifecycle](https://dekelhillel.com/transaction-log/): Giving operations teams a way to diagnose failures themselves, instead of escalating raw JSON to engineering.
+- [Designing for Investors Who Expect More](https://dekelhillel.com/ownera-investor/): The full investor experience on an institutional digital-asset platform: portfolio, invest flow, trading, and account management.
+- [Free Access to a Paid Data Platform, Without Giving the Platform Away](https://dekelhillel.com/placer-lite/): A free, public product that converts unfamiliar visitors into paying users.
 
 ## Experience
 
-- Ownera (2023–2026): Led design. 40+ shipped features across the Admin and Investor platforms, on a design system built from scratch.
-- Placer.ai (2021–2022): Location intelligence unicorn. Notable projects: Lite Platform, Design System & React Transformation, Marketplace, Embedded Widgets.
-- SimilarWeb (2018–2020): Digital intelligence platform. Notable projects: Extension Redesign, Registration Funnel & Onboarding, Cross-Platform B2C Products.
+- Ownera (2023 → 2026): Ownera is Fintech infrastructure for trading tokenized assets between financial institutions, backed by J.P. Morgan. Beyond the two case studies: 40+ shipped features across the Admin and Investor platforms, on a design system I built from scratch.
+- Placer.ai (2021 → 2022): Placer.ai is a location intelligence unicorn: foot-traffic analytics for retail, real estate, and finance. Notable projects: Lite Platform • Design System & React Transformation • Marketplace • Embedded Widgets
+- SimilarWeb (2018 → 2020): SimilarWeb is a digital intelligence platform that helps businesses understand market trends and competitive landscapes. Notable projects: SimilarWeb Extension Redesign • Registration Funnel & Onboarding • Cross-Platform B2C Products
 
 ## Contact
 
