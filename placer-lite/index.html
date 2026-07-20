@@ -73,6 +73,24 @@
   .menu-back .back-arrow{ display:inline-block; transition:transform .25s var(--ease); }
   a.menu-back:hover{ opacity:1; color:var(--text); }
   a.menu-back:hover .back-arrow{ transform:translateX(-4px); }
+
+  /* ---------- sticky back bar (appears after the header scrolls away) ---------- */
+  .back-bar{
+    position:fixed; top:0; left:0; width:100%; z-index:150;
+    background:rgba(29,29,31,0.7);
+    opacity:0; visibility:hidden; transform:translateY(-8px);
+    -webkit-backdrop-filter:blur(0px); backdrop-filter:blur(0px);
+    transition:opacity .5s ease, transform .6s var(--ease),
+      -webkit-backdrop-filter .5s ease, backdrop-filter .5s ease,
+      visibility 0s linear .5s;
+  }
+  .back-bar.visible{
+    opacity:1; visibility:visible; transform:translateY(0);
+    -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px);
+    transition:opacity .5s ease, transform .6s var(--ease),
+      -webkit-backdrop-filter .5s ease, backdrop-filter .5s ease;
+  }
+  .back-bar-inner{ max-width:1160px; margin:0 auto; padding:20px 40px; display:flex; }
   .menu-spacer{ flex:1; }
   .menu-meta{
     font-family:var(--font-body); font-size:13px; color:var(--secondary);
@@ -286,6 +304,7 @@
   @media (max-width:1316px){
     .heading,.subhead,.tags{ animation:none; opacity:1; transform:none; }
     .menu{ padding:20px 24px; gap:16px; }
+    .back-bar-inner{ padding:16px 24px; }
     .main{ padding:8px 24px 40px; }
     .back-to-top{ bottom:24px; right:24px; }
   }
@@ -293,6 +312,7 @@
   /* ---------- mobile ≤799px ---------- */
   @media (max-width:799px){
     .menu{ flex-wrap:wrap; gap:12px; padding:18px 20px; }
+    .back-bar-inner{ padding:14px 20px; }
     .menu-meta{ display:none; }
     .heading{ font-size:42px; letter-spacing:-2px; }
     .sec-head{ font-size:28px; letter-spacing:-1px; }
@@ -316,6 +336,12 @@
 
 <!-- Background gradient glow -->
 <div class="bg-glow" aria-hidden="true"></div>
+
+<div class="back-bar">
+  <div class="back-bar-inner">
+    <a href="../" class="menu-link menu-back"><span class="back-arrow" aria-hidden="true">&#8592;</span> Back</a>
+  </div>
+</div>
 
 <div class="layout">
 
@@ -488,7 +514,12 @@
 
   // back to top
   const toTop=document.getElementById('toTop');
-  window.addEventListener('scroll',()=>{ toTop.classList.toggle('visible', window.scrollY>600); });
+  const backBar=document.querySelector('.back-bar');
+  const menuBack=document.querySelector('.menu .menu-back');
+  window.addEventListener('scroll',()=>{
+    toTop.classList.toggle('visible', window.scrollY>600);
+    backBar.classList.toggle('visible', menuBack.getBoundingClientRect().bottom<0);
+  });
   toTop.addEventListener('click',()=>window.__lenis ? window.__lenis.scrollTo(0) : window.scrollTo({top:0,behavior:'smooth'}));
 </script>
 <!-- Lenis smooth scrolling (shared) -->
