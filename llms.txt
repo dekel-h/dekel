@@ -1,0 +1,21 @@
+# Dekel Hillel
+
+> I'm a product designer who builds the foundations for complex products, most recently leading design at Ownera. Before that, high-scale work at SimilarWeb and Placer.ai. I love taking things from 0 to 1, sweating the details, and helping teams be more ambitious and have fun doing it. I've also taught a UX/UI course at Bezalel Academy of Arts and Design. Portfolio: https://dekelhillel.com
+
+## Case Studies
+
+- [From JSON Dump to Transaction Lifecycle](https://dekelhillel.com/transaction-log/): Reframing Ownera's most-used admin screen from a raw JSON tree into a readable transaction lifecycle, so operations teams could diagnose failures without escalating.
+- [Designing for Investors Who Expect More](https://dekelhillel.com/ownera-investor/): Restructuring Ownera's investor app end-to-end: portfolio IA, focused asset views, transparent invest flow, and components that scale across data and bank brands.
+- [Free Access to a Paid Data Platform, Without Giving the Platform Away](https://dekelhillel.com/placer-lite/): A free, public product that converts unfamiliar visitors into paying users.
+
+## Experience
+
+- Ownera (2023 → 2026): Ownera is Fintech infrastructure for trading tokenized assets between financial institutions, backed by J.P. Morgan. Beyond the two case studies: 40+ shipped features across the Admin and Investor platforms, on a design system I built from scratch.
+- Placer.ai (2021 → 2022): Placer.ai is a location intelligence unicorn: foot-traffic analytics for retail, real estate, and finance. Notable projects: Lite Platform • Design System & React Transformation • Marketplace • Embedded Widgets
+- SimilarWeb (2018 → 2020): SimilarWeb is a digital intelligence platform that helps businesses understand market trends and competitive landscapes. Notable projects: SimilarWeb Extension Redesign • Registration Funnel & Onboarding • Cross-Platform B2C Products
+
+## Contact
+
+- [Email](mailto:h.dekel@gmail.com)
+- [LinkedIn](https://www.linkedin.com/in/dekelhillel/)
+- [CV](https://dekelhillel.com/cv.pdf)
