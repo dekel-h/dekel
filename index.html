@@ -113,8 +113,6 @@
     .page {
       position: relative;
       z-index: 1;
-      /* opaque so it covers the pinned hero during the scroll reveal */
-      background: var(--bg);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -185,6 +183,32 @@
       pointer-events: none;
       -webkit-mask-image: linear-gradient(to bottom, #000 72%, transparent 100%);
               mask-image: linear-gradient(to bottom, #000 72%, transparent 100%);
+    }
+
+    /* ============================================================
+       SCROLL REVEAL (desktop, motion-safe)
+       The hero is fixed behind while the work section scrolls up
+       over it — no GSAP pin, so no width capture / resize gaps.
+       js/hero-reveal.js adds .reveal to <body>.
+    ============================================================ */
+    @media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
+      body.reveal .hero {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 100vh;
+        min-height: 100vh;
+        z-index: 0;
+        will-change: opacity, transform;
+      }
+      /* page scrolls over the fixed hero; the first viewport is
+         reserved for the hero, and the background stays transparent
+         so the hero shows through the side gutters */
+      body.reveal .page {
+        margin-top: 100vh;
+        background: transparent;
+      }
     }
 
     .hero-bends,
