@@ -113,6 +113,8 @@
     .page {
       position: relative;
       z-index: 1;
+      /* opaque so it covers the pinned hero during the scroll reveal */
+      background: var(--bg);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -743,6 +745,11 @@
     })();
   </script>
   <script src="assets/hero-effects.js" defer></script>
+
+  <!-- GSAP pinned hero → work reveal (desktop, motion-safe) -->
+  <script src="js/gsap.min.js"></script>
+  <script src="js/ScrollTrigger.min.js"></script>
+  <script src="js/hero-reveal.js"></script>
 
 </body>
 </html>
