@@ -1,10 +1,10 @@
-/* Hero → work scroll reveal.
+/* Hero → work scroll reveal (natural flow).
    On desktop (and only when the user hasn't asked for reduced motion),
-   the hero is fixed behind while the work section scrolls up over it,
-   with the hero content easing back and fading for depth.
-   Uses a scroll-scrubbed timeline (no GSAP pin), so there's no width
-   capture and no resize gaps. Mobile / reduced-motion keep normal
-   scrolling. Integrates with the site's Lenis smooth scrolling. */
+   the hero scrolls away as usual while its content parallax-fades and
+   recedes for depth, and the work section rises up over the hero's
+   faded lower edge. No GSAP pin / fixed positioning / scroll-jacking,
+   so it reverses cleanly on scroll-up and never desyncs or leaves a
+   gap. Integrates with the site's Lenis smooth scrolling. */
 (function () {
   'use strict';
   if (!window.gsap || !window.ScrollTrigger) return;
@@ -24,35 +24,47 @@
     var heroBg = document.querySelector('.hero-bg');
     if (!hero || !heroInner) return;
 
-    /* Enables the fixed-hero CSS (see .reveal rules in the stylesheet). */
     document.body.classList.add('reveal');
 
-    var tl = gsap.timeline({
+    /* Hero content recedes and fades as the hero scrolls out of view. */
+    var innerTween = gsap.to(heroInner, {
+      yPercent: 26,
+      scale: 0.96,
+      opacity: 0,
+      ease: 'none',
       scrollTrigger: {
-        trigger: document.documentElement,
-        start: 0,
-        end: function () { return window.innerHeight; },  /* recomputed on refresh/resize */
+        trigger: hero,
+        start: 'center center',
+        end: 'bottom top',
         scrub: 0.6,
         invalidateOnRefresh: true
       }
     });
 
-    /* Hero content recedes as the work section rises over it. */
-    tl.to(heroInner, { yPercent: -14, scale: 0.94, ease: 'power1.in' }, 0)
-      /* Whole hero fades so the work sits on a clean background once covered. */
-      .to(hero, { opacity: 0, ease: 'power1.in' }, 0);
-    /* Background drifts a touch for parallax depth. */
-    if (heroBg) tl.to(heroBg, { scale: 1.06, ease: 'none' }, 0);
+    /* Background drifts a touch slower for parallax depth. */
+    var bgTween = heroBg ? gsap.to(heroBg, {
+      yPercent: 14,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: hero,
+        start: 'top top',
+        end: 'bottom top',
+        scrub: 0.6,
+        invalidateOnRefresh: true
+      }
+    }) : null;
 
     /* matchMedia cleanup: fully revert when leaving the breakpoint. */
     return function () {
       document.body.classList.remove('reveal');
-      if (tl.scrollTrigger) tl.scrollTrigger.kill();
-      tl.kill();
-      gsap.set([hero, heroInner, heroBg], { clearProps: 'all' });
+      [innerTween, bgTween].forEach(function (t) {
+        if (!t) return;
+        if (t.scrollTrigger) t.scrollTrigger.kill();
+        t.kill();
+      });
+      gsap.set([heroInner, heroBg], { clearProps: 'all' });
     };
   });
 
-  /* Recompute distances once images and fonts have settled. */
   window.addEventListener('load', function () { ScrollTrigger.refresh(); });
 })();

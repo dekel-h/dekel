@@ -187,27 +187,23 @@
 
     /* ============================================================
        SCROLL REVEAL (desktop, motion-safe)
-       The hero is fixed behind while the work section scrolls up
-       over it — no GSAP pin, so no width capture / resize gaps.
-       js/hero-reveal.js adds .reveal to <body>.
+       Natural-flow reveal: the hero scrolls away as usual while its
+       content parallax-fades and recedes, and the work card rises
+       up over the hero's faded lower edge. No pin / fixed / scroll-
+       jacking, so it behaves correctly in both scroll directions and
+       at every width. js/hero-reveal.js adds .reveal to <body>.
     ============================================================ */
     @media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
-      body.reveal .hero {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 100vh;
-        min-height: 100vh;
-        z-index: 0;
-        will-change: opacity, transform;
-      }
-      /* page scrolls over the fixed hero; the first viewport is
-         reserved for the hero, and the background stays transparent
-         so the hero shows through the side gutters */
       body.reveal .page {
-        margin-top: 100vh;
-        background: transparent;
+        position: relative;
+        z-index: 1;
+        margin-top: -72px;   /* work rises into the hero's faded edge */
+      }
+      body.reveal .hero {
+        z-index: 0;
+      }
+      body.reveal .hero-inner {
+        will-change: opacity, transform;
       }
     }
 
@@ -695,7 +691,7 @@
 
   </div>
 
-  <div style="position:fixed;top:0;left:0;right:0;z-index:200;background:#6366F1;color:#fff;font:600 13px/34px system-ui,sans-serif;text-align:center;letter-spacing:.02em;pointer-events:none">PREVIEW · GSAP hero reveal v2 — scroll down · your live homepage is unchanged</div>
+  <div style="position:fixed;top:0;left:0;right:0;z-index:200;background:#6366F1;color:#fff;font:600 13px/34px system-ui,sans-serif;text-align:center;letter-spacing:.02em;pointer-events:none">PREVIEW · hero reveal v3 — scroll up &amp; down · homepage unchanged</div>
   <div class="dot-rail">
     <button class="back-dot" aria-label="Back to top">
       <svg viewBox="0 0 29 29" fill="none" aria-hidden="true">
