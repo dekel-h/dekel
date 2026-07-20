@@ -1,10 +1,10 @@
-/* Pinned hero → work reveal.
+/* Hero → work scroll reveal.
    On desktop (and only when the user hasn't asked for reduced motion),
-   the hero pins in place while the work section scrolls up and over it,
-   with the hero content easing back for depth — a restrained take on
-   GSAP's pinned-panels-with-overscroll pattern.
-   Integrates with the site's Lenis smooth scrolling and pauses cleanly
-   on mobile / reduced-motion, where normal scrolling is kept. */
+   the hero is fixed behind while the work section scrolls up over it,
+   with the hero content easing back and fading for depth.
+   Uses a scroll-scrubbed timeline (no GSAP pin), so there's no width
+   capture and no resize gaps. Mobile / reduced-motion keep normal
+   scrolling. Integrates with the site's Lenis smooth scrolling. */
 (function () {
   'use strict';
   if (!window.gsap || !window.ScrollTrigger) return;
@@ -24,31 +24,35 @@
     var heroBg = document.querySelector('.hero-bg');
     if (!hero || !heroInner) return;
 
+    /* Enables the fixed-hero CSS (see .reveal rules in the stylesheet). */
+    document.body.classList.add('reveal');
+
     var tl = gsap.timeline({
       scrollTrigger: {
-        trigger: hero,
-        start: 'top top',
-        end: 'bottom top',
-        pin: true,
-        pinSpacing: false,   /* let the work section scroll over the pinned hero */
-        scrub: 0.6,          /* slight catch-up for an overscroll-like feel */
+        trigger: document.documentElement,
+        start: 0,
+        end: function () { return window.innerHeight; },  /* recomputed on refresh/resize */
+        scrub: 0.6,
         invalidateOnRefresh: true
       }
     });
 
-    /* Hero content recedes as the work curtain rises. */
-    tl.to(heroInner, { yPercent: -14, opacity: 0, scale: 0.94, ease: 'power1.in' }, 0);
+    /* Hero content recedes as the work section rises over it. */
+    tl.to(heroInner, { yPercent: -14, scale: 0.94, ease: 'power1.in' }, 0)
+      /* Whole hero fades so the work sits on a clean background once covered. */
+      .to(hero, { opacity: 0, ease: 'power1.in' }, 0);
     /* Background drifts a touch for parallax depth. */
     if (heroBg) tl.to(heroBg, { scale: 1.06, ease: 'none' }, 0);
 
     /* matchMedia cleanup: fully revert when leaving the breakpoint. */
     return function () {
+      document.body.classList.remove('reveal');
       if (tl.scrollTrigger) tl.scrollTrigger.kill();
       tl.kill();
-      gsap.set([heroInner, heroBg], { clearProps: 'all' });
+      gsap.set([hero, heroInner, heroBg], { clearProps: 'all' });
     };
   });
 
-  /* Recompute pin distances once images and fonts have settled. */
+  /* Recompute distances once images and fonts have settled. */
   window.addEventListener('load', function () { ScrollTrigger.refresh(); });
 })();
