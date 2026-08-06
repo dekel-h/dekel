@@ -438,6 +438,12 @@
       overflow-wrap: break-word;
     }
 
+    /* Manual line breaks only where there's room; on narrow screens
+       the text wraps naturally instead */
+    @media (max-width: 900px) {
+      .wide-only { display: none; }
+    }
+
     .hero .intro b {
       font-weight: 700;
     }
@@ -756,9 +762,10 @@
     <div class="hero-inner">
       <h1 data-reveal>Dekel Hillel</h1>
       <p class="intro" data-reveal>
-        I'm a Tel Aviv-based <b>product designer</b> specialising in complex, data-heavy products,
-        with a background in graphic design. I'm passionate about crafting beautiful and useful
-        experiences that give people exactly what they need to do more.
+        I'm a Tel Aviv-based <b>product designer</b> specialising in complex, data-heavy products,<br class="wide-only">
+        with a background in graphic design.<br class="wide-only">
+        I'm passionate about crafting beautiful and useful experiences<br class="wide-only">
+        that give people exactly what they need to do more.
       </p>
       <p class="contact-links" data-reveal>
         <a href="mailto:h.dekel@gmail.com">Email</a>
