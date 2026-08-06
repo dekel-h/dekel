@@ -410,19 +410,17 @@
       display: block;
     }
 
+    /* Hero content shares the work card's 1045px content column so its
+       left edge lines up with the Work label / company names below */
     .hero-inner {
       position: relative;
       z-index: 2;
       display: flex;
       flex-direction: column;
-      align-items: center;
+      align-items: flex-start;
       gap: 40px;
       width: 100%;
-    }
-
-    .hero-inner > * {
-      width: 100%;
-      max-width: 760px;
+      max-width: 1045px;
     }
 
     .hero h1 {
@@ -434,6 +432,7 @@
     }
 
     .hero .intro {
+      max-width: 760px;  /* keeps line length readable within the wider column */
       line-height: 1.6;
       letter-spacing: 0.16px;
       overflow-wrap: break-word;
