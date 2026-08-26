@@ -956,6 +956,33 @@
         --fab-icon: 24px;
       }
     }
+
+    /* -- before / after toggle (added) -------------------------- */
+    .ba { display: flex; flex-direction: column; gap: 16px; }
+    .ba-toggle { display: inline-flex; gap: 4px; background: var(--panel); border: 1px solid var(--border); border-radius: 99px; padding: 4px; width: fit-content; }
+    .ba-btn {
+      border: none; background: transparent; color: var(--muted); font-family: var(--font-body);
+      font-size: 0.9375rem; padding: 8px 24px; border-radius: 99px; cursor: pointer;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+    .ba-btn.is-active { background: #fff; color: #110f18; }
+    .ba-note { font-size: 0.9375rem; color: var(--secondary); min-height: 1.5em; }
+    .ba .shot { margin: 0; }
+    .ba .shot.is-hidden { display: none; }
+
+    /* -- pull quote (added) ------------------------------------- */
+    .pull { border-left: 3px solid rgba(255, 255, 255, 0.85); padding: 6px 0 6px 28px; display: flex; flex-direction: column; gap: 12px; }
+    .pull blockquote { font-family: 'Manrope', var(--font-body); font-weight: 800; font-size: 1.75rem; letter-spacing: -0.02em; line-height: 1.3; }
+    .pull figcaption { font-size: 0.9375rem; color: var(--secondary); }
+
+    /* -- goal / product-logic tiles (added) --------------------- */
+    .imp { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .imp.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+    .imp-tile { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 28px; display: flex; flex-direction: column; gap: 10px; }
+    .imp-kicker { text-transform: uppercase; letter-spacing: 0.04em; font-size: 0.8125rem; color: var(--secondary); }
+    .imp-value { font-family: 'Manrope', var(--font-body); font-weight: 800; font-size: 2.25rem; line-height: 1.1; letter-spacing: -0.02em; }
+    .imp-note { font-size: 0.9375rem; line-height: 1.5; color: var(--muted); }
+    @media (max-width: 767px) { .imp, .imp.cols-3 { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
@@ -1069,6 +1096,45 @@
 
         <hr class="divider">
 
+        <section class="block" data-reveal>
+          <p class="label">Why This Mattered</p>
+          <div class="imp cols-3">
+            <div class="imp-tile">
+              <p class="imp-kicker">The user's problem</p>
+              <p class="imp-note">“I cannot tell what I own, or how I am doing.” The answers exist, buried across tabs and a cramped panel.</p>
+            </div>
+            <div class="imp-tile">
+              <p class="imp-kicker">The business problem</p>
+              <p class="imp-note">Recurring support inquiries, and eroding trust of high-net-worth clients, on a platform sold to banks.</p>
+            </div>
+            <div class="imp-tile">
+              <p class="imp-kicker">Where the decision sits</p>
+              <p class="imp-note">Clarity is not a UI nicety here. It is what keeps capital on the platform.</p>
+            </div>
+          </div>
+        </section>
+
+        <hr class="divider">
+
+        <section class="block" data-reveal>
+          <p class="label">The Goal</p>
+          <p>Every investor opens the app with the same two questions. The goal was to answer both at a glance — clarity and control, the core value the platform kept failing to deliver.</p>
+          <div class="imp">
+            <div class="imp-tile">
+              <p class="imp-kicker">Question 01</p>
+              <p class="imp-value">What do I own?</p>
+              <p class="imp-note">Answered by: Portfolio, total balance on top.</p>
+            </div>
+            <div class="imp-tile">
+              <p class="imp-kicker">Question 02</p>
+              <p class="imp-value">How am I doing?</p>
+              <p class="imp-note">Answered by: allocation in the center, balance box in the panel.</p>
+            </div>
+          </div>
+        </section>
+
+        <hr class="divider">
+
         <section class="block decisions">
           <p class="label" data-reveal>The Decisions</p>
 
@@ -1099,6 +1165,11 @@
             <p>In the invest flow, I explored competing directions (A/B variants of the same steps) and landed on one principle: total cost transparency. Fees and FX exposed upfront, before commitment, and a deterministic review step before anything final. For users investing serious capital, trust isn't a brand value, it's a UI decision: they should never meet a number for the first time after clicking.</p>
           </div>
 
+          <figure class="pull" data-reveal>
+            <blockquote>They should never meet a number for the first time after clicking.</blockquote>
+            <figcaption>The principle behind the invest flow</figcaption>
+          </figure>
+
           <div class="shot shot--invest shot--shadow shot--video" data-reveal>
             <video src="../images/Animation-Flow.mp4" width="1440" height="1024"
                    autoplay loop muted playsinline preload="metadata"
@@ -1115,6 +1186,31 @@
 
         <hr class="divider">
 
+        <section class="block ba" data-reveal>
+          <p class="label">Before · After</p>
+          <div class="ba-toggle" role="tablist" aria-label="Before and after">
+            <button class="ba-btn is-active" role="tab" aria-selected="true" data-ba="before">Before</button>
+            <button class="ba-btn" role="tab" aria-selected="false" data-ba="after">After</button>
+          </div>
+          <div class="shot shot--before shot--shadow" data-ba-img="before">
+            <picture>
+              <source type="image/webp" srcset="assets/assets-before.webp">
+              <img src="assets/assets-before.png" alt="Before — the Assets tab mixing owned holdings with opportunities" loading="lazy" decoding="async" width="1104" height="566">
+            </picture>
+          </div>
+          <div class="shot shot--portfolio shot--shadow is-hidden" data-ba-img="after">
+            <picture>
+              <source type="image/webp" srcset="assets/portfolio-overview.webp">
+              <img src="assets/portfolio-overview.png" alt="After — the Portfolio screen with total balance and allocation" loading="lazy" decoding="async" width="1069" height="767">
+            </picture>
+          </div>
+          <p class="ba-note" aria-live="polite" data-ba-note
+             data-before="Assets: owned and offered mixed in one list, details in a cramped panel."
+             data-after="Portfolio: what you own, how you are doing, at a glance.">Assets: owned and offered mixed in one list, details in a cramped panel.</p>
+        </section>
+
+        <hr class="divider">
+
         <section class="block" data-reveal>
           <p class="label">What Changed</p>
           <p>The app went from an engineering build to a production-ready product: restructured IA, focused asset views, transparent costs, and full production coverage, empty states, loading skeletons, error and pending states, responsive down to mobile. No formal metrics were set up; the honest evidence is the product reaching production and the “missing assets” confusion disappearing from CS conversations. Next time, I'd define one signal upfront: how often users bounce between tabs before acting.</p>
@@ -1125,6 +1221,14 @@
               <img src="assets/production-states.png" alt="Production coverage — empty, loading, error, and pending states" loading="lazy" decoding="async" width="1069" height="744">
             </picture>
           </div>
+        </section>
+
+      
+        <hr class="divider">
+
+        <section class="block" data-reveal>
+          <p class="label">Next Step</p>
+          <p>A Home Dashboard concept: one glance at everything — value, allocation, activity, history. Designed as the platform's next chapter, positioning it as an investment management system and strengthening retention and daily stickiness.</p>
         </section>
 
       </div>
@@ -1303,5 +1407,28 @@
   </script>
   <script src="../assets/hero-effects.js" defer></script>
 
+
+  <script>
+    // Before / After toggle
+    (function () {
+      var btns = document.querySelectorAll('.ba-btn');
+      var shots = document.querySelectorAll('[data-ba-img]');
+      var note = document.querySelector('[data-ba-note]');
+      btns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var mode = btn.getAttribute('data-ba');
+          btns.forEach(function (b) {
+            var on = b === btn;
+            b.classList.toggle('is-active', on);
+            b.setAttribute('aria-selected', on ? 'true' : 'false');
+          });
+          shots.forEach(function (sh) {
+            sh.classList.toggle('is-hidden', sh.getAttribute('data-ba-img') !== mode);
+          });
+          if (note) note.textContent = note.getAttribute('data-' + mode);
+        });
+      });
+    })();
+  </script>
 </body>
 </html>
