@@ -527,6 +527,23 @@
     .shot.loaded::before { content: none; }
     .shot.loaded img { opacity: 1; }
 
+    /* Homepage-consistent hover: subtle zoom on clickable screenshots */
+    .shot:not(.shot--video) img {
+      transition: opacity 0.5s ease, transform 0.6s cubic-bezier(0.2, 0.6, 0.2, 1);
+    }
+
+    .shot:not(.shot--video) img {
+      will-change: transform;
+    }
+
+    .shot:not(.shot--video):hover img {
+      transform: scale(1.025);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .shot:not(.shot--video):hover img { transform: none; }
+    }
+
     @keyframes shimmer {
       100% { transform: translateX(100%); }
     }
@@ -1074,17 +1091,17 @@
     .pull figcaption { font-size: 0.9375rem; color: var(--secondary); }
 
     /* ── Sticky table of contents ───────────────────────────── */
-    /* In-flow block at the top of the case on narrow screens,
-       fixed sidebar once the viewport has room for it */
+    /* Desktop-only sidebar, hidden below the wide breakpoint
+       (same behavior as the reference) */
     .toc {
-      display: flex;
+      display: none;
       flex-direction: column;
       gap: 12px;
-      padding: 8px 0 16px;
     }
 
     @media (min-width: 1640px) {
       .toc {
+        display: flex;
         position: fixed;
         left: calc(50% - 782px);  /* anchored to the content column, not the viewport */
         top: 50%;
@@ -1116,7 +1133,41 @@
       font-weight: 700;
     }
 
-    [id^="sec-"] { scroll-margin-top: 48px; }
+    section[id], .tldr[id] { scroll-margin-top: 48px; }
+
+    .case-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    /* Contact mirrors the Back link: same anatomy, icon nudge on hover */
+    .contact-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .contact-link svg {
+      width: 24px;
+      height: 24px;
+      flex-shrink: 0;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .contact-link:hover svg {
+      transform: translateY(-3px);
+    }
+
+    .back-bar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
   </style>
 </head>
 <body>
@@ -1129,6 +1180,13 @@
           <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
         <span>Back</span>
+      </a>
+      <a class="contact-link" href="mailto:h.dekel@gmail.com">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect x="3.5" y="5.5" width="17" height="13" rx="2.5" stroke="white" stroke-width="1.5"/>
+          <path d="M4.5 7.5L12 13L19.5 7.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>Contact</span>
       </a>
     </div>
   </div>
@@ -1145,12 +1203,21 @@
       <div class="case-inner">
 
         <div class="case-header">
-          <a class="back-link" href="../">
-            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <span>Back</span>
-          </a>
+          <div class="case-topbar">
+            <a class="back-link" href="../">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span>Back</span>
+            </a>
+            <a class="contact-link" href="mailto:h.dekel@gmail.com">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <rect x="3.5" y="5.5" width="17" height="13" rx="2.5" stroke="white" stroke-width="1.5"/>
+                <path d="M4.5 7.5L12 13L19.5 7.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span>Contact</span>
+            </a>
+          </div>
           <div class="crumb-title">
             <p class="crumb">
               <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -1691,7 +1758,7 @@
       labels.forEach(function (l) {
         var host = l.closest('section, .tldr') || l;
         if (!host.id) {
-          host.id = 'sec-' + l.textContent.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+          host.id = l.textContent.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
         }
         var a = document.createElement('a');
         a.href = '#' + host.id;

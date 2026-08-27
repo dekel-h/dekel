@@ -29,14 +29,13 @@
     /* Hero content recedes and fades as the hero scrolls out of view. */
     var innerTween = gsap.to(heroInner, {
       yPercent: 26,
-      scale: 0.96,
       opacity: 0,
       ease: 'none',
       scrollTrigger: {
         trigger: hero,
         start: 'center center',
         end: 'bottom top',
-        scrub: 0.6,
+        scrub: true,
         invalidateOnRefresh: true
       }
     });
@@ -49,7 +48,7 @@
         trigger: hero,
         start: 'top top',
         end: 'bottom top',
-        scrub: 0.6,
+        scrub: true,
         invalidateOnRefresh: true
       }
     }) : null;

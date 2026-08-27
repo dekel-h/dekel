@@ -457,12 +457,12 @@
 
     .contact-links a {
       color: var(--text);
-      text-decoration: underline;
-      text-underline-position: from-font;
-      transition: text-decoration-color 0.2s ease;
+      text-decoration: none;
     }
 
     .contact-links a:hover {
+      text-decoration: underline;
+      text-underline-position: from-font;
       text-decoration-color: #FF0000;
     }
 
@@ -575,6 +575,10 @@
       position: relative;
       opacity: 0;
       transition: opacity 0.5s ease, transform 0.6s cubic-bezier(0.2, 0.6, 0.2, 1);
+    }
+
+    a.shot img {
+      will-change: transform;
     }
 
     a.shot:hover img {
@@ -776,7 +780,7 @@
         that give people exactly what they need to do more.
       </p>
       <p class="contact-links" data-reveal>
-        <a href="mailto:h.dekel@gmail.com">Email</a>
+        <a href="mailto:h.dekel@gmail.com">Contact</a>
         <span aria-hidden="true">•</span>
         <a href="https://www.linkedin.com/in/dekelhillel/" target="_blank" rel="noopener">LinkedIn</a>
         <span aria-hidden="true">•</span>

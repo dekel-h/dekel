@@ -9,7 +9,12 @@
      failed to load. The instance is exposed on window.__lenis so
      page scripts (e.g. back-to-top buttons) can reuse it. */
   if (!reduced && typeof window.Lenis === 'function') {
-    var lenis = new window.Lenis();
+    var lenis = new window.Lenis({
+      /* Snappier catch-up: less rubber-band lag on fast direction
+         changes (default lerp is 0.1). */
+      lerp: 0.16,
+      wheelMultiplier: 1
+    });
     window.__lenis = lenis;
     var raf = function (time) {
       lenis.raf(time);
