@@ -473,6 +473,8 @@
       background: var(--card);
       border: 1px solid var(--card-border);
       border-radius: 60px;
+      position: relative;
+      z-index: 2;
       width: 1237px;
       max-width: 100%;
       padding: 80px 56px 56px;
@@ -760,6 +762,14 @@
         --fab-dot:  20px;
         --fab-icon: 24px;
       }
+    }
+
+    /* Desktop: the work card climbs into the hero's faded glow.
+       The hero gets matching bottom padding so its content stays
+       centered in the visible area. Mobile keeps normal flow. */
+    @media (min-width: 1024px) {
+      .work { margin-top: -120px; }
+      .hero { padding-bottom: 184px; }
     }
   </style>
 </head>
