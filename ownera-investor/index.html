@@ -608,10 +608,36 @@
       background: var(--panel);
       border: 1px solid var(--border);
       border-radius: 16px;
-      padding: 40px;
+      padding: 16px 40px 8px;
       display: flex;
       flex-direction: column;
-      gap: 24px;
+    }
+
+    .tldr .label {
+      padding: 24px 0 8px;
+    }
+
+    .tldr-row {
+      display: grid;
+      grid-template-columns: 150px 1fr;
+      gap: 32px;
+      padding: 28px 0;
+    }
+
+    .tldr-row + .tldr-row {
+      border-top: 1px solid var(--border);
+    }
+
+    .tldr-key {
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    @media (max-width: 700px) {
+      .tldr-row {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
     }
 
     .tldr .label {
@@ -983,6 +1009,51 @@
     .imp-value { font-family: 'Manrope', var(--font-body); font-weight: 800; font-size: 2.25rem; line-height: 1.1; letter-spacing: -0.02em; }
     .imp-note { font-size: 0.9375rem; line-height: 1.5; color: var(--muted); }
     @media (max-width: 767px) { .imp, .imp.cols-3 { grid-template-columns: 1fr; } }
+
+    /* ── Sticky table of contents ───────────────────────────── */
+    /* In-flow block at the top of the case on narrow screens,
+       fixed sidebar once the viewport has room for it */
+    .toc {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 8px 0 16px;
+    }
+
+    @media (min-width: 1640px) {
+      .toc {
+        position: fixed;
+        left: calc(50% - 782px);  /* anchored to the content column, not the viewport */
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 5;
+        max-width: 210px;
+        gap: 14px;
+        padding: 0;
+      }
+    }
+
+    .toc a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      line-height: 1.3;
+      transition: color 0.2s ease;
+    }
+
+    .toc a:hover {
+      color: var(--text);
+      text-decoration: underline;
+      text-underline-position: from-font;
+      text-decoration-color: #FF0000;
+    }
+
+    .toc a.active {
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    [id^="sec-"] { scroll-margin-top: 48px; }
   </style>
 </head>
 <body>
@@ -1060,9 +1131,9 @@
         <div class="tldr" data-reveal>
           <p class="label">TL;DR</p>
           <div>
-            <p><span class="muted">Problem</span> → The investor app was built by engineers before design existed. Confusing structure, cramped side panels, hidden costs, and components that collapsed under real data.</p>
-            <p><span class="muted">What I did</span> → Restructured the core IA (Assets → Portfolio), redesigned the asset panel around focus, made every cost transparent in the invest flow, and rebuilt the underlying components to scale, across data volumes and across bank brands.</p>
-            <p><span class="muted">Result</span> → A production-ready investor experience that matches what high-net-worth users expect from a platform holding their money.</p>
+            <div class="tldr-row"><p class="tldr-key">Problem</p><p>The investor app was built by engineers before design existed. Confusing structure, cramped side panels, hidden costs, and components that collapsed under real data.</p></div>
+            <div class="tldr-row"><p class="tldr-key">What I did</p><p>Restructured the core IA (Assets → Portfolio), redesigned the asset panel around focus, made every cost transparent in the invest flow, and rebuilt the underlying components to scale, across data volumes and across bank brands.</p></div>
+            <div class="tldr-row"><p class="tldr-key">Result</p><p>A production-ready investor experience that matches what high-net-worth users expect from a platform holding their money.</p></div>
           </div>
         </div>
 
@@ -1428,6 +1499,62 @@
           if (note) note.textContent = note.getAttribute('data-' + mode);
         });
       });
+    })();
+  </script>
+
+  <script>
+    /* Sticky TOC: built from section labels, scrollspy, smooth scroll */
+    (function () {
+      var main = document.querySelector('main.case');
+      if (!main) return;
+      var skip = ['Ownership', 'Scope', 'Sector', 'Shift', 'Next Project', 'Beyond the numbers'];
+      var labels = Array.prototype.filter.call(main.querySelectorAll('.label'), function (l) {
+        return skip.indexOf(l.textContent.trim()) === -1;
+      });
+      if (labels.length < 3) return;
+      var toc = document.createElement('nav');
+      toc.className = 'toc';
+      toc.setAttribute('aria-label', 'Table of contents');
+      var targets = [];
+      labels.forEach(function (l) {
+        var host = l.closest('section, .tldr') || l;
+        if (!host.id) {
+          host.id = 'sec-' + l.textContent.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+        }
+        var a = document.createElement('a');
+        a.href = '#' + host.id;
+        a.textContent = l.textContent.trim();
+        a.addEventListener('click', function (e) {
+          e.preventDefault();
+          var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          if (window.__lenis && !reduce) {
+            window.__lenis.scrollTo('#' + host.id, { offset: -48 });
+          } else {
+            host.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+          }
+          history.replaceState(null, '', '#' + host.id);
+        });
+        toc.appendChild(a);
+        targets.push({ el: host, link: a });
+      });
+      var tldrHost = main.querySelector('.tldr');
+      if (tldrHost && tldrHost.parentNode) {
+        tldrHost.parentNode.insertBefore(toc, tldrHost);
+      } else {
+        main.insertBefore(toc, main.firstChild);
+      }
+      function onScroll() {
+        var y = window.scrollY + window.innerHeight * 0.3;
+        var cur = targets[0];
+        targets.forEach(function (t) {
+          if (t.el.getBoundingClientRect().top + window.scrollY <= y) cur = t;
+        });
+        targets.forEach(function (t) {
+          t.link.classList.toggle('active', t === cur);
+        });
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
     })();
   </script>
 </body>
