@@ -1746,7 +1746,7 @@
     (function () {
       var main = document.querySelector('main.case');
       if (!main) return;
-      var skip = ['Ownership', 'Scope', 'Sector', 'Shift', 'Next Project', 'Beyond the numbers'];
+      var skip = ['Ownership', 'Scope', 'Sector', 'Shift', 'Audience', 'Status', 'Next Project', 'Beyond the numbers'];
       var labels = Array.prototype.filter.call(main.querySelectorAll('.label'), function (l) {
         return skip.indexOf(l.textContent.trim()) === -1;
       });
