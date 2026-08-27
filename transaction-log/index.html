@@ -623,6 +623,10 @@
       border-top: 1px solid var(--border);
     }
 
+    .tldr-row p {
+      margin: 0;
+    }
+
     .tldr-key {
       color: var(--muted);
       line-height: 1.6;
@@ -642,10 +646,6 @@
     .tldr p {
       line-height: 1.6;
       letter-spacing: 0.01em;
-    }
-
-    .tldr p + p {
-      margin-top: 1.6em;
     }
 
     .tldr p .muted {
@@ -814,22 +814,6 @@
       }
     }
 
-
-    /* ============================================================
-       READING PROGRESS BAR
-    ============================================================ */
-    .progress-bar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 3px;
-      background: linear-gradient(90deg, #6366F1, #8b8ef7);
-      transform: scaleX(0);
-      transform-origin: 0 50%;
-      z-index: 50;
-      pointer-events: none;
-    }
 
     /* ============================================================
        BACK-TO-TOP BUTTON (same behavior as the homepage)
@@ -1137,7 +1121,6 @@
 </head>
 <body>
 
-  <div class="progress-bar" aria-hidden="true"></div>
 
   <div class="back-bar">
     <div class="back-bar-inner">
@@ -1538,15 +1521,11 @@
   <script>
     (function () {
       var dot = document.querySelector('.back-dot');
-      var progressBar = document.querySelector('.progress-bar');
       var backBar = document.querySelector('.back-bar');
       var inlineBack = document.querySelector('.case-header .back-link');
       var onScroll = function () {
         dot.classList.toggle('expanded', window.scrollY > 100);
         backBar.classList.toggle('visible', inlineBack.getBoundingClientRect().bottom < 0);
-        var max = document.documentElement.scrollHeight - window.innerHeight;
-        var p = max > 0 ? Math.min(1, window.scrollY / max) : 0;
-        progressBar.style.transform = 'scaleX(' + p + ')';
       };
       window.addEventListener('scroll', onScroll, { passive: true });
       window.addEventListener('resize', onScroll);
@@ -1736,17 +1715,32 @@
       } else {
         main.insertBefore(toc, main.firstChild);
       }
-      function onScroll() {
-        var y = window.scrollY + window.innerHeight * 0.3;
-        var cur = targets[0];
-        targets.forEach(function (t) {
-          if (t.el.getBoundingClientRect().top + window.scrollY <= y) cur = t;
-        });
-        targets.forEach(function (t) {
-          t.link.classList.toggle('active', t === cur);
+      /* Cache section offsets; re-measure only on resize/load, so the
+         scroll handler does no layout reads at 60fps. */
+      var offsets = [];
+      function measure() {
+        offsets = targets.map(function (t) {
+          return t.el.getBoundingClientRect().top + window.scrollY;
         });
       }
+      var activeIdx = -1;
+      function onScroll() {
+        var y = window.scrollY + window.innerHeight * 0.3;
+        var idx = 0;
+        for (var i = 0; i < offsets.length; i++) {
+          if (offsets[i] <= y) idx = i;
+        }
+        if (idx !== activeIdx) {
+          activeIdx = idx;
+          targets.forEach(function (t, j) {
+            t.link.classList.toggle('active', j === idx);
+          });
+        }
+      }
+      measure();
       window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', function () { measure(); onScroll(); }, { passive: true });
+      window.addEventListener('load', function () { measure(); onScroll(); });
       onScroll();
     })();
   </script>
