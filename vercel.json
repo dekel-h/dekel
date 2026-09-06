@@ -1,0 +1,9 @@
+{
+  "redirects": [
+    { "source": "/transaction-log", "destination": "/", "permanent": false },
+    { "source": "/transaction-log/:path*", "destination": "/", "permanent": false },
+    { "source": "/transaction-log.html", "destination": "/", "permanent": false },
+    { "source": "/ownera-investor", "destination": "/", "permanent": false },
+    { "source": "/ownera-investor/:path*", "destination": "/", "permanent": false }
+  ]
+}
