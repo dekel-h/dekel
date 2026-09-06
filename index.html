@@ -306,7 +306,8 @@
       background: var(--bg);
       color: var(--text);
       font-family: var(--font-body);
-      font-size: 1.125rem;  /* 18px */
+      /* fluid 16px -> 18px (700-925px), replaces the 700px step */
+      font-size: clamp(1rem, calc(16px + (100vw - 700px) * 0.00889), 1.125rem);
       line-height: 1.4;
       overflow-x: hidden;
       overflow-x: clip;
@@ -321,7 +322,11 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 0 40px 136px;
+      /* fluid gutters 24px -> 40px (600-1000px) and bottom 96 -> 136,
+         replacing the 700px step */
+      padding: 0
+               clamp(24px, calc(24px + (100vw - 600px) * 0.04), 40px)
+               clamp(96px, calc(96px + (100vw - 600px) * 0.1), 136px);
     }
 
     a {
@@ -374,7 +379,8 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      min-height: 800px;
+      /* fluid: 0 below 500px, 800px from 900px up - no step at 700px */
+      min-height: clamp(0px, calc((100vw - 500px) * 2), 800px);
       padding: 80px 40px;
       width: 100%;
       background: #110F18;
@@ -436,9 +442,10 @@
     .hero h1 {
       font-family: var(--font-heading);
       font-weight: 600;
-      font-size: 3rem;          /* 48px */
+      /* fluid 44px -> 48px, replaces the 700px step */
+      font-size: clamp(2.75rem, 2rem + 2vw, 3rem);
       letter-spacing: -0.06em;  /* -4.32px at 72px, scales with size */
-      line-height: normal;
+      line-height: 1.1;
     }
 
     .hero .intro {
@@ -488,7 +495,9 @@
       align-items: flex-start;
       gap: 24px;
       width: 100%;
-      margin-top: 16px;
+      /* fluid margins - replaces the 700px step */
+      margin-top: clamp(16px, calc(24px - (100vw - 500px) * 0.04), 24px);
+      margin-bottom: clamp(0px, calc(24px - (100vw - 500px) * 0.12), 24px);
     }
 
     .clients-label {
@@ -549,12 +558,14 @@
     .work {
       background: var(--card);
       border: 1px solid var(--card-border);
-      border-radius: 60px;
+      /* fluid radius and padding - replaces steps at 1319px and 700px */
+      border-radius: clamp(28px, calc(28px + (100vw - 500px) * 0.08), 60px);
       position: relative;
       z-index: 2;
       width: 1237px;
       max-width: 100%;
-      padding: 80px 56px 56px;
+      padding: clamp(24px, calc(24px + (100vw - 500px) * 0.064), 56px);
+      padding-top: clamp(24px, calc(24px + (100vw - 500px) * 0.064), 80px);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -796,48 +807,17 @@
     /* ============================================================
        TABLET  (below the 1237px card + 40px gutters)
     ============================================================ */
-    @media (max-width: 1319px) {
-      .work {
-        width: 100%;
-        padding: 56px;
-      }
-    }
-
     /* ============================================================
        MOBILE
     ============================================================ */
     @media (max-width: 700px) {
-      body {
-        font-size: 1rem;  /* 16px */
-      }
-
-      .page {
-        padding: 0 24px 96px;
-      }
-
       .hero {
-        min-height: 0;
         justify-content: flex-start;
         padding: 5rem 40px;  /* 80px top/bottom, 24px gutter + 16px inset */
       }
 
-      .hero h1 {
-        font-size: 2.75rem;  /* 44px */
-        line-height: 1.1;
-      }
-
-      .clients {
-        margin-top: 24px;
-        margin-bottom: 24px;
-      }
-
       .case-link span {
         font-size: 1.125rem;  /* 18px */
-      }
-
-      .work {
-        border-radius: 28px;
-        padding: 24px;
       }
 
       .case-link span {
@@ -852,12 +832,17 @@
       }
     }
 
-    /* Desktop: the work card climbs into the hero's faded glow.
-       The hero gets matching bottom padding so its content stays
-       centered in the visible area. Mobile keeps normal flow. */
-    @media (min-width: 1024px) {
-      .work { margin-top: -120px; }
-      .hero { padding-bottom: 184px; }
+    /* Desktop: the work card climbs into the hero's faded glow, and
+       the hero gets matching bottom padding so its content stays
+       centered in the visible area. Interpolated fluidly between
+       900px (no overlap) and 1150px (full -120px overlap) so there is
+       no snap when resizing - was a hard step at 1024px. */
+    .work {
+      margin-top: clamp(-120px, calc((900px - 100vw) * 0.48), 0px);
+    }
+
+    .hero {
+      padding-bottom: clamp(80px, calc(80px + (100vw - 900px) * 0.416), 184px);
     }
   </style>
 </head>
