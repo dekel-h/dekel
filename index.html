@@ -78,6 +78,7 @@
 
   <!-- ── Self-hosted fonts (same faces, no third-party) ─────── -->
   <link rel="preload" href="/fonts/manrope-800-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/sora-600-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/gsf-latin.woff2" as="font" type="font/woff2" crossorigin>
 
   <!-- Marks JS availability before first paint, so the reveal-on-scroll
@@ -263,6 +264,15 @@
   src: url(/fonts/manrope-800-latin.woff2) format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
+/* Sora latin */
+@font-face {
+  font-family: 'Sora';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(/fonts/sora-600-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
 
     *, *::before, *::after {
       box-sizing: border-box;
@@ -277,7 +287,7 @@
       --text: #ffffff;          /* primary text */
       --secondary: #5f5c62;     /* dates */
       --muted: #c6c6c6;         /* "Notable projects:" label */
-      --font-heading: 'Manrope', sans-serif;
+      --font-heading: 'Sora', sans-serif;
       --font-body: 'Google Sans Flex', 'DM Sans', sans-serif;
     }
 
@@ -364,8 +374,8 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      min-height: 700px;
-      padding: 64px 40px;
+      min-height: 800px;
+      padding: 80px 40px;
       width: 100%;
       background: #110F18;
       overflow: hidden;
@@ -425,8 +435,8 @@
 
     .hero h1 {
       font-family: var(--font-heading);
-      font-weight: 800;
-      font-size: 4.5rem;        /* 72px */
+      font-weight: 600;
+      font-size: 4rem;          /* 64px */
       letter-spacing: -0.06em;  /* -4.32px at 72px, scales with size */
       line-height: normal;
     }
@@ -457,13 +467,81 @@
 
     .contact-links a {
       color: var(--text);
-      text-decoration: none;
+      text-decoration: underline;
+      text-underline-position: from-font;
+      transition: text-decoration-color 0.2s ease;
     }
 
     .contact-links a:hover {
-      text-decoration: underline;
-      text-underline-position: from-font;
       text-decoration-color: #FF0000;
+    }
+
+    /* ============================================================
+       CLIENTS MARQUEE
+       Infinite horizontal logo strip, edge-faded — same "Framer
+       infinite scroll" pattern as superfine.studio, done in plain
+       CSS: the track's logo list is duplicated once and animated
+       from translateX(0) to translateX(-50%) for a seamless loop.
+    ============================================================ */
+    .clients {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 24px;
+      width: 100%;
+      margin-top: 16px;
+    }
+
+    .clients-label {
+      font-size: 0.875rem; /* 14px */
+      color: var(--secondary);
+    }
+
+    .clients-marquee {
+      width: 100%;
+      overflow: hidden;
+      -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 12%, #000 88%, transparent 100%);
+              mask-image: linear-gradient(to right, transparent 0%, #000 12%, #000 88%, transparent 100%);
+    }
+
+    .clients-track {
+      display: flex;
+      align-items: center;
+      gap: 56px;
+      width: max-content;
+      animation: clients-scroll 64s linear infinite;
+    }
+
+    @keyframes clients-scroll {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    .clients-logo {
+      display: block;
+      height: 26px;
+      width: auto;
+      flex-shrink: 0;
+      opacity: 0.7;
+    }
+
+    /* pure-black exports get flipped to white so they read on the
+       dark hero; CoHo's mark already ships pre-colored, so it's left as-is */
+    .clients-logo.is-mono {
+      filter: invert(1);
+    }
+
+    /* icon-only marks (no wordmark) read as noise at the wordmarks' height -
+       scale up and de-dim so fine detail stays legible */
+    .clients-logo.is-mark {
+      height: 40px;
+      opacity: 0.85;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .clients-track {
+        animation: none;
+      }
     }
 
     /* ============================================================
@@ -739,8 +817,13 @@
       }
 
       .hero h1 {
-        font-size: 3rem;  /* 48px */
+        font-size: 2.75rem;  /* 44px */
         line-height: 1.1;
+      }
+
+      .clients {
+        margin-top: 24px;
+        margin-bottom: 24px;
       }
 
       .case-link span {
@@ -796,6 +879,27 @@
         <span aria-hidden="true">•</span>
         <a href="Dekel-Hillel-CV.pdf" target="_blank" rel="noopener">CV</a>
       </p>
+      <div class="clients" data-reveal>
+        <p class="clients-label">Clients I've Worked With</p>
+        <div class="clients-marquee">
+          <div class="clients-track">
+            <img class="clients-logo is-mono" src="assets/logos/similarweb.svg" alt="Similarweb" width="219" height="32">
+            <img class="clients-logo is-mono" src="assets/logos/placer-ai.svg" alt="Placer.ai" width="105" height="32">
+            <img class="clients-logo is-mono" src="assets/logos/bezalel.svg" alt="Bezalel Academy of Arts and Design" width="211" height="32">
+            <img class="clients-logo is-mono" src="assets/logos/targetboard.svg" alt="TargetBoard" width="207" height="32">
+            <img class="clients-logo is-mono" src="assets/logos/paycom.svg" alt="Pay.com" width="167" height="32">
+            <img class="clients-logo is-mark" src="assets/logos/coho.svg" alt="CoHo" width="32" height="32">
+            <img class="clients-logo is-mono" src="assets/logos/cnvrg.svg" alt="cnvrg.io" width="145" height="32">
+            <img class="clients-logo is-mono" src="assets/logos/similarweb.svg" alt="" aria-hidden="true" width="219" height="32">
+            <img class="clients-logo is-mono" src="assets/logos/placer-ai.svg" alt="" aria-hidden="true" width="105" height="32">
+            <img class="clients-logo is-mono" src="assets/logos/bezalel.svg" alt="" aria-hidden="true" width="211" height="32">
+            <img class="clients-logo is-mono" src="assets/logos/targetboard.svg" alt="" aria-hidden="true" width="207" height="32">
+            <img class="clients-logo is-mono" src="assets/logos/paycom.svg" alt="" aria-hidden="true" width="167" height="32">
+            <img class="clients-logo is-mark" src="assets/logos/coho.svg" alt="" aria-hidden="true" width="32" height="32">
+            <img class="clients-logo is-mono" src="assets/logos/cnvrg.svg" alt="" aria-hidden="true" width="145" height="32">
+          </div>
+        </div>
+      </div>
     </div>
   </header>
 
